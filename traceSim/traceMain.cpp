@@ -70,10 +70,10 @@ extern "C" int NVMAIN_TEST( int argc, char *argv[] )
 }
 
 /*
-        $helloVPI;
-        $CordicRoCC_C(phase,{6'b000000,funct});
-        $NVMAIN_TEST();
-        result <= _T_221;
+    $helloVPI;
+    $CordicRoCC_C(phase,{6'b000000,funct});
+    $NVMAIN_TEST();
+    result <= _T_221;
 */
 
 TraceMain::TraceMain( )
