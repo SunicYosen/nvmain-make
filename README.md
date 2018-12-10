@@ -1,6 +1,8 @@
 # NVMain
 
-NVMAIN - An Architectural Level Main Memory Simulator for Emerging Non-Volatile Memories. And Make build method is added.
+NVMAIN - An Architectural Level Main Memory Simulator
+-- for Emerging Non-Volatile Memories.
+And Make build method is added.
 
 ======================================================
 
@@ -10,7 +12,7 @@ NVMAIN - An Architectural Level Main Memory Simulator for Emerging Non-Volatile 
     2. Building NVMain
        a. Trace Simulation
        b. Simulator-Connected Simulation
-       c. Build with make 
+       c. Build with make
     3. Running NVMain
     4. Configuring NVMain
     5. Hacking NVMain
@@ -21,12 +23,20 @@ NVMAIN - An Architectural Level Main Memory Simulator for Emerging Non-Volatile 
 
 ## 1. Overview
 
-    NVMain is a cycle accurate main memory simulator  designed to simulate emerging non-volatile memories at the architectural level. Since the current status of non-volatile memory is unknown and this is a research tool, flexability is provided to implement different variations of memory controllers, interconnects, organizations, etc. Detailed modification information is provided in section 5. Thanks for trying NVMain!
+    NVMain is a cycle accurate main memory simulator designed to
+    simulate emerging non-volatile memories at the architectural
+    level. Since the current status of non-volatile memory is
+    unknown and this is a research tool, flexability is provided
+    to implement different variations of memory controllers,
+    interconnects, organizations, etc. Detailed modification
+    information is provided in section 5. Thanks for trying NVMain!
 ------------------------------------------------------
 
 ## 2. Building NVMain
 
-    NVMain can be build as a standalone executable to run trace-based simulations, or it can be patched into a CPU simulator to provide closer to full system simulation.
+    NVMain can be build as a standalone executable to run trace-based
+    simulations, or it can be patched into a CPU simulator to provide
+    closer to full system simulation.
 
 ### 2a. Trace Simulation
 
@@ -34,15 +44,23 @@ NVMAIN - An Architectural Level Main Memory Simulator for Emerging Non-Volatile 
 
         $ scons --build-type=[fast|debug|prof]
 
-        Compiling with scons will automatically set the compile flags needed for trace-based simulation. You can use --build-type=fast for -O3 optimization, --build-type=debug to add debugging symbol, or --build-type=prof to add support for profiling the simulator. 
+        Compiling with scons will automatically set the compile flags
+        needed for trace-based simulation. You can use --build-type=fast
+        for -O3 optimization, --build-type=debug to add debugging symbol,
+        or --build-type=prof to add support for profiling the simulator.
 
 ### 2b. Simulator-Connected Simulation
 
-        Running NVMain under a simulator depends on the simulator use. The 'patches' directory contains a directory for each of the supported simulators.
+        Running NVMain under a simulator depends on the simulator use.
+        The 'patches' directory contains a directory for each of the
+        supported simulators.
 
         gem5 (git);
 
-           The gem5 patch is the most up-to-date patch in most cases. As of March 1st, 2017 gem5 uses a git repository as the master. The NVMain patch can be applied using the follwing command in the gem5 root directory:
+           The gem5 patch is the most up-to-date patch in most cases.
+           As of March 1st, 2017 gem5 uses a git repository as the master.
+           The NVMain patch can be applied using the follwing command in
+           the gem5 root directory:
 
            git apply /path/to/nvmain/patches/gem5/nvmain2-XYZ
 
@@ -52,7 +70,10 @@ NVMAIN - An Architectural Level Main Memory Simulator for Emerging Non-Volatile 
 
         gem5 (mercurial):
 
-           If you are using a verison of gem5 cloned from the read-only mercurial mirror, mercurial queues can be used to apply the patch. To start, go to the gem5 root directory and import the patch
+           If you are using a verison of gem5 cloned from the read-only
+           mercurial mirror, mercurial queues can be used to apply the
+           patch. To start, go to the gem5 root directory and import
+           the patch
 
            $ hg qimport /path/to/nvmain/patches/gem5/nvmain2-XYZ
 
@@ -65,7 +86,9 @@ NVMAIN - An Architectural Level Main Memory Simulator for Emerging Non-Volatile 
 
            $ hg qapplied
 
-           You can build gem5 normally at this point. You will need mercurial queues setup to do this. More information can be found at http://mercurial.selenic.com/wiki/MqExtension/ In general you should add the following to ~/.hgrc:
+           You can build gem5 normally at this point. You will need mercurial
+           queues setup to do this. More information can be found at http://mercurial.selenic.com/wiki/MqExtension/ In general you should
+           add the following to ~/.hgrc:
 
            [extensions]
            mq =
@@ -75,12 +98,15 @@ NVMAIN - An Architectural Level Main Memory Simulator for Emerging Non-Volatile 
            $ hg qinit
 
 
-           To update the gem5 patch, first remove it and delete it. It can then be imported again. In order to save your modifications, you can create your own patch before re-importing the nvmain patch:
+           To update the gem5 patch, first remove it and delete it. It can
+           then be imported again. In order to save your modifications, you
+           can create your own patch before re-importing the nvmain patch:
 
            $ hg qnew mychanges.patch
            $ hg qrefresh
 
-           Now your changes are saved in the "mychanges.patch" file. Feel free to rename this :). Next re-import NVmain:
+           Now your changes are saved in the "mychanges.patch" file. Feel
+           free to rename this :). Next re-import NVmain:
 
            $ hg qpop -a
            $ hg qdel nvmain-XYZ
@@ -99,7 +125,8 @@ NVMAIN - An Architectural Level Main Memory Simulator for Emerging Non-Volatile 
 
         make
         make TYPECONFIG=fast|debug|prof
-        make TYPECONFIG=fast|debug|prof onestep_bin #Build without middle objects
+        make TYPECONFIG=fast|debug|prof onestep_bin 
+        # Build without middle objects
 
         then objects will be find in build directory.
 ------------------------------------------------------
@@ -111,12 +138,30 @@ NVMAIN - An Architectural Level Main Memory Simulator for Emerging Non-Volatile 
     ./nvmain CONFIG_FILE TRACE_FILE [Cycles [PARAM=value]]
 
 
-    The CONFIG_FILE is the path to the configuration file for the memory system being simulated. The TRACE_FILE is the path to the trace file with the memory requests to simulate. Cycles is optional and specifies the max number of cycles to simulate. By default the entire trace file is simulated. This is equivalent to providing "0" as the value for Cycles. Additionally, CONFIG_FILE parameters can be overriden using PARAM=value, for example, adding "MEM_CTL=FRFCFS" to the command line will override the value for MEM_CTL in the configuration file.
+    The CONFIG_FILE is the path to the configuration file for the
+    memory system being simulated. The TRACE_FILE is the path to
+    the trace file with the memory requests to simulate. Cycles
+    is optional and specifies the max number of cycles to simulate.
+    By default the entire trace file is simulated. This is
+    equivalent to providing "0" as the value for Cycles.
+    Additionally, CONFIG_FILE parameters can be overriden using
+    PARAM=value, for example, adding "MEM_CTL=FRFCFS" to the
+    command line will override the value for MEM_CTL in the
+    configuration file.
 
-    A various number of trace formats are supported, such as "ProtocolTrace" traces from gem5 or NVMain traces which contain the minimum amount of information needed to simulate a request. NVMain traces are recommended. Traces can be generated by running gem5 with the printtrace.config configuration file. The NVMain trace format prints the previous and new value of data being written to memory to allow for simulation of MLC NVMs and data encoding techniques which require knowing which data bits are changing.
+    A various number of trace formats are supported, such as
+    "ProtocolTrace" traces from gem5 or NVMain traces which
+    contain the minimum amount of information needed to simulate
+    a request. NVMain traces are recommended. Traces can be
+    generated by running gem5 with the printtrace.config
+    configuration file. The NVMain trace format prints the
+    previous and new value of data being written to memory to
+    allow for simulation of MLC NVMs and data encoding techniques
+    which require knowing which data bits are changing.
 
-    For gem5, simulation is setup using python scripts. NVMain only patches gem5 to recognize command line options for NVMain. The example scripts provided with
-    gem5 can be used:
+    For gem5, simulation is setup using python scripts. NVMain
+    only patches gem5 to recognize command line options for NVMain.
+    The example scripts provided with gem5 can be used:
 
     configs/example/se.py - Run in SE mode
     configs/example/fs.py - Run in FS mode
@@ -133,16 +178,26 @@ NVMAIN - An Architectural Level Main Memory Simulator for Emerging Non-Volatile 
 
 ## 4. Configuring NVMain
 
-    NVMain can be configured using the configuration files. Several example configuration files can be found in the Config/ folder in the NVMain trunk.
+    NVMain can be configured using the configuration files.
+    Several example configuration files can be found in the
+    Config/ folder in the NVMain trunk.
 
-    A more detailed listing of configuration parameter names and potential values are on the NVMain wiki page at http://wiki.nvmain.org/.
+    A more detailed listing of configuration parameter names
+    and potential values are on the NVMain wiki page at
+    http://wiki.nvmain.org/.
 ------------------------------------------------------
 
 ## 5. Hacking NVMain
 
-    As mentioned in the overview, NVMain is meant to be flexible. Writing your own interconnect, memory controller, endurance model, address translator, etc. Can be done by creating a new C++ file with your new class.
+    As mentioned in the overview, NVMain is meant to be flexible.
+    Writing your own interconnect, memory controller, endurance
+    model, address translator, etc. Can be done by creating a new
+    C++ file with your new class.
 
-    Each unit has a Factory class which selects the class to used based on the configuration file input. You can create a class by looking at one of the example classes in each folder:
+    Each unit has a Factory class which selects the class to used
+    based on the configuration file input. You can create a class
+    by looking at one of the example classes in each folder:
+
     MemControl - Custom Memory Controllers
     FaultModels - Custom hard-fault models
     Decoders - Custom address translators
