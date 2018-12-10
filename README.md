@@ -86,9 +86,10 @@ And Make build method is added.
 
            $ hg qapplied
 
-           You can build gem5 normally at this point. You will need mercurial
-           queues setup to do this. More information can be found at http://mercurial.selenic.com/wiki/MqExtension/ In general you should
-           add the following to ~/.hgrc:
+           You can build gem5 normally at this point. You will need
+           mercurial queues setup to do this. More information can be
+           found at http://mercurial.selenic.com/wiki/MqExtension/
+           In general you should add the following to ~/.hgrc:
 
            [extensions]
            mq =
@@ -166,7 +167,10 @@ And Make build method is added.
     configs/example/se.py - Run in SE mode
     configs/example/fs.py - Run in FS mode
 
-    When running gem5, the parameter --mem-type=NVMainMemory must be used to enable NVMain. The option --nvmain-config must be used to specify the NVMain configuration file. Below is an example command line:
+    When running gem5, the parameter --mem-type=NVMainMemory
+    must be used to enable NVMain. The option --nvmain-config
+    must be used to specify the NVMain configuration file. 
+    Below is an example command line:
 
     $ gem5.fast config/example/se.py -c hello_world      \
                 --mem-type=NVMainMemory --caches         \
@@ -213,7 +217,7 @@ And Make build method is added.
 
     When adding a class, make sure to update
     the factory class to #include your class
-    header and to initialize your class if 
+    header and to initialize your class if
     the configuration is set to your class'
     name.
 
