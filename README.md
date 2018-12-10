@@ -1,22 +1,24 @@
-NVMain - An Architectural Level Main Memory Simulator
-         for Emerging Non-Volatile Memories
+# NVMain
+NVMAIN - An Architectural Level Main Memory Simulator for Emerging Non-Volatile Memories
 
 ======================================================
 
-Sections
+## Sections
 
     1. Overview
     2. Building NVMain
        a. Trace Simulation
        b. Simulator-Connected Simulation
+       c. Build with make 
     3. Running NVMain
     4. Configuring NVMain
     5. Hacking NVMain
     6. README Changelog
+    7. Release
 
 ------------------------------------------------------  
 
-1. Overview
+## 1. Overview
 
     NVMain is a cycle accurate main memory simulator
     designed to simulate emerging non-volatile
@@ -31,14 +33,14 @@ Sections
 
 ------------------------------------------------------
 
-2. Building NVMain
+## 2. Building NVMain
 
     NVMain can be build as a standalone executable to
     run trace-based simulations, or it can be patched
     into a CPU simulator to provide closer to full
     system simulation. 
 
-    2a. Trace Simulation
+### 2a. Trace Simulation
 
         The trace simulation can be build using scons:
 
@@ -51,7 +53,7 @@ Sections
         to add debugging symbol, or --build-type=prof
         to add support for profiling the simulator.
 
-    2b. Simulator-Connected Simulation
+### 2b. Simulator-Connected Simulation
 
         Running NVMain under a simulator depends on
         the simulator use. The 'patches' directory
@@ -130,10 +132,17 @@ Sections
 
            https://github.com/AXLEproject/axle-zsim-nvmain
 
+### 2c. Build With Make 
+        make
+        make CONFIG=fast|debug|prof
+        make onestep_bin #
+        
+        then objects 
+
 
 ------------------------------------------------------
 
-3. Running NVMain
+## 3. Running NVMain
 
 
     NVMain can be run on the command line with trace-based
@@ -188,7 +197,7 @@ Sections
 
 ------------------------------------------------------
 
-4. Configuring NVMain
+## 4. Configuring NVMain
 
 
     NVMain can be configured using the configuration files.
@@ -202,7 +211,7 @@ Sections
 
 ------------------------------------------------------
 
-5. Hacking NVMain
+## 5. Hacking NVMain
 
 
     As mentioned in the overview, NVMain is meant to 
@@ -242,9 +251,9 @@ Sections
 
 ------------------------------------------------------
 
+## 7. Release
+08/17/2012 - Created first README
 
-8/17/2012 - Created first README
-2/8/2017 - Update README for cleanup branch
+02/08/2017 - Update README for cleanup branch
 
-
-
+12/10/2018 - Add makefile
