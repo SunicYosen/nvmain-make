@@ -1,10 +1,9 @@
-# NVMain
+# NVMain-Make
 
 NVMAIN - An Architectural Level Main Memory Simulator
+
 -- for Emerging Non-Volatile Memories.
 And Make build method is added.
-
-======================================================
 
 ## Sections
 
