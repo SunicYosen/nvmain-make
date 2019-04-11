@@ -1,3 +1,4 @@
+// By Mengyu Guo
 
 #ifndef __TRACESIM_TRACEMAIN_H__
 #define __TRACESIM_TRACEMAIN_H__

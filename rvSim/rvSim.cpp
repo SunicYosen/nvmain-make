@@ -1,3 +1,5 @@
+// By Mengyu Guo
+
 #include <sstream>
 #include <cmath>
 #include <stdlib.h>
