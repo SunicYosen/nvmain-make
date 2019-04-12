@@ -24,6 +24,10 @@
 
 using namespace NVM;
 
+//Define some params
+rvSim *riscv_sim = new rvSim( );
+
+/*
 int main()
 {
 	char start;
@@ -42,22 +46,22 @@ int main()
     	argv[2] = (char*)"Tests/Traces/test.nvt";
     	//argv[3] = (char*)"1000000";
     	argv[3] = (char*)"10000";
-        rvSim *risc5sim = new rvSim( );
+        //rvSim *riscv_sim = new rvSim( );
 		
 		assert(argc = 4);
 
 		int result;
         std::cout << "//-----------------------------------------//" << std::endl;
         
-        risc5sim->SetConfig( argc, argv );
-		risc5sim->IssueCommand( 384, 'R', 1223, 0);
+        riscv_sim->SetConfig( argc, argv );
+		riscv_sim->IssueCommand( 384, 'R', 1223, 0);
 		while (true)
 		{
 			char conti;
-			std::cout << " continue cycle ? Y/N " << " currentCycle is " << risc5sim->getCycle() << std::endl;
+			std::cout << " continue cycle ? Y/N " << " currentCycle is " << riscv_sim->getCycle() << std::endl;
 			std::cin >> conti;
 			if ((conti == 'Y') || (conti == 'y'))
-				risc5sim->Cycle(100);
+				riscv_sim->Cycle(100);
 		}
         std::cout << "All is done" << std::endl ;
         std::cout << "//-----------------------------------------//" << std::endl;
@@ -76,6 +80,7 @@ int main()
 		std::cout << "Program is stopped" << std::endl;
 	}
 }
+*/
 
 rvSim::rvSim( )
 {
