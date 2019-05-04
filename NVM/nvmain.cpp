@@ -50,7 +50,7 @@
 #include <cassert>
 
 using namespace NVM;
-
+extern GlobalParams globalparams;
 NVMain::NVMain( )
 {
     config = NULL;
@@ -376,6 +376,19 @@ bool NVMain::IssueCommand( NVMainRequest *request )
     {
         std::cout << "NVMain: Received request before configuration!\n";
         return false;
+    }
+    
+    if(!globalparams.Input_Addr.IsTranslated( ))
+    {
+        GetDecoder( )->Translate( globalparams.Input_Addr.GetPhysicalAddress( ), 
+                           &row, &col, &bank, &rank, &channel, &subarray );
+        globalparams.Input_Addr.SetTranslatedAddress( row, col, bank, rank, channel, subarray );
+    }
+    if(!globalparams.Output_Addr.IsTranslated( ))
+    {
+        GetDecoder( )->Translate( globalparams.Output_Addr.GetPhysicalAddress( ),
+                            &row, &col, &bank, &rank, &channel, &subarray );
+        globalparams.Output_Addr.SetTranslatedAddress( row, col, bank, rank, channel, subarray );
     }
 
     /* Translate the address, then copy to the address struct, and copy to request. */
