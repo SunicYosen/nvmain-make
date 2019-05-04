@@ -15,7 +15,7 @@ And Make build method is added.
     3. Running NVMain
     4. Configuring NVMain
     5. Hacking NVMain
-    6. README Changelog
+    6. Compute In Memory
     7. Release
 
 ------------------------------------------------------  
@@ -125,7 +125,7 @@ And Make build method is added.
 
         make
         make TYPECONFIG=fast|debug|prof
-        make TYPECONFIG=fast|debug|prof onestep_bin 
+        make TYPECONFIG=fast|debug|prof onestep_bin
         # Build without middle objects
 
         then objects will be find in build directory.
@@ -168,7 +168,7 @@ And Make build method is added.
 
     When running gem5, the parameter --mem-type=NVMainMemory
     must be used to enable NVMain. The option --nvmain-config
-    must be used to specify the NVMain configuration file. 
+    must be used to specify the NVMain configuration file.
     Below is an example command line:
 
     $ gem5.fast config/example/se.py -c hello_world      \
@@ -226,11 +226,11 @@ And Make build method is added.
 
 ------------------------------------------------------
 
-## 7. Add compute function
+## 6. Compute In Memory
 
-add some compute in memory function used for CNN Convolution;
+Add some compute in memory function used for CNN Convolution;
 
-## 8. Release
+## 7. Release
 
 08/17/2012 - Created first README
 
