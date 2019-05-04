@@ -178,6 +178,12 @@ class MemoryController : public NVMObject
     NVMainRequest *MakePowerdownRequest( OpType pdOp,
                                          const ncounter_t rank );
     NVMainRequest *MakePowerupRequest( const ncounter_t rank );
+    /* This is for the memory compute */
+    NVMainRequest *MakeReadCycleRequest( NVMainRequest *triggerRequest );
+    NVMainRequest *MakeRealComputeRequest( NVMainRequest *triggerRequest );
+    NVMainRequest *MakePostReadRequest( NVMainRequest *triggerRequest );
+    NVMainRequest *MakeWriteCycleRequest( NVMainRequest *triggerRequest );
+    NVMainRequest *MakeComputeRequest( NVMainRequest *triggerRequest );
 
     bool FindStarvedRequest( std::list<NVMainRequest *>& transactionQueue, NVMainRequest **starvedRequest );
     bool FindCachedAddress( std::list<NVMainRequest *>& transactionQueue, NVMainRequest **accessibleRequest );
@@ -189,7 +195,8 @@ class MemoryController : public NVMObject
     bool FindRowBufferHits( std::list<NVMainRequest *>& transactionQueue, std::vector<NVMainRequest *>& hitRequests );
     bool FindOldestReadyRequests( std::list<NVMainRequest *>& transactionQueue, std::vector<NVMainRequest *>& oldestRequests );
     bool FindClosedBankRequests( std::list<NVMainRequest *>& transactionQueue, std::vector<NVMainRequest *>& closedRequests );
-
+    bool FindLoadRequest( std::list<NVMainRequest *>& transactionQueue, NVMainRequest **loadRequest );
+    bool FindComputeRequest( std::list<NVMainRequest *>& transactionQueue, NVMainRequest **computeRequest );
 
     bool IssueMemoryCommands( NVMainRequest *req );
     void CycleCommandQueues( );
