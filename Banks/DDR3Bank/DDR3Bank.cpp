@@ -537,6 +537,259 @@ bool DDR3Bank::Write( NVMainRequest *request )
     return success;
 }
 
+bool DDR3Bank::LoadWeight( NVMainRequest *request )
+{
+    std::cout << "rec Load command in bank*****" << std::endl;
+    if( nextRead > GetEventQueue()->GetCurrentCycle() )
+    {
+        std::cerr << "NVMain Error: Bank violates READ timing constraint!"
+            << std::endl;
+        return false;
+    }
+    else if( nextWrite > GetEventQueue()->GetCurrentCycle() )
+    {
+        std::cerr << "NVMain Error: Bank violates WRITE timing constraint!"
+            << std::endl;
+        return false;
+    }
+    else if( state != DDR3BANK_OPEN )
+    {
+        std::cerr << "NVMain Error: try to read a bank that is not active!"
+            << std::endl;
+        return false;
+    }
+    
+    uint64_t readRow, readSubArray;
+    request->address.GetTranslatedAddress( &readRow, NULL, NULL, NULL, NULL, &readSubArray );
+
+    nextPowerDown = MAX( nextPowerDown, 
+                         GetEventQueue()->GetCurrentCycle() 
+                             + MAX( p->tBURST, p->tCCD ) * (request->burstCount - 1)
+                             + p->tAL + p->tRTP + p->tRP );
+
+    nextRead = MAX( nextRead, 
+                    GetEventQueue()->GetCurrentCycle() 
+                        + MAX( p->tBURST, p->tCCD ) * request->burstCount );
+
+    nextWrite = MAX( nextWrite, 
+                     GetEventQueue()->GetCurrentCycle()
+                         + MAX( p->tBURST, p->tCCD ) * (request->burstCount - 1)
+                         + p->tCAS + p->tBURST + p->tRTRS - p->tCWD );
+
+    /* issue READ/READ_RECHARGE to the target subarray */
+    bool success = GetChild( request )->IssueCommand( request );
+
+    if( success )
+    {
+        std::deque<ncounter_t>::iterator it;
+        for( it = activeSubArrayQueue.begin(); 
+                it != activeSubArrayQueue.end(); ++it )
+        {
+            if( (*it) == readSubArray )
+            {
+                /* delete the item in the active subarray list */
+                activeSubArrayQueue.erase( it );
+                break;
+            }
+        }
+
+        if( activeSubArrayQueue.empty() )
+            state = DDR3BANK_CLOSED;
+    } // if( request->type == READ_PRECHARGE )
+
+    //dataCycles += p->tBURST; 
+    std::cout << "rec Load command in bank(complete)*****" << std::endl;
+    
+    return true;
+}
+
+bool DDR3Bank::ReadCycle( NVMainRequest *request )
+{
+    std::cout << "rec readcycle command in bank*****" << std::endl;
+    if( nextRead > GetEventQueue()->GetCurrentCycle() )
+    {
+        std::cerr << "NVMain Error: Bank violates READ timing constraint!"
+            << std::endl;
+        return false;
+    }
+    else if( nextWrite > GetEventQueue()->GetCurrentCycle() )
+    {
+        std::cerr << "NVMain Error: Bank violates WRITE timing constraint!"
+            << std::endl;
+        return false;
+    }
+    else if( state != DDR3BANK_OPEN )
+    {
+        std::cerr << "NVMain Error: try to read a bank that is not active!"
+            << std::endl;
+        return false;
+    }
+    
+    uint64_t readRow, readSubArray;
+    request->address.GetTranslatedAddress( &readRow, NULL, NULL, NULL, NULL, &readSubArray );
+
+    nextPowerDown = MAX( nextPowerDown, 
+                         GetEventQueue()->GetCurrentCycle() 
+                             + MAX( p->tBURST, p->tCCD ) * (request->burstCount - 1)
+                             + p->tAL + p->tRTP + p->tRP );
+
+    nextRead = MAX( nextRead, 
+                    GetEventQueue()->GetCurrentCycle() 
+                        + MAX( p->tBURST, p->tCCD ) * request->burstCount );
+
+    nextWrite = MAX( nextWrite, 
+                     GetEventQueue()->GetCurrentCycle()
+                         + MAX( p->tBURST, p->tCCD ) * (request->burstCount - 1)
+                         + p->tCAS + p->tBURST + p->tRTRS - p->tCWD );
+
+    /* issue READ/READ_RECHARGE to the target subarray */
+    bool success = GetChild( request )->IssueCommand( request );
+
+    if( success )
+    {
+        std::deque<ncounter_t>::iterator it;
+        for( it = activeSubArrayQueue.begin(); 
+                it != activeSubArrayQueue.end(); ++it )
+        {
+            if( (*it) == readSubArray )
+            {
+                /* delete the item in the active subarray list */
+                activeSubArrayQueue.erase( it );
+                break;
+            }
+        }
+
+        if( activeSubArrayQueue.empty() )
+            state = DDR3BANK_CLOSED;
+    } // if( request->type == READ_PRECHARGE )
+
+    //dataCycles += p->tBURST; 
+    std::cout << "rec readcycle command in bank(complete)*****" << std::endl;
+    
+    return true;
+}
+
+bool DDR3Bank::RealCompute( NVMainRequest *request )
+{
+    std::cout << "rec realcompute command in bank*****" << std::endl;
+
+    nextPowerDown = MAX( nextPowerDown, 
+                         GetEventQueue()->GetCurrentCycle() 
+                             + MAX( p->tBURST, p->tCCD ) * (request->burstCount - 1)
+                             + p->tAL + p->tRTP + p->tRP );
+
+    nextRead = MAX( nextRead, 
+                    GetEventQueue()->GetCurrentCycle() 
+                        + MAX( p->tBURST, p->tCCD ) * request->burstCount );
+
+    nextWrite = MAX( nextWrite, 
+                     GetEventQueue()->GetCurrentCycle()
+                         + MAX( p->tBURST, p->tCCD ) * (request->burstCount - 1)
+                         + p->tCAS + p->tBURST + p->tRTRS - p->tCWD );
+
+    /* issue READ/READ_RECHARGE to the target subarray */
+    bool success = GetChild( request )->IssueCommand( request );
+
+    //dataCycles += p->tBURST; 
+    std::cout << "rec realcompute command in bank(complete)*****" << std::endl;
+    
+    return success;
+}
+
+bool DDR3Bank::PostRead( NVMainRequest *request )
+{
+    std::cout << "rec postread command in bank*****" << std::endl;
+
+    nextPowerDown = MAX( nextPowerDown, 
+                         GetEventQueue()->GetCurrentCycle() 
+                             + MAX( p->tBURST, p->tCCD ) * (request->burstCount - 1)
+                             + p->tAL + p->tRTP + p->tRP );
+
+    nextRead = MAX( nextRead, 
+                    GetEventQueue()->GetCurrentCycle() 
+                        + MAX( p->tBURST, p->tCCD ) * request->burstCount );
+
+    nextWrite = MAX( nextWrite, 
+                     GetEventQueue()->GetCurrentCycle()
+                         + MAX( p->tBURST, p->tCCD ) * (request->burstCount - 1)
+                         + p->tCAS + p->tBURST + p->tRTRS - p->tCWD );
+
+    /* issue READ/READ_RECHARGE to the target subarray */
+    bool success = GetChild( request )->IssueCommand( request );
+
+    //dataCycles += p->tBURST; 
+    std::cout << "rec postread command in bank(complete)*****" << std::endl;
+    
+    return success;
+}
+
+bool DDR3Bank::WriteCycle( NVMainRequest *request )
+{
+    std::cout << "rec writecycle command in bank*****" << std::endl;
+    if( nextRead > GetEventQueue()->GetCurrentCycle() )
+    {
+        std::cerr << "NVMain Error: Bank violates READ timing constraint!"
+            << std::endl;
+        return false;
+    }
+    else if( nextWrite > GetEventQueue()->GetCurrentCycle() )
+    {
+        std::cerr << "NVMain Error: Bank violates WRITE timing constraint!"
+            << std::endl;
+        return false;
+    }
+    /*
+    else if( state != DDR3BANK_OPEN )
+    {
+        std::cerr << "NVMain Error: try to read a bank that is not active!"
+            << std::endl;
+        return false;
+    }
+    */
+   
+    uint64_t writeRow, writeSubArray;
+    request->address.GetTranslatedAddress( &writeRow, NULL, NULL, NULL, NULL, &writeSubArray );
+
+    nextPowerDown = MAX( nextPowerDown, 
+                         GetEventQueue()->GetCurrentCycle() 
+                             + MAX( p->tBURST, p->tCCD ) * (request->burstCount - 1)
+                             + p->tAL + p->tRTP + p->tRP );
+
+    nextRead = MAX( nextRead, 
+                    GetEventQueue()->GetCurrentCycle() 
+                        + MAX( p->tBURST, p->tCCD ) * request->burstCount );
+
+    nextWrite = MAX( nextWrite, 
+                     GetEventQueue()->GetCurrentCycle()
+                         + MAX( p->tBURST, p->tCCD ) * (request->burstCount - 1)
+                         + p->tCAS + p->tBURST + p->tRTRS - p->tCWD );
+
+    /* issue READ/READ_RECHARGE to the target subarray */
+    bool success = GetChild( request )->IssueCommand( request );
+
+    if( success )
+    {
+        std::deque<ncounter_t>::iterator it;
+        for( it = activeSubArrayQueue.begin(); 
+                it != activeSubArrayQueue.end(); ++it )
+        {
+            if( (*it) == writeSubArray )
+            {
+                /* delete the item in the active subarray list */
+                activeSubArrayQueue.erase( it );
+                break;
+            }
+        }
+
+        if( activeSubArrayQueue.empty() )
+            state = DDR3BANK_CLOSED;
+    } // if( request->type == READ_PRECHARGE )
+
+    //dataCycles += p->tBURST; 
+    std::cout << "rec writecycle command in bank(complete)*****" << std::endl;
+    
+    return success;
+}
 /*
  * Precharge() close a row and force the bank back to DDR3BANK_CLOSED
  */
@@ -704,7 +957,11 @@ ncycle_t DDR3Bank::NextIssuable( NVMainRequest *request )
     else if( request->type == READ || request->type == READ_PRECHARGE ) nextCompare = nextRead;
     else if( request->type == WRITE || request->type == WRITE_PRECHARGE ) nextCompare = nextWrite;
     else if( request->type == PRECHARGE || request->type == PRECHARGE_ALL ) nextCompare = nextPrecharge;
-        
+    else if( request->type == LOAD_WEIGHT ) nextCompare = MAX( nextRead, nextWrite );
+    else if( request->type == READCYCLE || request->type == REALCOMPUTE || request->type == POSTREAD || request->type == WRITECYCLE || request->type == COMPUTE ) nextCompare = MAX( nextRead, nextWrite );
+    else assert(false);
+
+    //std::cout << "bank next" << nextCompare << std::endl;
     return MAX(GetChild( request )->NextIssuable( request ), nextCompare );
 }
 
@@ -728,6 +985,7 @@ bool DDR3Bank::IsIssuable( NVMainRequest *req, FailReason *reason )
             || state == DDR3BANK_PDPF || state == DDR3BANK_PDPS || state == DDR3BANK_PDA )
 
         {
+            std::cout << "bank is not ok" << std::endl;
             rv = false;
             if( reason ) 
                 reason->reason = BANK_TIMING;
@@ -767,6 +1025,72 @@ bool DDR3Bank::IsIssuable( NVMainRequest *req, FailReason *reason )
         {
             rv = GetChild( req )->IsIssuable( req, reason );
         }
+    }
+    else if( req->type == LOAD_WEIGHT )
+    {
+        if( nextWrite > (GetEventQueue()->GetCurrentCycle()) 
+            || state != DDR3BANK_OPEN )
+        {
+            rv = false;
+            std::cout << "bank is writing" << std::endl;
+            if( reason ) 
+                reason->reason = BANK_TIMING;
+        }
+        else if( nextRead > (GetEventQueue()->GetCurrentCycle()) 
+            || state != DDR3BANK_OPEN )
+        {
+            rv = false;
+            std::cout << "bank is reading" << std::endl;
+            if( reason ) 
+                reason->reason = BANK_TIMING;
+        }
+        else
+        {
+             rv = GetChild( req )->IsIssuable( req, reason );
+        }
+    }
+    else if( req->type == READCYCLE )
+    {
+        if( nextWrite > (GetEventQueue()->GetCurrentCycle()) 
+            || state != DDR3BANK_OPEN )
+        {
+            rv = false;
+            std::cout << "bank is writing" << std::endl;
+            if( reason ) 
+                reason->reason = BANK_TIMING;
+        }
+        else if( nextRead > (GetEventQueue()->GetCurrentCycle()) 
+            || state != DDR3BANK_OPEN )
+        {
+            rv = false;
+            std::cout << "bank is reading" << std::endl;
+            if( reason ) 
+                reason->reason = BANK_TIMING;
+        }
+        else
+        {
+             rv = GetChild( req )->IsIssuable( req, reason );
+        }
+    }
+    else if ( req->type == REALCOMPUTE ) 
+    {
+        //std::cout << "something wrong in the bank " << std::endl;
+        rv = true ;
+    }
+    else if ( req->type == POSTREAD )
+    {
+        //std::cout << "something wrong in the bank " << std::endl;
+        rv = true ;
+    }
+    else if ( req->type == WRITECYCLE )
+    {
+        //std::cout << "something wrong in the bank " << std::endl;
+        rv = true ;
+    }
+    else if ( req->type == COMPUTE )
+    {
+        //std::cout << "something wrong in the bank " << std::endl;
+        rv = true ;
     }
     else if( req->type == PRECHARGE || req->type == PRECHARGE_ALL )
     {
@@ -894,6 +1218,27 @@ bool DDR3Bank::IssueCommand( NVMainRequest *req )
                 rv = this->Write( req );
                 break;
             
+            case LOAD_WEIGHT:
+                rv = this->LoadWeight( req );
+                break;
+            
+            case READCYCLE:
+                rv = this->ReadCycle( req );
+                break;
+            case REALCOMPUTE:
+                rv = this->RealCompute( req );
+                break;
+            case POSTREAD:
+                rv = this->PostRead( req );
+                break;
+            case WRITECYCLE:
+                rv = this->WriteCycle( req );
+                break;
+            case COMPUTE:
+                rv = false ;
+                std::cout << "something wrong in bank ********" << std::endl;
+                break;
+
             case PRECHARGE:
             case PRECHARGE_ALL:
                 rv = this->Precharge( req );
