@@ -42,6 +42,29 @@
 #include <iostream>
 
 using namespace NVM;
+GlobalParams::GlobalParams( )
+{
+    Func_n = 0;
+    Input_Row = 0;
+    Input_Col = 0;
+    Input_Channel = 0;
+    BitWidth = 0;
+    K_Row = 0;
+    K_Col = 0;
+    K_Channel = 0;
+    K_num = 0;
+    Input_Width = 0;
+    Weight_Width = 0;
+    act_mode = ACT_RELU;
+    pooling_mode = Pooling_Max;
+    isUsing = false;
+    Buffer_n = 0;
+}
+
+GlobalParams::~GlobalParams( )
+{
+    
+}
 
 Params::Params( )
 {

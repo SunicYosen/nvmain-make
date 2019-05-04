@@ -39,6 +39,7 @@
 #include "src/Config.h"
 #include "src/Debug.h"
 #include "include/NVMTypes.h"
+#include "include/NVMAddress.h"
 
 #include <set>
 #include <string>
@@ -54,6 +55,47 @@ enum PauseMode {
     PauseMode_Normal,   ///< Normal pause mode: Wait until write pulse before read
     PauseMode_IIWC,     ///< Intra-Iteration Write Cancellation: allow cancel during write pulse
     PauseMode_Optimal   ///< Optimal: Same as IIWC, but consider iteration complete
+};
+
+enum ACT{
+  ACT_RELU,
+  ACT_Tanh,
+  ACT_Sigmoid
+};
+
+enum Pooling{
+  Pooling_Average,
+  Pooling_Max
+};
+
+enum Slide_Mode{
+  X,
+  Y
+};
+
+class GlobalParams{
+  public:
+    GlobalParams( );
+    ~GlobalParams( );
+
+    //void SetGlobalParams( Config *c );
+
+    ncounter_t Func_n;
+    ncounter_t Input_Row, Input_Col, Input_Channel;
+    ncounter_t BitWidth;
+    ncounter_t K_Row, K_Col, K_Channel, K_num;
+    ncounter_t Input_Width, Weight_Width;
+    ACT act_mode;
+    Pooling pooling_mode;
+    bool isUsing;
+    uint64_t Buffer_n;
+    
+    NVMAddress Input_Addr;
+    NVMAddress Output_Addr;
+    Slide_Mode slide;
+
+  private:
+    
 };
 
 class Params
