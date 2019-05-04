@@ -88,7 +88,12 @@ class SubArray : public NVMObject
     bool Write( NVMainRequest *request );
     bool Precharge( NVMainRequest *request );
     bool Refresh( NVMainRequest *request );
-
+    bool LoadWeight( NVMainRequest *request );
+    bool ReadCycle( NVMainRequest *request );
+    bool RealCompute( NVMainRequest *request );
+    bool PostRead( NVMainRequest *request );
+    bool WriteCycle( NVMainRequest *request );
+    
     bool IsIssuable( NVMainRequest *req, FailReason *reason = NULL );
     bool IssueCommand( NVMainRequest *req );
     bool RequestComplete( NVMainRequest *req );
@@ -139,6 +144,10 @@ class SubArray : public NVMObject
     ncycle_t nextRead;
     ncycle_t nextWrite;
     ncycle_t nextPowerDown;
+    ncycle_t nextCompute;
+    ncycle_t nextLoad;
+    ncycle_t nextReadCycle;
+    
     bool writeCycle;
     std::vector<NVMainRequest *> writeBackRequests;
     bool isWriting;
