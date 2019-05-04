@@ -226,10 +226,16 @@ And Make build method is added.
 
 ------------------------------------------------------
 
-## 7. Release
+## 7. Add compute function
+
+add some compute in memory function used for CNN Convolution;
+
+## 8. Release
 
 08/17/2012 - Created first README
 
 02/08/2017 - Update README for cleanup branch
 
 12/10/2018 - Add makefile
+
+04/05/2019 - Add Compute in memory simulation
