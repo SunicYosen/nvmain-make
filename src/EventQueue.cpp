@@ -138,6 +138,7 @@ void EventQueue::InsertEvent( Event *event, ncycle_t when, int priority )
 {
     event->SetCycle( when );
 
+    std::cout << " You insert a Event at " << when << " while now is at " << currentCycle << std::endl;
     /* If this event time is before our previous nextEventCycle, change it. */
     if( when < nextEventCycle )
     {
@@ -468,9 +469,9 @@ void GlobalEventQueue::AddSystem( NVMain *subSystem, Config *config )
     eventQueues.insert( std::pair<EventQueue*, double>(queue, subSystemFrequency) );
     queue->SetFrequency( subSystemFrequency );
 
-    std::cout << "NVMain: GlobalEventQueue: Added a memory subsystem running at "
-              << config->GetEnergy( "CLK" ) << "MHz. My frequency is "
-              << (frequency / 1000000.0) << "MHz." << std::endl;
+    //std::cout << "NVMain: GlobalEventQueue: Added a memory subsystem running at "
+    //          << config->GetEnergy( "CLK" ) << "MHz. My frequency is "
+    //          << (frequency / 1000000.0) << "MHz." << std::endl;
 }
 
 void GlobalEventQueue::Cycle( ncycle_t steps )
