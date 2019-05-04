@@ -179,11 +179,11 @@ void TranslationMethod::SetAddressMappingScheme( std::string scheme )
     if( col == 0 ) { col = currentOrder--; }
     
     SetOrder( row, col, bank, rank, channel, subarray );
-    std::cout << "NVMain: the address mapping order is " << std::endl
-        << "\tSub-Array " << subarray << std::endl
-        << "\tRow " << row << std::endl
-        << "\tColumn " << col << std::endl
-        << "\tBank " << bank << std::endl
-        << "\tRank " << rank << std::endl
-        << "\tChannel " << channel << std::endl;
+    //std::cout << "NVMain: the address mapping order is " << std::endl
+    //    << "\tSub-Array " << subarray << std::endl
+    //    << "\tRow " << row << std::endl
+    //    << "\tColumn " << col << std::endl
+    //    << "\tBank " << bank << std::endl
+    //    << "\tRank " << rank << std::endl
+    //    << "\tChannel " << channel << std::endl;
 }
