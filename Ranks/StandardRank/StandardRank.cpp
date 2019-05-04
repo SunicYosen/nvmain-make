@@ -36,7 +36,7 @@
 #include "Ranks/StandardRank/StandardRank.h"
 #include "src/EventQueue.h"
 #include "Banks/BankFactory.h"
-#include "traceSim/R5sim.h"
+#include "rvSim/rvSim.h"
 
 #include <iostream>
 #include <sstream>
