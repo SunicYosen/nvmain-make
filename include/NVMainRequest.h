@@ -61,7 +61,15 @@ enum OpType
     BUS_READ,       /* Data bus read burst */
     BUS_WRITE,      /* Data bus write burst */ 
     CACHED_READ,    /* Check if read is cached anywhere in hierarchy. */
-    CACHED_WRITE    /* Check if write is cached anywhere in hierarchy. */
+    CACHED_WRITE,   /* Check if write is cached anywhere in hierarchy. */
+    LOAD_WEIGHT,     /* Load for weight */ 
+    //READ_FOR_LOAD,
+    //WRITE_FOR_LOAD
+    COMPUTE,
+    READCYCLE,
+    REALCOMPUTE,
+    POSTREAD,
+    WRITECYCLE
 };
 
 enum MemRequestStatus 
@@ -158,6 +166,17 @@ class NVMainRequest
     ncounter_t burstCount;         //< Number of bursts (used for variable-size requests.
     NVMObject *owner;              //< Pointer to the object that created this request
 
+    bool isBuffer = false;
+    uint64_t Buffer_n;
+    uint64_t Cycle_n;
+    bool rowIntr = false;
+    bool slide;                    //< 1 for row-first, 0 for col-first;
+    uint64_t row;
+    uint64_t col;
+    uint64_t BufferSize;
+    bool RowComplete = false;
+    bool ColComplete = false;
+    
     ncycle_t arrivalCycle;         //< When the request arrived at the memory controller
     ncycle_t queueCycle;           //< When the memory controller accepted (queued) the request
     ncycle_t issueCycle;           //< When the memory controller issued the request to the interconnect (dequeued)
