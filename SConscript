@@ -62,11 +62,10 @@ NVMainSource('traceReader/TraceLine.cpp')
 
 if 'NVMAIN_BUILD' in env:
     # NVMain build.
-    NVMainSource('traceSim/traceMain.cpp')
-
-    NVMainSource('traceReader/TraceReaderFactory.cpp')
-    NVMainSource('traceReader/RubyTrace/RubyTraceReader.cpp')
-    NVMainSource('traceReader/NVMainTrace/NVMainTraceReader.cpp')
+    NVMainSource('rvSim/rvSim.cpp')
+    #NVMainSource('traceReader/TraceReaderFactory.cpp')
+    #NVMainSource('traceReader/RubyTrace/RubyTraceReader.cpp')
+    #NVMainSource('traceReader/NVMainTrace/NVMainTraceReader.cpp')
 
 elif 'TARGET_ISA' in env:
     # Assume that this is a gem5 extras build if this is set.
