@@ -164,15 +164,15 @@ void Config::Read( std::string filename )
             }
             else
             {
-                std::cout << "Config: Missing value for key " << ty << std::endl;
+                //std::cout << "Config: Missing value for key " << ty << std::endl;
                 values.insert( std::pair<std::string, std::string>( ty, "" ) );
             }
         }
     }
     else
     {
-        std::cout << "NVMain: Could not read configuration file: " 
-            << filename << std::endl;
+        //std::cout << "NVMain: Could not read configuration file: " 
+        //    << filename << std::endl;
         exit(1);
     }
 
@@ -199,8 +199,8 @@ void Config::GetString( std::string key, std::string& value )
 {
     if( !KeyExists( key ) && !warned.count( key ) )
     {   
-        std::cout << "Config: Warning: Key " << key << " is not set. Using '" << value 
-                  << "' as the default. Please configure this value if this is wrong." << std::endl;
+        //std::cout << "Config: Warning: Key " << key << " is not set. Using '" << value 
+        //          << "' as the default. Please configure this value if this is wrong." << std::endl;
         warned.insert( key );
     }
     else if( KeyExists( key ) )
@@ -225,7 +225,7 @@ std::string Config::GetString( std::string key )
 
     if( !KeyExists( key ) && !warned.count( key ) )
     {
-        std::cout << "Config: Warning: Key " << key << " is not set. Using '' as the default. Please configure this value if this is wrong." << std::endl;
+        //std::cout << "Config: Warning: Key " << key << " is not set. Using '' as the default. Please configure this value if this is wrong." << std::endl;
         warned.insert( key );
     }
 
@@ -255,8 +255,8 @@ void Config::GetValueUL( std::string key, uint64_t& value )
 {
     if( !KeyExists( key ) && !warned.count( key ) )
     {
-        std::cout << "Config: Warning: Key " << key << " is not set. Using '" << value
-                  << "' as the default. Please configure this value if this is wrong." << std::endl;
+        //std::cout << "Config: Warning: Key " << key << " is not set. Using '" << value
+        //          << "' as the default. Please configure this value if this is wrong." << std::endl;
         warned.insert( key );
     }
     else if( KeyExists( key ) )
@@ -280,7 +280,7 @@ uint64_t Config::GetValueUL( std::string key )
 
     if( !KeyExists( key ) && !warned.count( key ) )
     {
-        std::cout << "Config: Warning: Key " << key << " is not set. Using '-1' as the default. Please configure this value if this is wrong." << std::endl;
+        //std::cout << "Config: Warning: Key " << key << " is not set. Using '-1' as the default. Please configure this value if this is wrong." << std::endl;
         warned.insert( key );
     }
 
@@ -303,8 +303,8 @@ void Config::GetValue( std::string key, int& value )
 {
     if( !KeyExists( key ) && !warned.count( key ) )
     {
-        std::cout << "Config: Warning: Key " << key << " is not set. Using '" << value
-                  << "' as the default. Please configure this value if this is wrong." << std::endl;
+        //std::cout << "Config: Warning: Key " << key << " is not set. Using '" << value
+        //          << "' as the default. Please configure this value if this is wrong." << std::endl;
         warned.insert( key );
     }
     else if( KeyExists( key ) )
@@ -328,7 +328,7 @@ int Config::GetValue( std::string key )
 
     if( !KeyExists( key ) && !warned.count( key ) )
     {
-        std::cout << "Config: Warning: Key " << key << " is not set. Using '-1' as the default. Please configure this value if this is wrong." << std::endl;
+        //std::cout << "Config: Warning: Key " << key << " is not set. Using '-1' as the default. Please configure this value if this is wrong." << std::endl;
         warned.insert( key );
     }
 
@@ -363,8 +363,8 @@ void Config::GetEnergy( std::string key, double& value )
 {
     if( !KeyExists( key ) && !warned.count( key ) )
     {
-        std::cout << "Config: Warning: Key " << key << " is not set. Using '" << value
-                  << "' as the default. Please configure this value if this is wrong." << std::endl;
+        //std::cout << "Config: Warning: Key " << key << " is not set. Using '" << value
+        //          << "' as the default. Please configure this value if this is wrong." << std::endl;
         warned.insert( key );
     }
     else if( KeyExists( key ) )
@@ -388,7 +388,7 @@ double Config::GetEnergy( std::string key )
 
     if( !KeyExists( key ) && !warned.count( key ) )
     {
-        std::cout << "Config: Warning: Key " << key << " is not set. Using '-1.0' as the default. Please configure this value if this is wrong." << std::endl;
+        //std::cout << "Config: Warning: Key " << key << " is not set. Using '-1.0' as the default. Please configure this value if this is wrong." << std::endl;
         warned.insert( key );
     }
 
@@ -416,9 +416,9 @@ void Config::GetBool( std::string key, bool& value )
 {
     if( !KeyExists( key ) && !warned.count( key ) )
     {
-        std::string defaultValue = (value ? "true" : "false");
-        std::cout << "Config: Warning: Key " << key << " is not set. Using '" << defaultValue
-                  << "' as the default. Please configure this value if this is wrong." << std::endl;
+        //std::string defaultValue = (value ? "true" : "false");
+        //std::cout << "Config: Warning: Key " << key << " is not set. Using '" << defaultValue
+        //          << "' as the default. Please configure this value if this is wrong." << std::endl;
         warned.insert( key );
     }
     else if( KeyExists( key ) )
@@ -433,7 +433,7 @@ bool Config::GetBool( std::string key )
 
     if( !KeyExists( key ) && !warned.count( key ) )
     {
-        std::cout << "Config: Warning: Key " << key << " is not set. Using 'false' as the default. Please configure this value if this is wrong." << std::endl;
+        //std::cout << "Config: Warning: Key " << key << " is not set. Using 'false' as the default. Please configure this value if this is wrong." << std::endl;
         warned.insert( key );
     }
 
@@ -463,7 +463,7 @@ void Config::Print( )
 
     for( i = values.begin( ); i != values.end( ); ++i) 
     {
-        std::cout << (i->first) << " = " << (i->second) << std::endl;
+        //std::cout << (i->first) << " = " << (i->second) << std::endl;
     }
 }
 
@@ -488,8 +488,8 @@ void Config::SetDebugLog( )
             std::cerr << "NVMain: Could not open debug log file: " << debugLogFilename << std::endl;
             exit(1);
         }
-        std::cout << &debugLogFile << std::endl;
-        std::cout << "Printing debug information to '" << debugLogFilename << "'" << std::endl;
+        //std::cout << &debugLogFile << std::endl;
+        //std::cout << "Printing debug information to '" << debugLogFilename << "'" << std::endl;
         useDebugLog = true;
     }
 }
