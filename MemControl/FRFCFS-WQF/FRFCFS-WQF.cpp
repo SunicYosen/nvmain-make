@@ -46,19 +46,24 @@ using namespace NVM;
  * the sense that it only starts a drain when the write queue is completely full
  * and drains until empty.
  */
-FRFCFS_WQF::FRFCFS_WQF( ) : readQueueId(0), writeQueueId(1)
+FRFCFS_WQF::FRFCFS_WQF( ) : readQueueId(0), writeQueueId(1), loadQueueId(2), computeQueueId(3)
 {
-    std::cout << "Created a First Ready First Come First Serve memory \
-        controller with write queue!" << std::endl;
+    //std::cout << "Created a First Ready First Come First Serve memory \n
+    //    controller with write queue!" << std::endl;
 
-    InitQueues( 2 );
+    InitQueues( 4 );
 
     readQueue = &(transactionQueues[readQueueId]);
     writeQueue = &(transactionQueues[writeQueueId]);
+    loadQueue = &(transactionQueues[loadQueueId]);
+    computeQueue = &(transactionQueues[computeQueueId]);
 
     /* Memory controller options. */
     readQueueSize = 32;
     writeQueueSize = 8;
+    loadQueueSize = 2;
+    computeQueueSize = 2;
+
     starvationThreshold = 4;
     /*
      * initialize the high and low watermark. the high watermark is set the same
@@ -88,6 +93,8 @@ FRFCFS_WQF::FRFCFS_WQF( ) : readQueueId(0), writeQueueId(1)
 
     mem_reads = 0;
     mem_writes = 0;
+    mem_load = 0;
+    mem_compute = 0;
     rq_rb_hits = 0;
     rq_rb_miss = 0;
     wq_rb_hits = 0;
@@ -234,7 +241,9 @@ bool FRFCFS_WQF::IsIssuable( NVMainRequest *request, FailReason * /*fail*/ )
     /* during a write drain, no write can enqueue */
     if( (request->type == READ  && readQueue->size()  >= readQueueSize) 
             || (request->type == WRITE && ( writeQueue->size() >= writeQueueSize 
-                    || m_draining == true || force_drain == true ) ) )
+                    || m_draining == true || force_drain == true ) ) 
+            || (request->type == LOAD_WEIGHT && ( loadQueue->size() >= loadQueueSize ))
+            || (request->type == COMPUTE && ( computeQueue->size() >= computeQueueSize )))
     {
         rv = false;
     }
@@ -263,6 +272,18 @@ bool FRFCFS_WQF::IssueCommand( NVMainRequest *request )
         Enqueue( writeQueueId, request );
 
         mem_writes++;
+    }
+    else if ( request->type == LOAD_WEIGHT )
+    {
+        Enqueue( loadQueueId, request );
+
+        mem_load++;
+    }
+    else if ( request->type == COMPUTE)
+    {
+        Enqueue( computeQueueId, request );
+
+        mem_compute++;
     }
     else
     {
@@ -325,6 +346,17 @@ bool FRFCFS_WQF::RequestComplete( NVMainRequest * request )
                                 - static_cast<double>(request->arrivalCycle))
                             / static_cast<double>(measuredTotalLatencies+1);
         measuredTotalLatencies += 1;
+    }
+    else if ( request->type == LOAD_WEIGHT || request->type == READCYCLE || request->type == REALCOMPUTE || request->type == POSTREAD || request->type == WRITECYCLE || request->type == COMPUTE )
+    {
+        /*
+        if( request->type == LOAD_WEIGHT )
+            Prequeue( loadQueueId, request );
+        else if( request->type == COMPUTE )
+            Prequeue( computeQueueId, request );
+        */
+        request->status = MEM_REQUEST_COMPLETE; 
+        request->completionCycle = GetEventQueue()->GetCurrentCycle();
     }
 
     return MemoryController::RequestComplete( request );
@@ -503,7 +535,24 @@ void FRFCFS_WQF::Cycle( ncycle_t steps )
 
         IssueMemoryCommands( nextRequest );
     }
-
+    else 
+    {
+        if( FindLoadRequest( *loadQueue, &nextRequest ) )
+        {
+            IssueMemoryCommands( nextRequest );
+            //std::cout << "olleh?" << std::endl;
+        }
+        else if ( FindComputeRequest( *computeQueue, &nextRequest ) )
+        {
+            IssueMemoryCommands( nextRequest );
+            //std::cout << "olleh???" << std::endl;
+        }
+        else
+        {
+            //std::cout << "hello?" << std::endl;
+        }
+        //std::cout << "hello ? hool " << std::endl;
+    }
     /* Issue memory commands from the command queue. */
     CycleCommandQueues( );
 

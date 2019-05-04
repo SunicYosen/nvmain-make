@@ -64,12 +64,20 @@ class FRFCFS_WQF : public MemoryController
     NVMTransactionQueue *readQueue;
     NVMTransactionQueue *writeQueue;
 
+    NVMTransactionQueue *loadQueue;
+    NVMTransactionQueue *computeQueue;
+
     const int readQueueId;
     const int writeQueueId;
+
+    const int loadQueueId; /* for memory computing */
+    const int computeQueueId;
 
     /* Cached Configuration Variables*/
     uint64_t writeQueueSize;
     uint64_t readQueueSize;
+    uint64_t loadQueueSize;
+    uint64_t computeQueueSize;
 
     /* write drain high and low watermark */
     uint64_t HighWaterMark;
@@ -96,7 +104,7 @@ class FRFCFS_WQF : public MemoryController
     double   average_read_spacing;
     double   average_predrain_readqueue_size;
     double   average_reads_during_drain;
-    uint64_t mem_reads, mem_writes;
+    uint64_t mem_reads, mem_writes, mem_load, mem_compute;
     uint64_t starvation_precharges;
     uint64_t rq_rb_hits;
     uint64_t rq_rb_miss;
