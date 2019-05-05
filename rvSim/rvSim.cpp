@@ -24,7 +24,8 @@
 
 using namespace NVM;
 
-//Define some params
+//Define some global params
+GlobalParams global_params;
 rvSim *riscv_sim = new rvSim( );
 
 /*
@@ -35,33 +36,67 @@ int main()
 	std::cout << "Ready? Y/N" << std::endl;
 	std::cin >> start;
 	
-	if( ( start == 'Y' ) || ( start == 'y' ))
+	if( ( start == 'Y' ) || ( start == 'y' ) )
 	{
-        int argc;
-	    char *argv[4];
+    int argc;
+	  char *argv[4];
 	
-	    argc = 4 ;
-	    argv[0] = (char*)"nvmain";
-    	argv[1] = (char*)"Config/PCM_ISSCC_2012_4GB.config";
-    	argv[2] = (char*)"Tests/Traces/test.nvt";
-    	//argv[3] = (char*)"1000000";
-    	argv[3] = (char*)"10000";
-        //rvSim *riscv_sim = new rvSim( );
+	  argc = 4 ;
+	  argv[0] = (char*)"nvmain";
+  	argv[1] = (char*)"Config/RRAM_ISSCC_2012_4GB.config";
+  	argv[2] = (char*)"Tests/Traces/test.nvt";
+   	//argv[3] = (char*)"1000000";
+   	argv[3] = (char*)"10000";
+    rvSim *risc5sim = new rvSim( );
 		
+		if (risc5sim->setParameters())
+		{
+
+		}
+		else
+		{
+			std::cout << "something wrong" << std::endl;
+		}
+		
+    //std::cout << "Test global params " << global_params.K_Col << std::endl;
+
 		assert(argc = 4);
 
 		int result;
-        std::cout << "//-----------------------------------------//" << std::endl;
+    std::cout << "//-----------------------------------------//" << std::endl;
         
-        riscv_sim->SetConfig( argc, argv );
-		riscv_sim->IssueCommand( 384, 'R', 1223, 0);
+    risc5sim->SetConfig(argc,argv);
+		//risc5sim->IssueCommand(384, 'L', 12312, 0 );
+		//risc5sim->IssueCommand(384, 191991292, 'C', 12331, 'X');
+		int command=0;
+
 		while (true)
 		{
 			char conti;
-			std::cout << " continue cycle ? Y/N " << " currentCycle is " << riscv_sim->getCycle() << std::endl;
+			std::cout << " continue cycle ? Y/N " << " currentCycle is " << risc5sim->getCycle() << std::endl;
 			std::cin >> conti;
 			if ((conti == 'Y') || (conti == 'y'))
-				riscv_sim->Cycle(100);
+			{
+				if(risc5sim->IsIssuable( 0, 0, 'C', 11, 'X'))
+				{
+					if(command < 1)
+					{
+						std::cout << "I send a load command" << std::endl;
+						//risc5sim->IssueCommand( 384+command, 'L', 12312, 0);
+						risc5sim->IssueCommand(0, 0, 'C', 11, 'Y');
+						command++;
+					}
+					else
+					{
+						std::cout << "there are no commands" << std::endl;
+					}
+				}
+				else
+				{
+					std::cout << "the queue is full" << std::endl;
+				}
+				risc5sim->Cycle(200);
+			}
 		}
         std::cout << "All is done" << std::endl ;
         std::cout << "//-----------------------------------------//" << std::endl;
@@ -92,6 +127,37 @@ rvSim::~rvSim( )
 	
 }
 
+bool rvSim::setParameters( )
+{
+	//std::cout<< "test " << std::endl;
+	if(!global_params.isUsing)
+	{
+		//std::cout<< "test " << std::endl;
+		global_params.Func_n = 0;
+    global_params.Input_Row = 5; //28;
+    global_params.Input_Col = 5; //28;
+    global_params.Input_Channel = 3;
+    global_params.BitWidth = 4;
+    global_params.K_Row = 3;
+    global_params.K_Col = 3;
+    global_params.K_Channel = global_params.Input_Channel;
+    global_params.K_num = 32;
+    global_params.Input_Width = 8;
+    global_params.Weight_Width = 8;
+    global_params.act_mode = ACT_RELU;
+    global_params.pooling_mode = Pooling_Max;
+		global_params.Buffer_n = 4;
+
+		//global_params.Input_Addr.SetPhysicalAddress(0);
+		//global_params.Output_Addr.SetPhysicalAddress(100000000);
+		
+		return true;
+	}
+
+	else 
+		return false;
+}
+
 void rvSim::SetConfig( int argc, char *argv[] )
 {
 	if (argc != 4)
@@ -103,7 +169,7 @@ void rvSim::SetConfig( int argc, char *argv[] )
 	stats = new Stats( );
 	config = new Config( );
 	//trace = NULL;
-	tl = new TraceLine( );
+	//tl = new TraceLine( );
 	simInterface = new NullInterface( );
 	nvmain = new NVMain( );
 	mainEventQueue = new EventQueue( );
@@ -169,10 +235,35 @@ void rvSim::Cycle( ncycle_t steps )
 	for ( uint64_t i=1 ; i <= steps ; i++ )
 		if ( outstandingRequests > 0 ) 
 		{
+			//std::cout << " now it is " << currentCycle << std::endl;
 			globalEventQueue->Cycle( 1 );
 			currentCycle++;
+			
 		}
 		
+}
+bool rvSim::IsIssuable( uint64_t input_addr, uint64_t output_addr, char opt, uint64_t data, char slide)
+{
+	if ( opt == 'C')
+	{
+		global_params.Input_Addr.SetPhysicalAddress(input_addr);
+		global_params.Output_Addr.SetPhysicalAddress(output_addr);
+		if( slide == 'X')
+			global_params.slide=X;
+		else if ( slide == 'Y' )
+			global_params.slide=Y;
+		else
+		{
+			std::cout << "wrong slide_mode " << std::endl;
+			return false;
+		}
+		return IsIssuable(input_addr, opt, data, (uint64_t)0);
+	}
+	else
+	{
+		std::cout<< "wrong command" <<std::endl;
+		return false;
+	}
 }
 
 bool rvSim::IsIssuable( uint64_t addr, char opt, uint64_t data, uint64_t threadId = 0 )
@@ -188,6 +279,10 @@ bool rvSim::IsIssuable( uint64_t addr, char opt, uint64_t data, uint64_t threadI
 		request->type = READ;
 	else if ( opt == 'W')
 		request->type = WRITE;
+	else if ( opt == 'L')
+		request->type = LOAD_WEIGHT;
+	else if ( opt == 'C')
+		request->type = COMPUTE;
 	else 
 		std::cout << "Warning: Unknown operation '" << opt << "'" << std::endl;
 	
@@ -222,7 +317,29 @@ bool rvSim::IsIssuable( NVMainRequest* request , FailReason * /*fail*/)
 {
 	return GetChild( request )->IsIssuable( request );
 }
-
+bool rvSim::IssueCommand( uint64_t input_addr, uint64_t output_addr, char opt, uint64_t data, char slide)
+{
+	if ( opt == 'C')
+	{
+		global_params.Input_Addr.SetPhysicalAddress(input_addr);
+		global_params.Output_Addr.SetPhysicalAddress(output_addr);
+		if( slide == 'X')
+			global_params.slide=X;
+		else if ( slide == 'Y' )
+			global_params.slide=Y;
+		else
+		{
+			std::cout << "wrong slide_mode " << std::endl;
+			return false;
+		}
+		return IssueCommand(input_addr, opt, data, (uint64_t)0);
+	}
+	else
+	{
+		std::cout<< "wrong command" <<std::endl;
+		return false;
+	}
+}
 bool rvSim::IssueCommand( uint64_t addr, char opt, uint64_t data, uint64_t threadId )
 {
 	NVMainRequest *request = new NVMainRequest( );
@@ -234,6 +351,13 @@ bool rvSim::IssueCommand( uint64_t addr, char opt, uint64_t data, uint64_t threa
 		request->type = READ;
 	else if ( opt == 'W')
 		request->type = WRITE;
+	else if ( opt == 'L')
+		request->type = LOAD_WEIGHT;
+	else if ( opt == 'C')
+	{
+		request->BufferSize = global_params.Buffer_n;
+		request->type = COMPUTE;
+	}
 	else 
 		std::cout << "Warning: Unknown operation '" << opt << "'" << std::endl;
 	
@@ -280,7 +404,10 @@ bool rvSim::RequestComplete( NVMainRequest* request )
 		std::cout << "read from " << request->arrivalCycle << " to " << request->completionCycle << std::endl;
 	else if( request->type == WRITE )
 		std::cout << "write from " << request->arrivalCycle << " to " << request->completionCycle << std::endl;
-    
+    else if ( request->type == LOAD_WEIGHT )
+		std::cout << "load from " << request->arrivalCycle << " to " << request->completionCycle << std::endl;
+	else if ( request->type == COMPUTE )
+		std::cout << "compute from " << request->arrivalCycle << " to " << request->completionCycle << std::endl;
 	for (int i = 0; i<64; i++)
     {
         std::cout << (int) request->data.rawData[i] << " ";
