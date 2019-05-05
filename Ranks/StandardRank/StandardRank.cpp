@@ -44,7 +44,7 @@
 
 using namespace NVM;
 
-extern GlobalParams globalparams;
+extern GlobalParams global_params;
 
 Addrgen::Addrgen( )
 {
@@ -71,20 +71,20 @@ void Addrgen::init( )
 
 void Addrgen::generator_input( )
 {
-    if( n_col < globalparams.Input_Col ) 
+    if( n_col < global_params.Input_Col ) 
         n_col++;
-    else if( n_row < globalparams.Input_Row )
+    else if( n_row < global_params.Input_Row )
     {
         n_col = 0;
         n_row++;
     }
-    else if( n_channel < globalparams.Input_Channel )
+    else if( n_channel < global_params.Input_Channel )
     {
         n_col = 0;
         n_row = 0;
         n_channel++;
     }
-    else if ( ( n_col == globalparams.Input_Col ) && ( n_row == globalparams.Input_Row ) && ( n_channel == globalparams.Input_Channel ))
+    else if ( ( n_col == global_params.Input_Col ) && ( n_row == global_params.Input_Row ) && ( n_channel == global_params.Input_Channel ))
     {
         complete = true;
     }
@@ -92,27 +92,27 @@ void Addrgen::generator_input( )
 
 void Addrgen::generator_weight( )
 {
-    if( n_col < globalparams.K_Col ) 
+    if( n_col < global_params.K_Col ) 
         n_col++;
-    else if( n_row < globalparams.K_Row )
+    else if( n_row < global_params.K_Row )
     {
         n_col = 0;
         n_row++;
     }
-    else if( n_channel < globalparams.K_Channel )
+    else if( n_channel < global_params.K_Channel )
     {
         n_col = 0;
         n_row = 0;
         n_channel++;
     }
-    else if( n_kernel < globalparams.K_num )
+    else if( n_kernel < global_params.K_num )
     {
         n_col = 0;
         n_row = 0;
         n_channel = 0;
         n_kernel++;
     }
-    else if ( ( n_col == globalparams.K_Col ) && ( n_row == globalparams.K_Row ) && ( n_channel == globalparams.K_Channel ) && ( n_kernel == globalparams.K_num ))
+    else if ( ( n_col == global_params.K_Col ) && ( n_row == global_params.K_Row ) && ( n_channel == global_params.K_Channel ) && ( n_kernel == global_params.K_num ))
     {
         complete = true;
     }
@@ -123,8 +123,8 @@ NVMAddress Addrgen::GetAddr_weight( NVMAddress *addr )
     NVMAddress nAddress;
     uint64_t Row, Col, Bank, Rank, Channel, Sub;
     uint64_t Offset;
-    Offset = n_col + n_row * globalparams.K_Row + n_channel * globalparams.K_Row * globalparams.K_Col;
-    Offset = Offset + n_kernel * globalparams.K_Row * globalparams.K_Col * globalparams.K_Channel;
+    Offset = n_col + n_row * global_params.K_Row + n_channel * global_params.K_Row * global_params.K_Col;
+    Offset = Offset + n_kernel * global_params.K_Row * global_params.K_Col * global_params.K_Channel;
     Offset = Offset / 8 ; // burst cycle is 8
     addr->GetTranslatedAddress( &Row, &Col, &Bank, &Rank, &Channel, &Sub );
     nAddress.SetTranslatedAddress( Row, Col + Offset, Bank, Rank, Channel, Sub );
@@ -1093,7 +1093,7 @@ bool StandardRank::IsIssuable( NVMainRequest *req, FailReason *reason )
         else
         {
             //std::cout << "im hereeeeee" << std::endl;
-            //std::cout << "test global params " << globalparams.K_Col << std::endl;
+            //std::cout << "test global params " << global_params.K_Col << std::endl;
             rv = GetChild( req )->IsIssuable( req, reason );
         }
     }
@@ -1123,7 +1123,7 @@ bool StandardRank::IsIssuable( NVMainRequest *req, FailReason *reason )
         else
         {
             //std::cout << "im hereeeeee" << std::endl;
-            //std::cout << "test global params " << globalparams.K_Col << std::endl;
+            //std::cout << "test global params " << global_params.K_Col << std::endl;
             rv = GetChild( req )->IsIssuable( req, reason );
         }
     }

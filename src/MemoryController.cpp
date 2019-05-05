@@ -51,7 +51,7 @@
 
 using namespace NVM;
 
-extern GlobalParams globalparams;
+extern GlobalParams global_params;
 
 /* Command queue removal predicate. */
 bool WasIssued( NVMainRequest *request );
@@ -987,7 +987,7 @@ NVMainRequest *MemoryController::MakeWriteCycleRequest( NVMainRequest *triggerRe
     wcRequest->type = WRITECYCLE;
     wcRequest->issueCycle = GetEventQueue()->GetCurrentCycle();
     wcRequest->address = triggerRequest->address;
-    //wcRequest->address = globalparams.Output_Addr;
+    //wcRequest->address = global_params.Output_Addr;
     wcRequest->owner = this;
     wcRequest->isBuffer = triggerRequest->isBuffer;
     wcRequest->Buffer_n = triggerRequest->Buffer_n;
@@ -1729,7 +1729,7 @@ bool MemoryController::IssueMemoryCommands( NVMainRequest *req )
                 req->row = 1;
                 req->col = 1;
                 req->rowIntr = false;
-                req->slide = globalparams.slide;
+                req->slide = global_params.slide;
 
                 NVMainRequest *rcRequest = MakeReadCycleRequest( req );
                 //flags need setting ??
@@ -1780,7 +1780,7 @@ bool MemoryController::IssueMemoryCommands( NVMainRequest *req )
             req->Cycle_n = 0;
             req->Buffer_n = req->BufferSize;
             req->rowIntr = false;
-            req->slide = globalparams.slide;
+            req->slide = global_params.slide;
             
             NVMainRequest *rcRequest = MakeReadCycleRequest( req );
             //flags need setting ??
@@ -1853,7 +1853,7 @@ bool MemoryController::IssueMemoryCommands( NVMainRequest *req )
                 req->Cycle_n = 0;
                 req->Buffer_n = req->BufferSize;
                 req->rowIntr = false;
-                req->slide = globalparams.slide;
+                req->slide = global_params.slide;
                 
                 NVMainRequest *rcRequest = MakeReadCycleRequest( req );
                 //flags need setting ??
@@ -1938,7 +1938,7 @@ void MemoryController::CycleCommandQueues( )
 
                     /*
                     queueHead->Cycle_n++;
-                    //if( queueHead->Cycle_n = p->DeviceWidth*8 / globalparams.BitWidth )
+                    //if( queueHead->Cycle_n = p->DeviceWidth*8 / global_params.BitWidth )
                     if( queueHead->Cycle_n == 2)
                     {
                         queueHead->address.SetPhysicalAddress( queueHead->address.GetPhysicalAddress() + 1 );
@@ -2004,16 +2004,16 @@ void MemoryController::CycleCommandQueues( )
                         std::cout << " now is col " << col << " row " << row << std::endl;
                         queueHead->address.SetTranslatedAddress( row, col, bank, rank, channel, subarray );
                         
-                        queueHead->BufferSize = globalparams.Buffer_n;
-                        if(( queueHead->col + queueHead->BufferSize / 2 + globalparams.K_Col - 2) >= globalparams.Input_Col)
+                        queueHead->BufferSize = global_params.Buffer_n;
+                        if(( queueHead->col + queueHead->BufferSize / 2 + global_params.K_Col - 2) >= global_params.Input_Col)
                         {
-                            queueHead->BufferSize = 2*(globalparams.Input_Row - queueHead->col + 2 - globalparams.K_Col);
+                            queueHead->BufferSize = 2*(global_params.Input_Row - queueHead->col + 2 - global_params.K_Col);
                             queueHead->ColComplete = true;
                         }
                         queueHead->Buffer_n = queueHead->BufferSize;
                         std::cout << "buffer_n is " << queueHead->Buffer_n << std::endl;
                         /*
-                        if((col + queueHead->Buffer_n / 2 + globalparams.K_Col - 1) >= p->COLS)
+                        if((col + queueHead->Buffer_n / 2 + global_params.K_Col - 1) >= p->COLS)
                             queueHead->rowIntr = true;
                         else
                             queueHead->rowIntr = false;
@@ -2037,8 +2037,8 @@ void MemoryController::CycleCommandQueues( )
                         queueHead->row = queueHead->row + 1;
                         
                         ncounter_t rank, bank, row, subarray, col, channel;
-                        globalparams.Input_Addr.GetTranslatedAddress( &row, &col, &bank, &rank, &channel, &subarray );
-                        col = col + (queueHead->row - 1)*globalparams.Input_Row;
+                        global_params.Input_Addr.GetTranslatedAddress( &row, &col, &bank, &rank, &channel, &subarray );
+                        col = col + (queueHead->row - 1)*global_params.Input_Row;
                         while (col>=p->COLS)
                         {
                             col = col - p->COLS;
@@ -2053,15 +2053,15 @@ void MemoryController::CycleCommandQueues( )
 
                         commandQueues[queueId].pop_front();
                         commandQueues[queueId].push_front(MakeComputeRequest( queueHead ));
-                        queueHead->BufferSize = globalparams.Buffer_n;
-                        if(( queueHead->col + queueHead->BufferSize / 2 + globalparams.K_Col - 2) >= globalparams.Input_Col)
+                        queueHead->BufferSize = global_params.Buffer_n;
+                        if(( queueHead->col + queueHead->BufferSize / 2 + global_params.K_Col - 2) >= global_params.Input_Col)
                         {
-                            queueHead->BufferSize = 2*(globalparams.Input_Row - queueHead->col + 2 - globalparams.K_Col);
+                            queueHead->BufferSize = 2*(global_params.Input_Row - queueHead->col + 2 - global_params.K_Col);
                             queueHead->ColComplete = true;
                         }
                         queueHead->Buffer_n = queueHead->BufferSize;
                         std::cout << "buffer is " << queueHead->Buffer_n << std::endl;
-                        if(( queueHead->row + globalparams.K_Row - 1 ) >= globalparams.Input_Row)
+                        if(( queueHead->row + global_params.K_Row - 1 ) >= global_params.Input_Row)
                         {
                             queueHead->RowComplete = true;
                         }
@@ -2095,8 +2095,8 @@ void MemoryController::CycleCommandQueues( )
                         std::cout << "buffer_n is " << queueHead->Buffer_n << std::endl;
 
                         ncounter_t rank, bank, row, subarray, col, channel;
-                        globalparams.Input_Addr.GetTranslatedAddress( &row, &col, &bank, &rank, &channel, &subarray );
-                        col = col + (queueHead->row - 1)*globalparams.Input_Row + queueHead->col - 1;
+                        global_params.Input_Addr.GetTranslatedAddress( &row, &col, &bank, &rank, &channel, &subarray );
+                        col = col + (queueHead->row - 1)*global_params.Input_Row + queueHead->col - 1;
                         while (col >=p->COLS)
                         {
                             col = col - p->COLS;
@@ -2110,7 +2110,7 @@ void MemoryController::CycleCommandQueues( )
                         std::cout << " now is col " << col << " row " << row << std::endl;
                         queueHead->address.SetTranslatedAddress( row, col, bank, rank, channel, subarray );
 
-                        if(( queueHead->row + globalparams.K_Row - 1 ) >= globalparams.Input_Row)
+                        if(( queueHead->row + global_params.K_Row - 1 ) >= global_params.Input_Row)
                         {
                             queueHead->RowComplete = true;
                         }
@@ -2136,8 +2136,8 @@ void MemoryController::CycleCommandQueues( )
                         commandQueues[queueId].push_front(MakeComputeRequest( queueHead ));
 
                         ncounter_t rank, bank, row, subarray, col, channel;
-                        globalparams.Input_Addr.GetTranslatedAddress( &row, &col, &bank, &rank, &channel, &subarray );
-                        col = col + (queueHead->row - 1)*globalparams.Input_Row + queueHead->col - 1;
+                        global_params.Input_Addr.GetTranslatedAddress( &row, &col, &bank, &rank, &channel, &subarray );
+                        col = col + (queueHead->row - 1)*global_params.Input_Row + queueHead->col - 1;
                         while (col>=p->COLS)
                         {
                             col = col - p->COLS;
@@ -2150,10 +2150,10 @@ void MemoryController::CycleCommandQueues( )
                         }
                         queueHead->address.SetTranslatedAddress( row, col, bank, rank, channel, subarray );
                         std::cout << " now is col " << col << " row " << row << std::endl;
-                        queueHead->BufferSize = globalparams.Buffer_n;
-                        if(( queueHead->col + queueHead->BufferSize / 2 + globalparams.K_Col - 2) >= globalparams.Input_Col)
+                        queueHead->BufferSize = global_params.Buffer_n;
+                        if(( queueHead->col + queueHead->BufferSize / 2 + global_params.K_Col - 2) >= global_params.Input_Col)
                         {
-                            queueHead->BufferSize = 2*(globalparams.Input_Row - queueHead->col + 2 - globalparams.K_Col);
+                            queueHead->BufferSize = 2*(global_params.Input_Row - queueHead->col + 2 - global_params.K_Col);
                             queueHead->ColComplete = true;
                         }
                         queueHead->Buffer_n = queueHead->BufferSize;
