@@ -98,16 +98,26 @@ extern "C" void rvsim_is_issuable()
       exit(0); 
    }
 
-   std::cout << "[+](Is Issuable) Is Issuable a command: " << (is_issuable_flag?1:0) << std::endl;
+   std::cout << "[+](Is Issuable) Is Issuable a command: " << (is_issuable_flag ? 1 : 0) << std::endl;
 
-   handle reg = acc_handle_object("tb.vpi_test_module.is_issuable_flag");
+   handle reg = acc_handle_object("tb_nvmain.vpi_test_nvmain.is_issuable_flag");
    //handle reg = acc_handle_object("TestDriver.testHarness.dut.tile.RoCCInterfaceImp.rocc_nvmain.is_issuable_flag");
    static s_setval_delay delay_s = {{0, 1, 0, 0.0},accNoDelay};
    static s_setval_value value_s = {accIntVal};
    
-   value_s.value.integer = (PLI_UBYTE8)(*(unsigned char *)&is_issuable_flag);  
+   if(is_issuable_flag)
+      {
+         value_s.value.integer = 1;
+      }
+   else
+      {
+         value_s.value.integer = 0;
+      }
+      
+   
+   //value_s.value.integer = (PLI_UBYTE8)(*(unsigned char *)&is_issuable_flag);  
    //Turn float to binary according to ieee standards.
 
-   acc_set_value(reg, &value_s,&delay_s);
+   acc_set_value(reg, &value_s, &delay_s);
    return;
 }
