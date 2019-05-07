@@ -244,7 +244,7 @@ void rvSim::Cycle( ncycle_t steps )
 }
 bool rvSim::IsIssuable( uint64_t input_addr, uint64_t output_addr, char opt, uint64_t data, char slide)
 {
-	if ( opt == 'C')
+	if ( opt == 'C' | opt == 'c')
 	{
 		global_params.Input_Addr.SetPhysicalAddress(input_addr);
 		global_params.Output_Addr.SetPhysicalAddress(output_addr);
@@ -254,14 +254,14 @@ bool rvSim::IsIssuable( uint64_t input_addr, uint64_t output_addr, char opt, uin
 			global_params.slide=Y;
 		else
 		{
-			std::cout << "wrong slide_mode " << std::endl;
+			std::cout << "[-](IsIssuable) Wrong slide_mode!" << std::endl;
 			return false;
 		}
 		return IsIssuable(input_addr, opt, data, (uint64_t)0);
 	}
 	else
 	{
-		std::cout<< "wrong command" <<std::endl;
+		std::cout<< "[-](IsIssuable) Wrong command!" <<std::endl;
 		return false;
 	}
 }
@@ -275,16 +275,17 @@ bool rvSim::IsIssuable( uint64_t addr, char opt, uint64_t data, uint64_t threadI
 	//uint64_t cycle = currentCycle;
 	
 	/* opt translator */
-	if ( opt == 'R' )
+	if ( opt == 'R' | opt == 'r' )
 		request->type = READ;
-	else if ( opt == 'W')
+	else if ( opt == 'W' | opt == 'w')
 		request->type = WRITE;
-	else if ( opt == 'L')
+	else if ( opt == 'L' | opt == 'l')
 		request->type = LOAD_WEIGHT;
-	else if ( opt == 'C')
+	else if ( opt == 'C' | opt == 'c')
 		request->type = COMPUTE;
 	else 
-		std::cout << "Warning: Unknown operation '" << opt << "'" << std::endl;
+		std::cout << "[-](IsIssuable) Warning: Unknown operation '" \
+		          << opt << "'" << std::endl;
 	
 	//int byte;
 	//int start, end;
@@ -317,9 +318,10 @@ bool rvSim::IsIssuable( NVMainRequest* request , FailReason * /*fail*/)
 {
 	return GetChild( request )->IsIssuable( request );
 }
+
 bool rvSim::IssueCommand( uint64_t input_addr, uint64_t output_addr, char opt, uint64_t data, char slide)
 {
-	if ( opt == 'C')
+	if ( opt == 'C' | opt == 'c')
 	{
 		global_params.Input_Addr.SetPhysicalAddress(input_addr);
 		global_params.Output_Addr.SetPhysicalAddress(output_addr);
@@ -329,37 +331,43 @@ bool rvSim::IssueCommand( uint64_t input_addr, uint64_t output_addr, char opt, u
 			global_params.slide=Y;
 		else
 		{
-			std::cout << "wrong slide_mode " << std::endl;
+			std::cout << "[-](IssueCommand) Wrong slide_mode " << std::endl;
 			return false;
 		}
 		return IssueCommand(input_addr, opt, data, (uint64_t)0);
 	}
 	else
 	{
-		std::cout<< "wrong command" <<std::endl;
+		std::cout<< "[-](IssueCommand) Wrong command" <<std::endl;
 		return false;
 	}
 }
+
 bool rvSim::IssueCommand( uint64_t addr, char opt, uint64_t data, uint64_t threadId )
 {
 	NVMainRequest *request = new NVMainRequest( );
+	
 	/* translate traceline to command */
 	//cycle = currentCycle;
 	
 	/* opt translator */
-	if ( opt == 'R' )
+	if ( opt == 'R' | opt == 'r')
 		request->type = READ;
-	else if ( opt == 'W')
+
+	else if ( opt == 'W' | opt == 'w')
 		request->type = WRITE;
-	else if ( opt == 'L')
+
+	else if ( opt == 'L' | opt == 'l')
 		request->type = LOAD_WEIGHT;
-	else if ( opt == 'C')
+
+	else if ( opt == 'C' | opt == 'c')
 	{
 		request->BufferSize = global_params.Buffer_n;
 		request->type = COMPUTE;
 	}
-	else 
-		std::cout << "Warning: Unknown operation '" << opt << "'" << std::endl;
+	
+	else
+		std::cout << "[-](IssueCommand) Warning: Unknown operation '" << opt << "'" << std::endl;
 	
 	//int byte;
 	//int start, end;
@@ -399,23 +407,28 @@ bool rvSim::RequestComplete( NVMainRequest* request )
 {
     assert( request->owner == this );
 	
-	std::cout << "********************************" << std::endl;
+	std::cout << "[+] ******************************** [+]" << std::endl;
+	
 	if( request->type == READ )
-		std::cout << "read from " << request->arrivalCycle << " to " << request->completionCycle << std::endl;
+		std::cout << "[+] read from " << request->arrivalCycle << " to " << request->completionCycle << std::endl;
+	
 	else if( request->type == WRITE )
-		std::cout << "write from " << request->arrivalCycle << " to " << request->completionCycle << std::endl;
-    else if ( request->type == LOAD_WEIGHT )
-		std::cout << "load from " << request->arrivalCycle << " to " << request->completionCycle << std::endl;
+		std::cout << "[+] write from " << request->arrivalCycle << " to " << request->completionCycle << std::endl;
+  
+	else if ( request->type == LOAD_WEIGHT )
+		std::cout << "[+] load from " << request->arrivalCycle << " to " << request->completionCycle << std::endl;
+	
 	else if ( request->type == COMPUTE )
-		std::cout << "compute from " << request->arrivalCycle << " to " << request->completionCycle << std::endl;
+		std::cout << "[+] compute from " << request->arrivalCycle << " to " << request->completionCycle << std::endl;
+	
 	for (int i = 0; i<64; i++)
-    {
+  {
         std::cout << (int) request->data.rawData[i] << " ";
-    }
+  }
+	
 	std::cout << std::endl;
 	outstandingRequests--;
 
-    delete request;
-
-    return true;
+  delete request;
+	return true;
 }

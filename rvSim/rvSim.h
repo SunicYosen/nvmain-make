@@ -4,6 +4,7 @@
 #define RVSIM_H
 
 #include "src/NVMObject.h"
+#include "MemControl/DRAMCache/DRAMCache.h"
 
 namespace NVM {
   class rvSim : public NVMObject
@@ -12,7 +13,7 @@ namespace NVM {
       rvSim( );
       ~rvSim( );
 
-      void SetConfig( int argc, char *argv[] );
+      void SetConfig(int argc, char *argv[]);
 
       void Cycle( ncycle_t steps );
 
