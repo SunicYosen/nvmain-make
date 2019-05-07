@@ -24,7 +24,7 @@ extern "C" int rvsim_set_config(){
 
   argc = 4 ;
   argv[0] = (char*)"nvmain";
- 	argv[1] = (char*)"/home/sun/File/RISCV/Projects/nvmain/Config/PCM_ISSCC_2012_4GB.config";
+ 	argv[1] = (char*)"/home/sun/File/RISCV/Projects/nvmain/Config/RRAM_ISSCC_2012_4GB.config";
  	argv[2] = (char*)"/home/sun/File/RISCV/Projects/nvmain/Tests/Traces/test.nvt";
  	argv[3] = (char*)"10000";
 
