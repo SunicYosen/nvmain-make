@@ -50,7 +50,7 @@
 #include <cassert>
 
 using namespace NVM;
-extern GlobalParams global_params;
+extern GlobalParams globalparams;
 NVMain::NVMain( )
 {
     config = NULL;
@@ -378,17 +378,17 @@ bool NVMain::IssueCommand( NVMainRequest *request )
         return false;
     }
     
-    if(!global_params.Input_Addr.IsTranslated( ))
+    if(!globalparams.Input_Addr.IsTranslated( ))
     {
-        GetDecoder( )->Translate( global_params.Input_Addr.GetPhysicalAddress( ), 
+        GetDecoder( )->Translate( globalparams.Input_Addr.GetPhysicalAddress( ), 
                            &row, &col, &bank, &rank, &channel, &subarray );
-        global_params.Input_Addr.SetTranslatedAddress( row, col, bank, rank, channel, subarray );
+        globalparams.Input_Addr.SetTranslatedAddress( row, col, bank, rank, channel, subarray );
     }
-    if(!global_params.Output_Addr.IsTranslated( ))
+    if(!globalparams.Output_Addr.IsTranslated( ))
     {
-        GetDecoder( )->Translate( global_params.Output_Addr.GetPhysicalAddress( ),
+        GetDecoder( )->Translate( globalparams.Output_Addr.GetPhysicalAddress( ),
                             &row, &col, &bank, &rank, &channel, &subarray );
-        global_params.Output_Addr.SetTranslatedAddress( row, col, bank, rank, channel, subarray );
+        globalparams.Output_Addr.SetTranslatedAddress( row, col, bank, rank, channel, subarray );
     }
 
     /* Translate the address, then copy to the address struct, and copy to request. */
