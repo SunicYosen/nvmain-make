@@ -46,23 +46,25 @@ using namespace NVM;
  * the sense that it only starts a drain when the write queue is completely full
  * and drains until empty.
  */
-FRFCFS_WQF::FRFCFS_WQF( ) : readQueueId(0), writeQueueId(1), loadQueueId(2), computeQueueId(3)
+FRFCFS_WQF::FRFCFS_WQF( ) : readQueueId(0), writeQueueId(1), computeQueueId(2)
 {
     //std::cout << "Created a First Ready First Come First Serve memory \n
     //    controller with write queue!" << std::endl;
 
-    InitQueues( 4 );
+    InitQueues( 3 );
 
     readQueue = &(transactionQueues[readQueueId]);
     writeQueue = &(transactionQueues[writeQueueId]);
-    loadQueue = &(transactionQueues[loadQueueId]);
+    //loadQueue = &(transactionQueues[loadQueueId]);
     computeQueue = &(transactionQueues[computeQueueId]);
+    //transferQueue = &(transactionQueues[transferQueueId]);
 
     /* Memory controller options. */
     readQueueSize = 32;
     writeQueueSize = 8;
-    loadQueueSize = 2;
+    //loadQueueSize = 1;
     computeQueueSize = 2;
+    //transferQueueSize = 1;
 
     starvationThreshold = 4;
     /*
@@ -95,6 +97,7 @@ FRFCFS_WQF::FRFCFS_WQF( ) : readQueueId(0), writeQueueId(1), loadQueueId(2), com
     mem_writes = 0;
     mem_load = 0;
     mem_compute = 0;
+    mem_transfer = 0;
     rq_rb_hits = 0;
     rq_rb_miss = 0;
     wq_rb_hits = 0;
@@ -238,12 +241,14 @@ bool FRFCFS_WQF::IsIssuable( NVMainRequest *request, FailReason * /*fail*/ )
 {
     bool rv = true;
 
+    //std::cout << "hapi" << std::endl;
     /* during a write drain, no write can enqueue */
     if( (request->type == READ  && readQueue->size()  >= readQueueSize) 
             || (request->type == WRITE && ( writeQueue->size() >= writeQueueSize 
                     || m_draining == true || force_drain == true ) ) 
-            || (request->type == LOAD_WEIGHT && ( loadQueue->size() >= loadQueueSize ))
-            || (request->type == COMPUTE && ( computeQueue->size() >= computeQueueSize )))
+            || (request->type == LOAD_WEIGHT && ( computeQueue->size() >= computeQueueSize ))
+            || (request->type == COMPUTE && ( computeQueue->size() >= computeQueueSize ))
+            || (request->type == TRANSFER && ( computeQueue->size() >= computeQueueSize )))
     {
         rv = false;
     }
@@ -275,15 +280,25 @@ bool FRFCFS_WQF::IssueCommand( NVMainRequest *request )
     }
     else if ( request->type == LOAD_WEIGHT )
     {
-        Enqueue( loadQueueId, request );
-
+        if ( transactionQueues[computeQueueId].size() < computeQueueSize )
+            Enqueue( computeQueueId, request );
+            //std::cout<< "*******enqueue****" << std::endl; 
+        //}
         mem_load++;
     }
     else if ( request->type == COMPUTE)
     {
-        Enqueue( computeQueueId, request );
+        if ( transactionQueues[computeQueueId].size() < computeQueueSize )
+            Enqueue( computeQueueId, request );
 
         mem_compute++;
+    }
+    else if ( request->type == TRANSFER )
+    {
+        if ( transactionQueues[computeQueueId].size() < computeQueueSize )
+            Enqueue( computeQueueId, request );
+            
+        mem_transfer++;
     }
     else
     {
@@ -347,7 +362,7 @@ bool FRFCFS_WQF::RequestComplete( NVMainRequest * request )
                             / static_cast<double>(measuredTotalLatencies+1);
         measuredTotalLatencies += 1;
     }
-    else if ( request->type == LOAD_WEIGHT || request->type == READCYCLE || request->type == REALCOMPUTE || request->type == POSTREAD || request->type == WRITECYCLE || request->type == COMPUTE )
+    else if ( request->type == LOAD_WEIGHT || request->type == TRANSFER || request->type == READCYCLE || request->type == REALCOMPUTE || request->type == POSTREAD || request->type == WRITECYCLE || request->type == COMPUTE )
     {
         /*
         if( request->type == LOAD_WEIGHT )
@@ -537,6 +552,7 @@ void FRFCFS_WQF::Cycle( ncycle_t steps )
     }
     else 
     {
+        /*
         if( FindLoadRequest( *loadQueue, &nextRequest ) )
         {
             IssueMemoryCommands( nextRequest );
@@ -547,9 +563,18 @@ void FRFCFS_WQF::Cycle( ncycle_t steps )
             IssueMemoryCommands( nextRequest );
             //std::cout << "olleh???" << std::endl;
         }
-        else
+        else if ( FindTransferRequest( *transferQueue, &nextRequest ))
         {
+            IssueMemoryCommands( nextRequest );
             //std::cout << "hello?" << std::endl;
+        }
+        else
+        */
+        if ( FindComputeRequest( *computeQueue, &nextRequest ) )
+        {
+            IssueMemoryCommands( nextRequest );
+
+            //std::cout << "olleh???" << std::endl;
         }
         //std::cout << "hello ? hool " << std::endl;
     }
