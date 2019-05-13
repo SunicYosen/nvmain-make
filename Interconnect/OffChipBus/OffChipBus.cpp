@@ -125,7 +125,8 @@ bool OffChipBus::IssueCommand( NVMainRequest *req )
         std::cout << "rec postread command in connect*****" << std::endl;
     if ( req->type == WRITECYCLE )
         std::cout << "rec writecycle command in connect*****" << std::endl;
-
+    if ( req->type == TRANSFER )
+        std::cout << "rec transfer command in connect*****" << std::endl;
     assert( GetChild( req )->IsIssuable( req ) );
 
     success = GetChild( req )->IssueCommand( req );
@@ -151,7 +152,8 @@ bool OffChipBus::IssueCommand( NVMainRequest *req )
         std::cout << "rec postread command in connect(c)*****" << std::endl;
     if ( req->type == WRITECYCLE )
         std::cout << "rec writecycle command in connect(c)*****" << std::endl;
-    
+    if ( req->type == TRANSFER )
+        std::cout << "rec transfer command in connect(c)*****" << std::endl;
     return success;
 }
 
