@@ -36,7 +36,7 @@
 #include "Ranks/StandardRank/StandardRank.h"
 #include "src/EventQueue.h"
 #include "Banks/BankFactory.h"
-#include "rvSim/rvSim.h"
+#include "traceSim/R5sim.h"
 
 #include <iostream>
 #include <sstream>
@@ -44,7 +44,7 @@
 
 using namespace NVM;
 
-extern GlobalParams global_params;
+extern GlobalParams globalparams;
 
 Addrgen::Addrgen( )
 {
@@ -71,20 +71,20 @@ void Addrgen::init( )
 
 void Addrgen::generator_input( )
 {
-    if( n_col < global_params.Input_Col ) 
+    if( n_col < globalparams.Input_Col ) 
         n_col++;
-    else if( n_row < global_params.Input_Row )
+    else if( n_row < globalparams.Input_Row )
     {
         n_col = 0;
         n_row++;
     }
-    else if( n_channel < global_params.Input_Channel )
+    else if( n_channel < globalparams.Input_Channel )
     {
         n_col = 0;
         n_row = 0;
         n_channel++;
     }
-    else if ( ( n_col == global_params.Input_Col ) && ( n_row == global_params.Input_Row ) && ( n_channel == global_params.Input_Channel ))
+    else if ( ( n_col == globalparams.Input_Col ) && ( n_row == globalparams.Input_Row ) && ( n_channel == globalparams.Input_Channel ))
     {
         complete = true;
     }
@@ -92,27 +92,27 @@ void Addrgen::generator_input( )
 
 void Addrgen::generator_weight( )
 {
-    if( n_col < global_params.K_Col ) 
+    if( n_col < globalparams.K_Col ) 
         n_col++;
-    else if( n_row < global_params.K_Row )
+    else if( n_row < globalparams.K_Row )
     {
         n_col = 0;
         n_row++;
     }
-    else if( n_channel < global_params.K_Channel )
+    else if( n_channel < globalparams.K_Channel )
     {
         n_col = 0;
         n_row = 0;
         n_channel++;
     }
-    else if( n_kernel < global_params.K_num )
+    else if( n_kernel < globalparams.K_num )
     {
         n_col = 0;
         n_row = 0;
         n_channel = 0;
         n_kernel++;
     }
-    else if ( ( n_col == global_params.K_Col ) && ( n_row == global_params.K_Row ) && ( n_channel == global_params.K_Channel ) && ( n_kernel == global_params.K_num ))
+    else if ( ( n_col == globalparams.K_Col ) && ( n_row == globalparams.K_Row ) && ( n_channel == globalparams.K_Channel ) && ( n_kernel == globalparams.K_num ))
     {
         complete = true;
     }
@@ -123,8 +123,8 @@ NVMAddress Addrgen::GetAddr_weight( NVMAddress *addr )
     NVMAddress nAddress;
     uint64_t Row, Col, Bank, Rank, Channel, Sub;
     uint64_t Offset;
-    Offset = n_col + n_row * global_params.K_Row + n_channel * global_params.K_Row * global_params.K_Col;
-    Offset = Offset + n_kernel * global_params.K_Row * global_params.K_Col * global_params.K_Channel;
+    Offset = n_col + n_row * globalparams.K_Row + n_channel * globalparams.K_Row * globalparams.K_Col;
+    Offset = Offset + n_kernel * globalparams.K_Row * globalparams.K_Col * globalparams.K_Channel;
     Offset = Offset / 8 ; // burst cycle is 8
     addr->GetTranslatedAddress( &Row, &Col, &Bank, &Rank, &Channel, &Sub );
     nAddress.SetTranslatedAddress( Row, Col + Offset, Bank, Rank, Channel, Sub );
@@ -538,6 +538,50 @@ bool StandardRank::LoadWeight( NVMainRequest *request )
     return success;                 
 }
 
+bool StandardRank::Transfer( NVMainRequest *request )
+{
+    uint64_t readBank;
+    std::cout << "rec Transfer command in rank*****" << std::endl;
+    //addrgen.init();
+
+    request->address.GetTranslatedAddress( NULL, NULL, &readBank, NULL, NULL, NULL );
+
+    if( readBank >= bankCount )
+    {
+        std::cerr << "NVMain Error: Rank attempted to read non-existant bank: " 
+            << readBank << "!" << std::endl;
+        return false;
+    }
+
+    if( nextRead > GetEventQueue()->GetCurrentCycle() )
+    {
+        std::cerr << "NVMain Error: Rank Read violates the timing constraint: " 
+            << readBank << "!" << std::endl;
+        return false;
+    }
+
+    bool success = GetChild( request )->IssueCommand( request );
+
+    /*
+    nextRead = MAX( nextRead, 
+                    GetEventQueue()->GetCurrentCycle() 
+                    + MAX( p->tBURST, p->tCCD ) * (request->burstCount - 1)
+                    + p->tCWD + p->tBURST + p->tWTR );
+
+    nextWrite = MAX( nextWrite, 
+                     GetEventQueue()->GetCurrentCycle() 
+                     + MAX( p->tBURST, p->tCCD ) * request->burstCount );
+    */
+    
+    if( success == false )
+    {
+        std::cerr << "NVMain Error: Rank Write FAILED! Did you check IsIssuable?" 
+            << std::endl;
+    }
+    std::cout << "rec Transfer command in rank(complete)*****" << std::endl;
+    return success;                 
+}
+
 bool StandardRank::ReadCycle( NVMainRequest *request )
 {
     uint64_t readBank;
@@ -922,7 +966,7 @@ ncycle_t StandardRank::NextIssuable( NVMainRequest *request )
     else if( request->type == READ || request->type == READ_PRECHARGE ) nextCompare = nextRead;
     else if( request->type == WRITE || request->type == WRITE_PRECHARGE ) nextCompare = nextWrite;
     else if( request->type == PRECHARGE || request->type == PRECHARGE_ALL ) nextCompare = nextPrecharge;
-    else if( request->type == LOAD_WEIGHT ) nextCompare = MAX( nextRead, nextWrite );
+    else if( request->type == LOAD_WEIGHT || request->type == TRANSFER ) nextCompare = MAX( nextRead, nextWrite );
     else if( request->type == READCYCLE || request->type == REALCOMPUTE || request->type == POSTREAD || request->type == WRITECYCLE || request->type == COMPUTE ) nextCompare = MAX( nextRead, nextWrite );
     else assert(false);
         
@@ -1074,6 +1118,27 @@ bool StandardRank::IsIssuable( NVMainRequest *req, FailReason *reason )
                 return rv;
         }
     }
+    else if ( req->type == TRANSFER )
+    {
+        if( nextRead > GetEventQueue( )->GetCurrentCycle( ) )
+        {
+            rv = false;
+            std::cout << "*********read forbidding*******" << std::endl;
+            if ( reason )
+                reason->reason = RANK_TIMING;
+        }
+        else if ( nextWrite > GetEventQueue( )->GetCurrentCycle( ) )
+        {
+            rv = false;
+            std::cout << "********write forbidding******"  << std::endl;
+            if ( reason )
+                reason->reason = RANK_TIMING;
+        }
+        else
+        {
+            rv = GetChild( req )->IsIssuable( req, reason );
+        }
+    }
     else if ( req->type == LOAD_WEIGHT )
     {
         if( nextRead > GetEventQueue( )->GetCurrentCycle( ) )
@@ -1093,7 +1158,7 @@ bool StandardRank::IsIssuable( NVMainRequest *req, FailReason *reason )
         else
         {
             //std::cout << "im hereeeeee" << std::endl;
-            //std::cout << "test global params " << global_params.K_Col << std::endl;
+            //std::cout << "test global params " << globalparams.K_Col << std::endl;
             rv = GetChild( req )->IsIssuable( req, reason );
         }
     }
@@ -1123,7 +1188,7 @@ bool StandardRank::IsIssuable( NVMainRequest *req, FailReason *reason )
         else
         {
             //std::cout << "im hereeeeee" << std::endl;
-            //std::cout << "test global params " << global_params.K_Col << std::endl;
+            //std::cout << "test global params " << globalparams.K_Col << std::endl;
             rv = GetChild( req )->IsIssuable( req, reason );
         }
     }
@@ -1261,6 +1326,10 @@ bool StandardRank::IssueCommand( NVMainRequest *req )
                 rv = this->LoadWeight( req );
                 break;
             
+            case TRANSFER:
+                rv = this->Transfer( req );
+                break;
+
             case READCYCLE:
                 rv = this->ReadCycle( req );
                 break;
@@ -1316,7 +1385,7 @@ void StandardRank::Notify( NVMainRequest *request )
         nextRead = MAX( nextRead, GetEventQueue()->GetCurrentCycle()
                                     + p->tBURST + p->tCWD + p->tRTRS - p->tCAS );
     }
-    else if ( op == LOAD_WEIGHT )
+    else if ( op == LOAD_WEIGHT || op == TRANSFER )
     /* it need to update */
     {
         nextWrite = MAX( nextWrite, GetEventQueue()->GetCurrentCycle() 

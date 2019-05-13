@@ -164,6 +164,7 @@ class StandardRank : public Rank
     bool CanPowerDown( NVMainRequest *request );
     bool CanPowerUp( NVMainRequest *request );
     bool LoadWeight( NVMainRequest *request );
+    bool Transfer( NVMainRequest *request );
     bool ReadCycle( NVMainRequest *request );
     bool RealCompute( NVMainRequest *request );
     bool PostRead( NVMainRequest *request );
