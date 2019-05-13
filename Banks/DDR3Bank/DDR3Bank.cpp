@@ -603,6 +603,72 @@ bool DDR3Bank::LoadWeight( NVMainRequest *request )
     return true;
 }
 
+bool DDR3Bank::Transfer( NVMainRequest *request )
+{
+    std::cout << "rec transfer command in bank*****" << std::endl;
+    if( nextRead > GetEventQueue()->GetCurrentCycle() )
+    {
+        std::cerr << "NVMain Error: Bank violates READ timing constraint!"
+            << std::endl;
+        return false;
+    }
+    else if( nextWrite > GetEventQueue()->GetCurrentCycle() )
+    {
+        std::cerr << "NVMain Error: Bank violates WRITE timing constraint!"
+            << std::endl;
+        return false;
+    }
+    else if( state != DDR3BANK_OPEN )
+    {
+        std::cerr << "NVMain Error: try to read a bank that is not active!"
+            << std::endl;
+        return false;
+    }
+    
+    uint64_t readRow, readSubArray;
+    request->address.GetTranslatedAddress( &readRow, NULL, NULL, NULL, NULL, &readSubArray );
+
+    nextPowerDown = MAX( nextPowerDown, 
+                         GetEventQueue()->GetCurrentCycle() 
+                             + MAX( p->tBURST, p->tCCD ) * (request->burstCount - 1)
+                             + p->tAL + p->tRTP + p->tRP );
+
+    nextRead = MAX( nextRead, 
+                    GetEventQueue()->GetCurrentCycle() 
+                        + MAX( p->tBURST, p->tCCD ) * request->burstCount );
+
+    nextWrite = MAX( nextWrite, 
+                     GetEventQueue()->GetCurrentCycle()
+                         + MAX( p->tBURST, p->tCCD ) * (request->burstCount - 1)
+                         + p->tCAS + p->tBURST + p->tRTRS - p->tCWD );
+
+    /* issue READ/READ_RECHARGE to the target subarray */
+    bool success = GetChild( request )->IssueCommand( request );
+
+    if( success )
+    {
+        std::deque<ncounter_t>::iterator it;
+        for( it = activeSubArrayQueue.begin(); 
+                it != activeSubArrayQueue.end(); ++it )
+        {
+            if( (*it) == readSubArray )
+            {
+                /* delete the item in the active subarray list */
+                activeSubArrayQueue.erase( it );
+                break;
+            }
+        }
+
+        if( activeSubArrayQueue.empty() )
+            state = DDR3BANK_CLOSED;
+    } // if( request->type == READ_PRECHARGE )
+
+    //dataCycles += p->tBURST; 
+    std::cout << "rec transfer command in bank(complete)*****" << std::endl;
+    
+    return true;
+}
+
 bool DDR3Bank::ReadCycle( NVMainRequest *request )
 {
     std::cout << "rec readcycle command in bank*****" << std::endl;
@@ -957,7 +1023,7 @@ ncycle_t DDR3Bank::NextIssuable( NVMainRequest *request )
     else if( request->type == READ || request->type == READ_PRECHARGE ) nextCompare = nextRead;
     else if( request->type == WRITE || request->type == WRITE_PRECHARGE ) nextCompare = nextWrite;
     else if( request->type == PRECHARGE || request->type == PRECHARGE_ALL ) nextCompare = nextPrecharge;
-    else if( request->type == LOAD_WEIGHT ) nextCompare = MAX( nextRead, nextWrite );
+    else if( request->type == LOAD_WEIGHT || request->type == TRANSFER ) nextCompare = MAX( nextRead, nextWrite );
     else if( request->type == READCYCLE || request->type == REALCOMPUTE || request->type == POSTREAD || request->type == WRITECYCLE || request->type == COMPUTE ) nextCompare = MAX( nextRead, nextWrite );
     else assert(false);
 
@@ -1027,6 +1093,29 @@ bool DDR3Bank::IsIssuable( NVMainRequest *req, FailReason *reason )
         }
     }
     else if( req->type == LOAD_WEIGHT )
+    {
+        if( nextWrite > (GetEventQueue()->GetCurrentCycle()) 
+            || state != DDR3BANK_OPEN )
+        {
+            rv = false;
+            std::cout << "bank is writing" << std::endl;
+            if( reason ) 
+                reason->reason = BANK_TIMING;
+        }
+        else if( nextRead > (GetEventQueue()->GetCurrentCycle()) 
+            || state != DDR3BANK_OPEN )
+        {
+            rv = false;
+            std::cout << "bank is reading" << std::endl;
+            if( reason ) 
+                reason->reason = BANK_TIMING;
+        }
+        else
+        {
+             rv = GetChild( req )->IsIssuable( req, reason );
+        }
+    }
+    else if( req->type == TRANSFER )
     {
         if( nextWrite > (GetEventQueue()->GetCurrentCycle()) 
             || state != DDR3BANK_OPEN )
@@ -1222,6 +1311,10 @@ bool DDR3Bank::IssueCommand( NVMainRequest *req )
                 rv = this->LoadWeight( req );
                 break;
             
+            case TRANSFER:
+                rv = this->Transfer( req );
+                break;
+
             case READCYCLE:
                 rv = this->ReadCycle( req );
                 break;

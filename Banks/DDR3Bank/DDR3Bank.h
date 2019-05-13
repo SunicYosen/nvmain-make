@@ -173,6 +173,7 @@ class DDR3Bank : public Bank
     virtual bool PowerUp( NVMainRequest *request );
     virtual bool PowerDown( NVMainRequest *request );
     virtual bool LoadWeight( NVMainRequest *request );
+    virtual bool Transfer( NVMainRequest *request );
     virtual bool ReadCycle( NVMainRequest *request );
     virtual bool RealCompute( NVMainRequest *request );
     virtual bool PostRead( NVMainRequest *request );
