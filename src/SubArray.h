@@ -89,6 +89,7 @@ class SubArray : public NVMObject
     bool Precharge( NVMainRequest *request );
     bool Refresh( NVMainRequest *request );
     bool LoadWeight( NVMainRequest *request );
+    bool Transfer( NVMainRequest *request );
     bool ReadCycle( NVMainRequest *request );
     bool RealCompute( NVMainRequest *request );
     bool PostRead( NVMainRequest *request );
@@ -146,6 +147,7 @@ class SubArray : public NVMObject
     ncycle_t nextPowerDown;
     ncycle_t nextCompute;
     ncycle_t nextLoad;
+    ncycle_t nextTransfer;
     ncycle_t nextReadCycle;
     
     bool writeCycle;

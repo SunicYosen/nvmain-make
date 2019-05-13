@@ -45,6 +45,8 @@
 #include <cassert>
 #include <iostream>
 #include <limits>
+#include <cmath>
+
 
 /*
  * Using -O3 in gcc causes the popcount methods to return incorrect values.
@@ -58,6 +60,7 @@
 
 using namespace NVM;
 
+extern GlobalParams globalparams;
 SubArray::SubArray( )
 {
     conf = NULL;
@@ -316,7 +319,11 @@ bool SubArray::Activate( NVMainRequest *request )
     nextLoad = MAX(nextRead,
                     GetEventQueue()->GetCurrentCycle()
                          + p->tRCD - p->tAL);
-    
+
+    nextTransfer = MAX(nextRead,
+                    GetEventQueue()->GetCurrentCycle()
+                         + p->tRCD - p->tAL);    
+
     nextCompute = MAX(nextRead,
                         GetEventQueue()->GetCurrentCycle()
                              + p->tRCD - p->tAL);
@@ -718,6 +725,66 @@ bool SubArray::Write( NVMainRequest *request )
     return true;
 }
 
+bool SubArray::Transfer( NVMainRequest *request )
+{
+    std::cout << "rec Transfer command in bank*****" << std::endl;
+    uint64_t readRow;
+    ncycle_t transferTimer;
+
+    request->address.GetTranslatedAddress( &readRow, NULL, NULL, NULL, NULL, NULL );
+
+    /* Check if we need to cancel or pause a write to service this request. */
+    //CheckWritePausing( );
+
+    /* TODO: Can we remove this sanity check and totally trust IsIssuable()? */
+    /* sanity check */
+    if( nextRead > GetEventQueue()->GetCurrentCycle() )
+    {
+        std::cerr << "NVMain Error: Subarray violates READ timing constraint!"
+            << std::endl;
+        return false;
+    }
+    else if( state != SUBARRAY_OPEN )
+    {
+        std::cerr << "NVMain Error: try to read a subarray that is not active!"
+            << std::endl;
+        return false;
+    }
+    else if( readRow != openRow )
+    {
+        std::cerr << "NVMain Error: try to read a row that is not opened in a subarray!"
+            << std::endl;
+        return false;
+    }
+
+    /* Any additional latency for data encoding. */
+    ncycles_t decLat = (dataEncoder ? dataEncoder->Read( request ) : 0);
+    
+    if( request->t_mode == Move_In )
+        transferTimer = ceil(request->t_size*17.2/64*0.4);
+    else if( request->t_mode == Move_Out )
+    {
+        transferTimer = ceil(request->t_size*4/64);
+    }
+    else
+    {
+        std::cout << "errrror **********" << std::endl;
+        return false;
+    }
+    
+    nextActivate = MAX( nextActivate, GetEventQueue()->GetCurrentCycle() + transferTimer + decLat );
+    nextCompute = MAX( nextActivate, GetEventQueue()->GetCurrentCycle() + transferTimer + decLat );
+
+    //dataCycles += p->tBURST;
+    //request->type =READ;
+    GetEventQueue( )->InsertEvent( EventResponse, this, request, 
+            GetEventQueue()->GetCurrentCycle() + transferTimer + decLat );
+    
+    std::cout << "rec transfer command in bank(complete)*****" << std::endl;
+    return true;
+    
+}
+
 bool SubArray::LoadWeight( NVMainRequest *request )
 {
     std::cout << "rec Load command in bank*****" << std::endl;
@@ -752,38 +819,16 @@ bool SubArray::LoadWeight( NVMainRequest *request )
     /* Any additional latency for data encoding. */
     ncycles_t decLat = (dataEncoder ? dataEncoder->Read( request ) : 0);
 
-    /* Update timing constraints */
-    if( request->type == LOAD_WEIGHT )
-    {
-        nextPrecharge = MAX( nextPrecharge, 
-                             GetEventQueue()->GetCurrentCycle() 
-                                 + MAX( p->tBURST, p->tCCD ) * (request->burstCount - 1)
-                                 + p->tAL + p->tBURST + p->tRTP - p->tCCD + decLat );
-
-        nextRead = MAX( nextRead, 
-                        GetEventQueue()->GetCurrentCycle() 
-                            + MAX( p->tBURST, p->tCCD ) * request->burstCount );
-
-        nextWrite = MAX( nextWrite, 
-                         GetEventQueue()->GetCurrentCycle() 
-                             + MAX( p->tBURST, p->tCCD ) * (request->burstCount  - 1)
-                             + p->tCAS + p->tBURST + p->tRTRS - p->tCWD + decLat );
+    ncycle_t Timer;
+    Timer = globalparams.K_Row*globalparams.K_Col*globalparams.K_Channel*globalparams.K_num*225;   //write weight for 225cyc/cell
         
-        nextActivate = MAX( nextActivate, GetEventQueue()->GetCurrentCycle() + p->tCAS + p->tBURST - p->tAL + decLat );
-        nextCompute = MAX( nextActivate, GetEventQueue()->GetCurrentCycle() + p->tCAS + p->tBURST - p->tAL + decLat );
+    nextActivate = MAX( nextActivate, GetEventQueue()->GetCurrentCycle() + Timer + decLat );
+    nextCompute = MAX( nextActivate, GetEventQueue()->GetCurrentCycle() + Timer + decLat );
                              
-    }
-
-    /* Read->Powerdown is typical the same for READ and READ_PRECHARGE. */
-    nextPowerDown = MAX( nextPowerDown,
-                         GetEventQueue()->GetCurrentCycle()
-                            + MAX( p->tBURST, p->tCCD ) * (request->burstCount  - 1)
-                            + p->tCAS + p->tAL + p->tBURST + 1 + decLat );
-
     //dataCycles += p->tBURST;
     //request->type =READ;
     GetEventQueue( )->InsertEvent( EventResponse, this, request, 
-            GetEventQueue()->GetCurrentCycle() + p->tCAS + p->tBURST + decLat );
+            GetEventQueue()->GetCurrentCycle() + Timer + decLat );
     
     std::cout << "rec Load command in bank(complete)*****" << std::endl;
     return true;
@@ -825,34 +870,36 @@ bool SubArray::ReadCycle( NVMainRequest *request)
     ncycles_t decLat = (dataEncoder ? dataEncoder->Read( request ) : 0);
 
     /* Update timing constraints */
-    if( request->type == LOAD_WEIGHT )
+    ncycles_t Timer ;
+    if (request->isReused)
     {
-        nextPrecharge = MAX( nextPrecharge, 
-                             GetEventQueue()->GetCurrentCycle() 
-                                 + MAX( p->tBURST, p->tCCD ) * (request->burstCount - 1)
-                                 + p->tAL + p->tBURST + p->tRTP - p->tCCD + decLat );
-
-        nextRead = MAX( nextRead, 
-                        GetEventQueue()->GetCurrentCycle() 
-                            + MAX( p->tBURST, p->tCCD ) * request->burstCount );
-
-        nextWrite = MAX( nextWrite, 
-                         GetEventQueue()->GetCurrentCycle() 
-                             + MAX( p->tBURST, p->tCCD ) * (request->burstCount  - 1)
-                             + p->tCAS + p->tBURST + p->tRTRS - p->tCWD + decLat );
+        if (request->slide == X)
+        {
+            Timer = p->tCAS+p->tBURST*(request->BufferSize/2);
+            Timer = (Timer + p->tRP)*globalparams.K_Row* ceil( globalparams.K_Channel/4.0 ); //four bank is parallel
+        }
+        else if (request->slide == Y)
+        {
+            Timer = p->tCAS+p->tBURST*(request->BufferSize/2+globalparams.K_Col - 1);
+            Timer = (Timer + p->tRP)*1* ceil( globalparams.K_Channel/4.0 ); //four bank is parallel
+        }
     }
-    nextActivate = MAX( nextActivate, GetEventQueue()->GetCurrentCycle() + p->tCAS + p->tBURST + decLat);
-    nextCompute = MAX( nextActivate, GetEventQueue()->GetCurrentCycle() + p->tCAS + p->tBURST + decLat);
+    else
+    {
+        Timer = p->tCAS+p->tBURST*(request->BufferSize/2+globalparams.K_Col - 1);
+        Timer = (Timer + p->tRP)*globalparams.K_Row* ceil( globalparams.K_Channel/4.0 ); //four bank is parallel
+    }
+
+
+    nextActivate = MAX( nextActivate, GetEventQueue()->GetCurrentCycle() + Timer + decLat);
+    nextCompute = MAX( nextActivate, GetEventQueue()->GetCurrentCycle() + Timer + decLat);
+
     /* Read->Powerdown is typical the same for READ and READ_PRECHARGE. */
-    nextPowerDown = MAX( nextPowerDown,
-                         GetEventQueue()->GetCurrentCycle()
-                            + MAX( p->tBURST, p->tCCD ) * (request->burstCount  - 1)
-                            + p->tCAS + p->tAL + p->tBURST + 1 + decLat );
 
     //dataCycles += p->tBURST;
     //request->type =READ;
     GetEventQueue( )->InsertEvent( EventResponse, this, request, 
-            GetEventQueue()->GetCurrentCycle() + p->tCAS + p->tBURST + decLat );
+            GetEventQueue()->GetCurrentCycle() + Timer + decLat);
     
     std::cout << "rec readcycle command in bank(complete)*****" << std::endl;
     return true;
@@ -862,34 +909,13 @@ bool SubArray::ReadCycle( NVMainRequest *request)
 bool SubArray::RealCompute( NVMainRequest *request)
 {
     std::cout << "rec realcompute command in bank*****" << std::endl;
-
     
-    nextPrecharge = MAX( nextPrecharge, 
-                         GetEventQueue()->GetCurrentCycle() 
-                             + MAX( p->tBURST, p->tCCD ) * (request->burstCount - 1)
-                             + p->tAL + p->tBURST + p->tRTP - p->tCCD );
-
-    nextRead = MAX( nextRead, 
-                    GetEventQueue()->GetCurrentCycle() 
-                        + MAX( p->tBURST, p->tCCD ) * request->burstCount );
-
-    nextWrite = MAX( nextWrite, 
-                     GetEventQueue()->GetCurrentCycle() 
-                         + MAX( p->tBURST, p->tCCD ) * (request->burstCount  - 1)
-                         + p->tCAS + p->tBURST + p->tRTRS - p->tCWD );
-
-    /* Read->Powerdown is typical the same for READ and READ_PRECHARGE. */
-    nextPowerDown = MAX( nextPowerDown,
-                         GetEventQueue()->GetCurrentCycle()
-                            + MAX( p->tBURST, p->tCCD ) * (request->burstCount  - 1)
-                            + p->tCAS + p->tAL + p->tBURST + 1 );
-    
-    nextActivate = MAX( nextActivate, GetEventQueue()->GetCurrentCycle() + p->tCAS + p->tBURST);
-    nextCompute = MAX( nextActivate, GetEventQueue()->GetCurrentCycle() + p->tCAS + p->tBURST);
+    nextActivate = MAX( nextActivate, GetEventQueue()->GetCurrentCycle() + 40 );
+    nextCompute = MAX( nextActivate, GetEventQueue()->GetCurrentCycle() + 40 );
     //dataCycles += p->tBURST;
     //request->type =READ;
     GetEventQueue( )->InsertEvent( EventResponse, this, request, 
-            GetEventQueue()->GetCurrentCycle() + p->tCAS + p->tBURST );
+            GetEventQueue()->GetCurrentCycle() + 40 );
     
     std::cout << "rec realcompute command in bank(complete)*****" << std::endl;
     return true;    
@@ -899,32 +925,14 @@ bool SubArray::PostRead( NVMainRequest *request)
 {
     std::cout << "rec postread command in bank*****" << std::endl;
 
-    nextPrecharge = MAX( nextPrecharge, 
-                         GetEventQueue()->GetCurrentCycle() 
-                             + MAX( p->tBURST, p->tCCD ) * 2
-                             + p->tAL + p->tBURST + p->tRTP - p->tCCD );
-
-    nextRead = MAX( nextRead, 
-                    GetEventQueue()->GetCurrentCycle() 
-                        + MAX( p->tBURST, p->tCCD ) * 2 );
-
-    nextWrite = MAX( nextWrite, 
-                     GetEventQueue()->GetCurrentCycle() 
-                         + MAX( p->tBURST, p->tCCD ) * 2
-                         + p->tCAS + p->tBURST + p->tRTRS - p->tCWD );
-
-    /* Read->Powerdown is typical the same for READ and READ_PRECHARGE. */
-    nextPowerDown = MAX( nextPowerDown,
-                         GetEventQueue()->GetCurrentCycle()
-                            + MAX( p->tBURST, p->tCCD ) * 2
-                            + p->tCAS + p->tAL + p->tBURST + 1);
-
-    nextActivate = MAX( nextActivate, GetEventQueue()->GetCurrentCycle() + p->tCAS + p->tBURST*2);
-    nextCompute = MAX( nextActivate, GetEventQueue()->GetCurrentCycle() + p->tCAS + p->tBURST*2);
+    ncycles_t Timer;
+    Timer = ceil( globalparams.K_num*p->tBURST/8.0 ) + p->tCAS;
+    nextActivate = MAX( nextActivate, GetEventQueue()->GetCurrentCycle() + Timer );
+    nextCompute = MAX( nextActivate, GetEventQueue()->GetCurrentCycle() + Timer );
     //dataCycles += p->tBURST;
     //request->type =READ;
     GetEventQueue( )->InsertEvent( EventResponse, this, request, 
-            GetEventQueue()->GetCurrentCycle() + p->tCAS + p->tBURST*2);
+            GetEventQueue()->GetCurrentCycle() + Timer );
     
     std::cout << "rec postread command in bank(complete)*****" << std::endl;
     return true; 
@@ -938,7 +946,7 @@ bool SubArray::WriteCycle( NVMainRequest *request)
     request->address.GetTranslatedAddress( &readRow, NULL, NULL, NULL, NULL, NULL );
 
     /* Check if we need to cancel or pause a write to service this request. */
-    CheckWritePausing( );
+    //CheckWritePausing( );
 
     /* TODO: Can we remove this sanity check and totally trust IsIssuable()? */
     /* sanity check */
@@ -968,36 +976,15 @@ bool SubArray::WriteCycle( NVMainRequest *request)
     /* Any additional latency for data encoding. */
     ncycles_t decLat = (dataEncoder ? dataEncoder->Read( request ) : 0);
 
-    /* Update timing constraints */
-    if( request->type == LOAD_WEIGHT )
-    {
-        nextPrecharge = MAX( nextPrecharge, 
-                             GetEventQueue()->GetCurrentCycle() 
-                                 + MAX( p->tBURST, p->tCCD ) * (request->burstCount - 1)
-                                 + p->tAL + p->tBURST + p->tRTP - p->tCCD + decLat );
-
-        nextRead = MAX( nextRead, 
-                        GetEventQueue()->GetCurrentCycle() 
-                            + MAX( p->tBURST, p->tCCD ) * request->burstCount );
-
-        nextWrite = MAX( nextWrite, 
-                         GetEventQueue()->GetCurrentCycle() 
-                             + MAX( p->tBURST, p->tCCD ) * (request->burstCount  - 1)
-                             + p->tCAS + p->tBURST + p->tRTRS - p->tCWD + decLat );
-    }
-
-    /* Read->Powerdown is typical the same for READ and READ_PRECHARGE. */
-    nextPowerDown = MAX( nextPowerDown,
-                         GetEventQueue()->GetCurrentCycle()
-                            + MAX( p->tBURST, p->tCCD ) * (request->burstCount  - 1)
-                            + p->tCAS + p->tAL + p->tBURST + 1 + decLat );
-
     //dataCycles += p->tBURST;
     //request->type =READ;
-    nextActivate = MAX( nextActivate, GetEventQueue()->GetCurrentCycle() + p->tCAS + p->tBURST + decLat );
-    nextCompute = MAX( nextActivate, GetEventQueue()->GetCurrentCycle() + p->tCAS + p->tBURST + decLat);
+    ncycles_t Timer;
+    Timer = ceil((( globalparams.K_num > 128 ) ? 128 : globalparams.K_num)*8*17.2/64/2.5);
+
+    nextActivate = MAX( nextActivate, GetEventQueue()->GetCurrentCycle() + Timer + decLat);
+    nextCompute = MAX( nextActivate, GetEventQueue()->GetCurrentCycle() + Timer + decLat);
     GetEventQueue( )->InsertEvent( EventResponse, this, request, 
-            GetEventQueue()->GetCurrentCycle() + p->tCAS + p->tBURST + decLat );
+            GetEventQueue()->GetCurrentCycle() + Timer + decLat);
     
     std::cout << "rec writecycle command in Sub(complete)*****" << std::endl;
     return true;  
@@ -1398,6 +1385,7 @@ ncycle_t SubArray::NextIssuable( NVMainRequest *request )
     else if( request->type == WRITE ) nextCompare = nextWrite;
     else if( request->type == PRECHARGE ) nextCompare = nextPrecharge;
     else if( request->type == LOAD_WEIGHT ) nextCompare = nextLoad;
+    else if( request->type == TRANSFER ) nextCompare = nextTransfer;
     else if( request->type == READCYCLE || request->type == REALCOMPUTE || request->type == POSTREAD || request->type == WRITECYCLE || request->type == COMPUTE ) nextCompare = nextCompute;
     else assert(false);
 
@@ -1473,6 +1461,26 @@ bool SubArray::IsIssuable( NVMainRequest *req, FailReason *reason )
         }
     }
     else if( req->type == LOAD_WEIGHT )
+    {
+        if( nextRead > (GetEventQueue()->GetCurrentCycle()) /* if it is too early to read */
+            || state != SUBARRAY_OPEN  /* or, the subarray is not active */
+            || opRow != openRow        /* or, the target row is not the open row */
+            || ( p->WritePausing && isWriting && writeRequest->flags & NVMainRequest::FLAG_FORCED ) ) /* or, write can't be paused. */
+        {
+            rv = false;
+            if( reason ) 
+                reason->reason = SUBARRAY_TIMING;
+        }
+        else if( nextWrite > (GetEventQueue()->GetCurrentCycle()) /* if it is too early to write */
+                || state != SUBARRAY_OPEN  /* or, the subarray is not active */          
+                || opRow != openRow )      /* or, the target row is not the open row */
+        {
+            rv = false;
+            if( reason ) 
+                reason->reason = SUBARRAY_TIMING;
+        }
+    }
+    else if( req->type == TRANSFER )
     {
         if( nextRead > (GetEventQueue()->GetCurrentCycle()) /* if it is too early to read */
             || state != SUBARRAY_OPEN  /* or, the subarray is not active */
@@ -1618,6 +1626,9 @@ bool SubArray::IssueCommand( NVMainRequest *req )
             case LOAD_WEIGHT:
                 rv = this->LoadWeight( req );
                 break;
+            case TRANSFER:
+                rv = this->Transfer( req );
+                break;
             case READCYCLE:
                 rv = this->ReadCycle( req );
                 break;
@@ -1743,7 +1754,7 @@ bool SubArray::RequestComplete( NVMainRequest *req )
     }
     else
     {
-        if (req->type == WRITECYCLE || req->type == LOAD_WEIGHT )
+        if (req->type == WRITECYCLE || req->type == LOAD_WEIGHT || req->type == TRANSFER )
         {
             state = SUBARRAY_CLOSED;
             openRow = p->ROWS;

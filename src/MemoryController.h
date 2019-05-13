@@ -196,6 +196,7 @@ class MemoryController : public NVMObject
     bool FindOldestReadyRequests( std::list<NVMainRequest *>& transactionQueue, std::vector<NVMainRequest *>& oldestRequests );
     bool FindClosedBankRequests( std::list<NVMainRequest *>& transactionQueue, std::vector<NVMainRequest *>& closedRequests );
     bool FindLoadRequest( std::list<NVMainRequest *>& transactionQueue, NVMainRequest **loadRequest );
+    bool FindTransferRequest( std::list<NVMainRequest *>& transactionQueue, NVMainRequest **transferRequest );
     bool FindComputeRequest( std::list<NVMainRequest *>& transactionQueue, NVMainRequest **computeRequest );
 
     bool IssueMemoryCommands( NVMainRequest *req );
