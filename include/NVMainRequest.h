@@ -42,6 +42,11 @@
 
 namespace NVM {
 
+enum Transfer_mode
+{
+    Move_In,
+    Move_Out
+};
 
 enum OpType 
 { 
@@ -69,7 +74,8 @@ enum OpType
     READCYCLE,
     REALCOMPUTE,
     POSTREAD,
-    WRITECYCLE
+    WRITECYCLE,
+    TRANSFER
 };
 
 enum MemRequestStatus 
@@ -150,6 +156,9 @@ class NVMainRequest
     };
 
     NVMAddress address;            //< Address of request
+    NVMAddress C_address1;
+    NVMAddress C_address2;
+    
     OpType type;                   //< Operation type of request (read, write, etc)
     BulkCommand bulkCmd;           //< Bulk Commands (i.e., Read+Precharge, Write+Precharge, etc)
     ncounters_t threadId;                  //< Thread ID of issuing application
@@ -176,6 +185,9 @@ class NVMainRequest
     uint64_t BufferSize;
     bool RowComplete = false;
     bool ColComplete = false;
+    Transfer_mode t_mode;
+    uint64_t t_size;
+    bool isReused;
     
     ncycle_t arrivalCycle;         //< When the request arrived at the memory controller
     ncycle_t queueCycle;           //< When the memory controller accepted (queued) the request
