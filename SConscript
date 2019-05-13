@@ -62,7 +62,8 @@ NVMainSource('traceReader/TraceLine.cpp')
 
 if 'NVMAIN_BUILD' in env:
     # NVMain build.
-    NVMainSource('rvSim/rvSim.cpp')
+    NVMainSource('traceSim/R5sim.cpp')
+
     #NVMainSource('traceReader/TraceReaderFactory.cpp')
     #NVMainSource('traceReader/RubyTrace/RubyTraceReader.cpp')
     #NVMainSource('traceReader/NVMainTrace/NVMainTraceReader.cpp')
