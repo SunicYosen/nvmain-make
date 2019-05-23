@@ -75,7 +75,7 @@ void STeMS::FetchNextUnused( PatternSequence *rps, int count,
             rps->startedPrefetch = true;
 
 #ifdef DBGPF
-            std::cout << "Prefetching 0x" << std::hex
+            std::cout << "[+] Prefetching 0x" << std::hex
                     << rps->address + lastUnused[i] << std::dec << std::endl;
 #endif
 
@@ -129,7 +129,7 @@ bool STeMS::NotifyAccess( NVMainRequest *accessOp,
                     successful = true;
 
 #ifdef DBGPF
-                    std::cout << "Successful prefetch ! 0x" << std::hex << address
+                    std::cout << "[+] Successful prefetch ! 0x" << std::hex << address
                               << std::dec << std::endl;
 #endif
 
@@ -255,14 +255,14 @@ bool STeMS::DoPrefetch( NVMainRequest *triggerOp,
         }
 
 #ifdef DBGPF
-        std::cout << "Found a PST entry for PC 0x" << std::hex
+        std::cout << "[+] Found a PST entry for PC 0x" << std::hex
                   << triggerOp->programCounter << std::dec << std::endl;
         
-        std::cout << "Triggered by 0x" << std::hex
+        std::cout << "[+] Triggered by 0x" << std::hex
                   << triggerOp->address.GetPhysicalAddress( ) << std::dec
                   << std::endl;
         
-        std::cout << "Start address 0x" << std::hex << ps->address 
+        std::cout << "[+] Start address 0x" << std::hex << ps->address 
             << ": " << std::dec;
         
         for( uint64_t i = 0; i < ps->size; i++ )
@@ -270,7 +270,7 @@ bool STeMS::DoPrefetch( NVMainRequest *triggerOp,
             std::cout << "[" << ps->offset[i] << "," << ps->delta[i] << "], ";
         }
 
-        std::cout << std::endl;
+        std::cout << "[+]" << std::endl;
 #endif
 
     }

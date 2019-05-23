@@ -118,7 +118,7 @@ void NVMain::SetConfig( Config *conf, std::string memoryName, bool createChildre
     if( config->GetSimInterface( ) != NULL )
         config->GetSimInterface( )->SetConfig( conf, createChildren );
     else
-      std::cout << "Warning: Sim Interface should be allocated before configuration!" << std::endl;
+      std::cout << "[+] Warning: Sim Interface should be allocated before configuration!" << std::endl;
 
 
     if( createChildren )
@@ -183,7 +183,7 @@ void NVMain::SetConfig( Config *conf, std::string memoryName, bool createChildre
                     channelConfigFile += config->GetString( confString.str( ) );
                 }
                 
-                std::cout << "Reading channel config file: " << channelConfigFile << std::endl;
+                std::cout << "[+] Reading channel config file: " << channelConfigFile << std::endl;
 
                 channelConfig[i]->Read( channelConfigFile );
             }
@@ -215,7 +215,7 @@ void NVMain::SetConfig( Config *conf, std::string memoryName, bool createChildre
     if( p->MemoryPrefetcher != "none" )
     {
         prefetcher = PrefetcherFactory::CreateNewPrefetcher( p->MemoryPrefetcher );
-        std::cout << "Made a " << p->MemoryPrefetcher << " prefetcher." << std::endl;
+        std::cout << "[+] Made a " << p->MemoryPrefetcher << " prefetcher." << std::endl;
     }
 
     numChannels = static_cast<unsigned int>(p->CHANNELS);
@@ -235,7 +235,7 @@ void NVMain::SetConfig( Config *conf, std::string memoryName, bool createChildre
             pretraceFile += config->GetString( "PreTraceFile" );
         }
 
-        std::cout << "Using trace file " << pretraceFile << std::endl;
+        std::cout << "[+] Using trace file " << pretraceFile << std::endl;
 
         if( config->GetString( "PreTraceWriter" ) == "" )
             preTracer = TraceWriterFactory::CreateNewTraceWriter( "NVMainTrace" );
@@ -286,7 +286,7 @@ void NVMain::GeneratePrefetches( NVMainRequest *request, std::vector<NVMAddress>
         request->address.SetTranslatedAddress( row, col, bank, rank, channel, subarray );
         request->bulkCmd = CMD_NOP;
 
-        //std::cout << "Prefetching 0x" << std::hex << (*iter).GetPhysicalAddress() << " (trigger 0x"
+        //std::cout << "[+] Prefetching 0x" << std::hex << (*iter).GetPhysicalAddress() << " (trigger 0x"
         //          << request->address.GetPhysicalAddress( ) << std::dec << std::endl;
 
         /* Just type to issue; If the queue is full it simply won't be enqueued. */
@@ -337,10 +337,10 @@ bool NVMain::CheckPrefetch( NVMainRequest *request )
 
     if( pfRequest != NULL )
     {
-        //std::cout << "Prefetched 0x" << std::hex << request->address.GetPhysicalAddress( )
+        //std::cout << "[+] Prefetched 0x" << std::hex << request->address.GetPhysicalAddress( )
         //          << std::dec << " (list size " << prefetchBuffer.size() << " -> ";
         prefetchBuffer.remove( pfRequest );
-        //std::cout << prefetchBuffer.size() << ")" << std::endl;
+        //std::cout << "[+]" << prefetchBuffer.size() << ")" << std::endl;
     }
 
     return rv;
@@ -374,7 +374,7 @@ bool NVMain::IssueCommand( NVMainRequest *request )
 
     if( !config )
     {
-        std::cout << "NVMain: Received request before configuration!\n";
+        std::cout << "[+] NVMain: Received request before configuration!\n";
         return false;
     }
     
@@ -434,7 +434,7 @@ bool NVMain::IssueAtomic( NVMainRequest *request )
 
     if( !config )
     {
-        std::cout << "NVMain: Received request before configuration!\n";
+        std::cout << "[+] NVMain: Received request before configuration!\n";
         return false;
     }
 
@@ -478,7 +478,7 @@ bool NVMain::RequestComplete( NVMainRequest *request )
     {
         if( request->isPrefetch )
         {
-            //std::cout << "Placing 0x" << std::hex << request->address.GetPhysicalAddress( )
+            //std::cout << "[+] Placing 0x" << std::hex << request->address.GetPhysicalAddress( )
             //          << std::dec << " into prefetch buffer (cur size: " << prefetchBuffer.size( )
             //          << ")." << std::endl;
 
@@ -486,7 +486,7 @@ bool NVMain::RequestComplete( NVMainRequest *request )
             if( prefetchBuffer.size() >= p->PrefetchBufferSize )
             {
                 unsuccessfulPrefetches++;
-                //std::cout << "Prefetch buffer is full. Removing oldest prefetch: 0x" << std::hex
+                //std::cout << "[+] Prefetch buffer is full. Removing oldest prefetch: 0x" << std::hex
                 //          << prefetchBuffer.front()->address.GetPhysicalAddress() << std::dec
                 //          << std::endl;
 

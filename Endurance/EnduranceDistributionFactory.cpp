@@ -50,7 +50,7 @@ EnduranceDistribution *EnduranceDistributionFactory::CreateEnduranceDistribution
     EnduranceDistribution *enduranceDist = NULL;
 
     if( distName == "" )
-        std::cout << "NVMain: EnduranceDist is not set in configuration file!\n";
+        std::cout << "[+] NVMain: EnduranceDist is not set in configuration file!\n";
     
     if( distName == "Normal" ) 
         enduranceDist = new NormalDistribution( conf );
@@ -64,7 +64,7 @@ EnduranceDistribution *EnduranceDistributionFactory::CreateEnduranceDistribution
 
 
     if( enduranceDist == NULL )
-        std::cout << "NVMain: Endurance distribution '" << distName 
+        std::cout << "[+] NVMain: Endurance distribution '" << distName 
             << "' not found in factory!\n";
 
     return enduranceDist;

@@ -51,7 +51,7 @@ void VerilogTraceWriter::Init( Config *conf )
 
     if( deviceWidth != 4 && deviceWidth % 8 != 0 )
     {
-        std::cout << "VerilogTraceWriter: Don't know how to write a device "
+        std::cout << "[+] VerilogTraceWriter: Don't know how to write a device "
                   << " with width " << deviceWidth << std::endl;
         exit(0);
     }
@@ -68,7 +68,7 @@ void VerilogTraceWriter::SetTraceFile( std::string file )
 
     if( !trace.is_open( ) )
     {
-        std::cout << "Warning: Could not open trace file " << file
+        std::cout << "[+] Warning: Could not open trace file " << file
                   << ". Output will be suppressed." << std::endl;
     }
 }
@@ -101,7 +101,7 @@ bool VerilogTraceWriter::SetNextAccess( TraceLine *nextAccess )
 
     if( this->GetEcho() )
     {
-        WriteTraceLine( std::cout, nextAccess );
+        WriteTraceLine( std::cout , nextAccess );
         rv = true;
     }
 

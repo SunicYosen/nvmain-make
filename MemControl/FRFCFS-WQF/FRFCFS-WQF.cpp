@@ -48,7 +48,7 @@ using namespace NVM;
  */
 FRFCFS_WQF::FRFCFS_WQF( ) : readQueueId(0), writeQueueId(1), computeQueueId(2)
 {
-    //std::cout << "Created a First Ready First Come First Serve memory \n
+    //std::cout << "[+] Created a First Ready First Come First Serve memory \n
     //    controller with write queue!" << std::endl;
 
     InitQueues( 3 );
@@ -171,13 +171,13 @@ void FRFCFS_WQF::SetConfig( Config *conf, bool createChildren )
     if( HighWaterMark > writeQueueSize )
     {
         HighWaterMark = writeQueueSize;
-        std::cout << "NVMain Warning: high watermark can NOT be larger than write \
+        std::cout << "[+] NVMain Warning: high watermark can NOT be larger than write \
             queue size. Has reset it to equal." << std::endl;
     }
     else if( LowWaterMark > HighWaterMark )
     {
         LowWaterMark = 0;
-        std::cout << "NVMain Warning: low watermark can NOT be larger than high \
+        std::cout << "[+] NVMain Warning: low watermark can NOT be larger than high \
             watermark. Has reset it to 0." << std::endl;
     }
 
@@ -241,7 +241,7 @@ bool FRFCFS_WQF::IsIssuable( NVMainRequest *request, FailReason * /*fail*/ )
 {
     bool rv = true;
 
-    //std::cout << "hapi" << std::endl;
+    //std::cout << "[+] hapi" << std::endl;
     /* during a write drain, no write can enqueue */
     if( (request->type == READ  && readQueue->size()  >= readQueueSize) 
             || (request->type == WRITE && ( writeQueue->size() >= writeQueueSize 
@@ -282,7 +282,7 @@ bool FRFCFS_WQF::IssueCommand( NVMainRequest *request )
     {
         if ( transactionQueues[computeQueueId].size() < computeQueueSize )
             Enqueue( computeQueueId, request );
-            //std::cout<< "*******enqueue****" << std::endl; 
+            //std::cout << "[+](IssueCommand) *******enqueue****" << std::endl; 
         //}
         mem_load++;
     }
@@ -556,17 +556,17 @@ void FRFCFS_WQF::Cycle( ncycle_t steps )
         if( FindLoadRequest( *loadQueue, &nextRequest ) )
         {
             IssueMemoryCommands( nextRequest );
-            //std::cout << "olleh?" << std::endl;
+            //std::cout << "[+] olleh?" << std::endl;
         }
         else if ( FindComputeRequest( *computeQueue, &nextRequest ) )
         {
             IssueMemoryCommands( nextRequest );
-            //std::cout << "olleh???" << std::endl;
+            //std::cout << "[+] olleh???" << std::endl;
         }
         else if ( FindTransferRequest( *transferQueue, &nextRequest ))
         {
             IssueMemoryCommands( nextRequest );
-            //std::cout << "hello?" << std::endl;
+            //std::cout << "[+] hello?" << std::endl;
         }
         else
         */
@@ -574,9 +574,9 @@ void FRFCFS_WQF::Cycle( ncycle_t steps )
         {
             IssueMemoryCommands( nextRequest );
 
-            //std::cout << "olleh???" << std::endl;
+            //std::cout << "[+] olleh???" << std::endl;
         }
-        //std::cout << "hello ? hool " << std::endl;
+        //std::cout << "[+] hello ? hool " << std::endl;
     }
     /* Issue memory commands from the command queue. */
     CycleCommandQueues( );

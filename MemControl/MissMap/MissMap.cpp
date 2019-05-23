@@ -132,7 +132,7 @@ void MissMap::SetConfig( Config *conf, bool createChildren )
         missMap->SetWriteTime( missMapLatency );
     }
 
-    std::cout << "Created a MissMap!" << std::endl;
+    std::cout << "[+] Created a MissMap!" << std::endl;
 }
 
 void MissMap::RegisterStats( )
@@ -166,7 +166,7 @@ bool MissMap::IssueAtomic( NVMainRequest *req )
     lineOffset = ((req->address.GetPhysicalAddress( ) >> 6) & 0xFFF) / 64; 
     lineMask = (uint64_t)(1ULL << lineOffset);
 
-    std::cout << "Address 0x" << std::hex << req->address.GetPhysicalAddress() 
+    std::cout << "[+] Address 0x" << std::hex << req->address.GetPhysicalAddress() 
         << " maps to page 0x" << testAddr.GetPhysicalAddress( ) << std::dec 
         << " with offset " << lineOffset << std::endl;
     
@@ -234,7 +234,7 @@ bool MissMap::IssueCommand( NVMainRequest *req )
         missMapQueue.push( mmReq );
 
 #ifdef DBGMISSMAP
-        std::cout << "Enqueued a request to the miss map. " << std::endl;
+        std::cout << "[+] Enqueued a request to the miss map. " << std::endl;
 #endif
 
         rv = true;
@@ -254,7 +254,7 @@ bool MissMap::RequestComplete( NVMainRequest *req )
             CacheRequest *cacheReq = static_cast<CacheRequest *>( req->reqInfo );
 
 #ifdef DBGMISSMAP
-            std::cout << "MissMap read complete. Hit = " 
+            std::cout << "[+] MissMap read complete. Hit = " 
                 << cacheReq->hit << std::endl;
 #endif
 
@@ -274,7 +274,7 @@ bool MissMap::RequestComplete( NVMainRequest *req )
                 if( (*lineMap) & lineMask )
                 {
 #ifdef DBGMISSMAP
-                    std::cout << "Found cacheline in miss map, issuing to DRC." 
+                    std::cout << "[+] Found cacheline in miss map, issuing to DRC." 
                         << std::endl;
 #endif
 
@@ -293,7 +293,7 @@ bool MissMap::RequestComplete( NVMainRequest *req )
                 else
                 {
 #ifdef DBGMISSMAP
-                    std::cout << "Did not find cacheline; issuing to main memory." 
+                    std::cout << "[+] Did not find cacheline; issuing to main memory." 
                         << std::endl;
 #endif
 
@@ -342,7 +342,7 @@ bool MissMap::RequestComplete( NVMainRequest *req )
                     missMapFillQueue.push( mmFill );
 
 #ifdef DBGMISSMAP
-                    std::cout << "Updating miss map entry 0x" 
+                    std::cout << "[+] Updating miss map entry 0x" 
                         << fillCReq->address.GetPhysicalAddress( )
                         << " with bit vector 0x" << std::hex << (*lineMap) 
                         << std::dec << std::endl;
@@ -401,7 +401,7 @@ bool MissMap::RequestComplete( NVMainRequest *req )
                 missMapFillQueue.push( mmFill );
 
 #ifdef DBGMISSMAP
-                std::cout << "Adding new miss map entry 0x" 
+                std::cout << "[+] Adding new miss map entry 0x" 
                     << fillCReq->address.GetPhysicalAddress( )
                     << " with bit vector 0x" << std::hex << (*lineMap) 
                     << std::dec << std::endl;
@@ -416,7 +416,7 @@ bool MissMap::RequestComplete( NVMainRequest *req )
             CacheRequest *creq = static_cast<CacheRequest *>( req->reqInfo );
 
 #ifdef DBGMISSMAP
-            std::cout << "Wrote to the miss map." << std::endl;
+            std::cout << "[+] Wrote to the miss map." << std::endl;
 #endif
 
             /* Check if there was an eviction. */
@@ -435,7 +435,7 @@ bool MissMap::RequestComplete( NVMainRequest *req )
                 evictReq->tag = MISSMAP_FORCE_EVICT;
 
 #ifdef DBGMISSMAP
-                std::cout << "Miss map evicted a line.." << std::endl;
+                std::cout << "[+] Miss map evicted a line.." << std::endl;
 #endif
 
                 /* Count the number of cachelines being evicted. */
@@ -482,7 +482,7 @@ bool MissMap::RequestComplete( NVMainRequest *req )
         req->tag = 0;
 
 #ifdef DBGMISSMAP
-        std::cout << "MissMap memory access returned, filling DRAM cache. " 
+        std::cout << "[+] MissMap memory access returned, filling DRAM cache. " 
             << std::endl;
 #endif
 
@@ -510,7 +510,7 @@ void MissMap::Cycle( ncycle_t )
                 missMapFillQueue.pop( );
 
 #ifdef DBGMISSMAP
-                std::cout << "Issued a fill to the miss map." << std::endl;
+                std::cout << "[+] Issued a fill to the miss map." << std::endl;
 #endif
             }
         }
@@ -522,7 +522,7 @@ void MissMap::Cycle( ncycle_t )
                 missMapQueue.pop( );
 
 #ifdef DBGMISSMAP
-                std::cout << "Issued a probe to the miss map." << std::endl;
+                std::cout << "[+] Issued a probe to the miss map." << std::endl;
 #endif
             }
         }

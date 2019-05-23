@@ -239,7 +239,7 @@ void Migrator::CreateCheckpoint( std::string dir )
 
     if( !cpt_handle.is_open() )
     {
-        std::cout << StatName( ) << ": Warning: Could not open checkpoint file: "
+        std::cout << "[+]" << StatName( ) << ": Warning: Could not open checkpoint file: "
                   << cpt_file.str() << std::endl;
     }
     else
@@ -266,7 +266,7 @@ void Migrator::CreateCheckpoint( std::string dir )
 
         if( !cpt_handle.is_open() )
         {
-            std::cout << StatName( ) << ": Warning: Could not open checkpoint " 
+            std::cout << "[+]" << StatName( ) << ": Warning: Could not open checkpoint " 
                       << "info file: " << cpt_info << std::endl;
         }
         else
@@ -292,7 +292,7 @@ void Migrator::RestoreCheckpoint( std::string dir )
 
     if( !cpt_handle.is_open() )
     {
-        std::cout << StatName( ) << ": Warning: Could not open checkpoint file: "
+        std::cout << "[+]" << StatName( ) << ": Warning: Could not open checkpoint file: "
                   << cpt_file.str() << std::endl;
     }
     else
@@ -301,7 +301,7 @@ void Migrator::RestoreCheckpoint( std::string dir )
 
         if( cpt_size % (sizeof(uint64_t)*2) != 0 )
         {
-            std::cout << StatName( ) << ": Warning: Excepted checkpoint size to be "
+            std::cout << "[+]" << StatName( ) << ": Warning: Excepted checkpoint size to be "
                       << "a multiple of " << (sizeof(uint64_t)*2) << std::endl;
         }
 

@@ -116,17 +116,17 @@ bool OffChipBus::IssueCommand( NVMainRequest *req )
     req->address.GetTranslatedAddress( NULL, NULL, NULL, &opRank, NULL, NULL );
 
     if ( req->type == LOAD_WEIGHT ) 
-        std::cout << "rec Load command in connect*****" << std::endl;
+        std::cout << "[+] rec Load command in connect*****" << std::endl;
     if ( req->type == READCYCLE )
-        std::cout << "rec readcycle command in connect*****" << std::endl;
+        std::cout << "[+] rec readcycle command in connect*****" << std::endl;
     if ( req->type == REALCOMPUTE )
-        std::cout << "rec realcompute command in connect*****" << std::endl;
+        std::cout << "[+] rec realcompute command in connect*****" << std::endl;
     if ( req->type == POSTREAD )
-        std::cout << "rec postread command in connect*****" << std::endl;
+        std::cout << "[+] rec postread command in connect*****" << std::endl;
     if ( req->type == WRITECYCLE )
-        std::cout << "rec writecycle command in connect*****" << std::endl;
+        std::cout << "[+] rec writecycle command in connect*****" << std::endl;
     if ( req->type == TRANSFER )
-        std::cout << "rec transfer command in connect*****" << std::endl;
+        std::cout << "[+] rec transfer command in connect*****" << std::endl;
     assert( GetChild( req )->IsIssuable( req ) );
 
     success = GetChild( req )->IssueCommand( req );
@@ -143,17 +143,17 @@ bool OffChipBus::IssueCommand( NVMainRequest *req )
     }
 
     if ( req->type == LOAD_WEIGHT ) 
-        std::cout << "rec Load command in connect(c)*****" << std::endl;
+        std::cout << "[+] rec Load command in connect(c)*****" << std::endl;
     if ( req->type == READCYCLE )
-        std::cout << "rec readcycle command in connect(C)*****" << std::endl;
+        std::cout << "[+] rec readcycle command in connect(C)*****" << std::endl;
     if ( req->type == REALCOMPUTE )
-        std::cout << "rec realcompute command in connec(c)*****" << std::endl;
+        std::cout << "[+] rec realcompute command in connec(c)*****" << std::endl;
     if ( req->type == POSTREAD )
-        std::cout << "rec postread command in connect(c)*****" << std::endl;
+        std::cout << "[+] rec postread command in connect(c)*****" << std::endl;
     if ( req->type == WRITECYCLE )
-        std::cout << "rec writecycle command in connect(c)*****" << std::endl;
+        std::cout << "[+] rec writecycle command in connect(c)*****" << std::endl;
     if ( req->type == TRANSFER )
-        std::cout << "rec transfer command in connect(c)*****" << std::endl;
+        std::cout << "[+] rec transfer command in connect(c)*****" << std::endl;
     return success;
 }
 

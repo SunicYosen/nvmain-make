@@ -56,7 +56,7 @@ void NVMainTraceWriter::SetTraceFile( std::string file )
 
     if( !trace.is_open( ) )
     {
-        std::cout << "Warning: Could not open trace file " << file
+        std::cout << "[+] Warning: Could not open trace file " << file
                   << ". Output will be suppressed." << std::endl;
     }
 
@@ -81,7 +81,7 @@ bool NVMainTraceWriter::SetNextAccess( TraceLine *nextAccess )
 
     if( this->GetEcho() )
     {
-        WriteTraceLine( std::cout, nextAccess );
+        WriteTraceLine( std::cout , nextAccess );
         rv = true;
     }
 

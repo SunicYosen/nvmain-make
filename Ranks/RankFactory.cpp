@@ -60,7 +60,7 @@ Rank *RankFactory::CreateNewRank( std::string rankName )
     {
         rank = new StandardRank( );
         
-        std::cout << "Could not find Rank named `" << rankName
+        std::cout << "[+] Could not find Rank named `" << rankName
                   << "'. Using StandardRank." << std::endl;
     }
 

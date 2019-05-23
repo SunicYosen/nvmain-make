@@ -84,7 +84,7 @@ NVMainMemory::NVMainMemory(const Params *p)
     m_nvmainConfig = new Config( );
 
     m_nvmainConfig->Read( m_nvmainConfigPath );
-    std::cout << "NVMainControl: Reading NVMain config file: " << m_nvmainConfigPath << "." << std::endl;
+    std::cout << "[+] NVMainControl: Reading NVMain config file: " << m_nvmainConfigPath << "." << std::endl;
 
     clock = clockPeriod( );
 
@@ -110,7 +110,7 @@ NVMainMemory::NVMainMemory(const Params *p)
     for( cparam = strtok_r( cfgparams, ",", &saveptr1 ), cvalue = strtok_r( cfgvalues, ",", &saveptr2 )
            ; (cparam && cvalue) ; cparam = strtok_r( NULL, ",", &saveptr1 ), cvalue = strtok_r( NULL, ",", &saveptr2) )
     {
-        std::cout << "NVMain: Overriding parameter `" << cparam << "' with `" << cvalue << "'" << std::endl;
+        std::cout << "[+] NVMain: Overriding parameter `" << cparam << "' with `" << cvalue << "'" << std::endl;
         m_nvmainConfig->SetValue( cparam, cvalue );
     }
 
@@ -124,7 +124,7 @@ NVMainMemory::NVMainMemory(const Params *p)
 
 NVMainMemory::~NVMainMemory()
 {
-    std::cout << "NVMain dtor called" << std::endl;
+    std::cout << "[+] NVMain dtor called" << std::endl;
 }
 
 
@@ -180,7 +180,7 @@ NVMainMemory::init()
 
         for( size_t i = 0; i < hookList.size( ); i++ )
         {
-            std::cout << "Creating hook " << hookList[i] << std::endl;
+            std::cout << "[+] Creating hook " << hookList[i] << std::endl;
 
             NVMObject *hook = HookFactory::CreateHook( hookList[i] );
 
@@ -192,7 +192,7 @@ NVMainMemory::init()
             }
             else
             {
-                std::cout << "Warning: Could not create a hook named `"
+                std::cout << "[+] Warning: Could not create a hook named `"
                     << hookList[i] << "'." << std::endl;
             }
         }
@@ -262,7 +262,7 @@ void NVMainMemory::NVMainStatPrinter::process()
     memory->m_nvmainGlobalEventQueue->Cycle( stepCycles );
 
     nvmainPtr->CalculateStats();
-    std::ostream& refStream = (statStream.is_open()) ? statStream : std::cout;
+    std::ostream& refStream = (statStream.is_open()) ? statStream : std::cout ;
     nvmainPtr->GetStats()->PrintAll( refStream );
 }
 
@@ -828,7 +828,7 @@ void NVMainMemory::serialize(CheckpointOut &cp) const
 
     if( nvmain_chkpt_dir != "" )
     {
-        std::cout << "NVMainMemory: Writing to checkpoint directory " << nvmain_chkpt_dir << std::endl;
+        std::cout << "[+] NVMainMemory: Writing to checkpoint directory " << nvmain_chkpt_dir << std::endl;
 
         m_nvmainPtr->CreateCheckpoint( nvmain_chkpt_dir );
     }
@@ -847,7 +847,7 @@ void NVMainMemory::unserialize(CheckpointIn &cp)
 
     if( nvmain_chkpt_dir != "" )
     {
-        std::cout << "NVMainMemory: Reading from checkpoint directory " << nvmain_chkpt_dir << std::endl;
+        std::cout << "[+] NVMainMemory: Reading from checkpoint directory " << nvmain_chkpt_dir << std::endl;
 
         m_nvmainPtr->RestoreCheckpoint( nvmain_chkpt_dir );
     }

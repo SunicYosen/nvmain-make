@@ -272,7 +272,7 @@ void Visualizer::Cycle( ncycle_t )
             graphLines[i * (numBanks+1)] += '-';
 
         /* Print rank graph. */
-        std::cout << "RANK " << i << " " 
+        std::cout << "[+] RANK " << i << " " 
             << graphLines[i * (numBanks+1)].substr(0,lineLength) << std::endl;
 
         for( ncounter_t j = 0; j < numBanks; j++ )
@@ -287,7 +287,7 @@ void Visualizer::Cycle( ncycle_t )
                 graphLines[graphId] += graphSymbol[graphId];
 
             /* Print bank graph. */
-            std::cout << "BANK " << j << " " 
+            std::cout << "[+] BANK " << j << " " 
                 << graphLines[graphId].substr(0,lineLength) << std::endl;
         }
     }

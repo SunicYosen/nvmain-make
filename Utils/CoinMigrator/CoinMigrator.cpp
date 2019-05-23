@@ -395,7 +395,7 @@ void CoinMigrator::ChooseVictim( Migrator *at, NVMAddress& /*promotee*/, NVMAddr
 
         if( p->COLS != numCols )
         {
-            std::cout << "Warning: Page size of fast and slow memory differs." << std::endl;
+            std::cout << "[+] Warning: Page size of fast and slow memory differs." << std::endl;
         }
 
         queriedMemory = true;

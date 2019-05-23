@@ -587,11 +587,11 @@ void NVMObject::PrintHierarchy( int depth )
 
     if( depth > 0 )
     {
-        std::cout << std::string(depth*2, '-') << " " << StatName( ) << std::endl;
+        std::cout << "[+]" << std::string(depth*2, '-') << " " << StatName( ) << std::endl;
     }
     else
     {
-        std::cout << StatName( ) << std::endl;
+        std::cout << "[+]" << StatName( ) << std::endl;
     }
 
     for( it = children.begin(); it != children.end(); it++ )

@@ -44,7 +44,7 @@ UniformDistribution::UniformDistribution( Config *conf )
 
     if( conf->GetValue( "EnduranceDistMean" ) == -1 )
     {
-        std::cout << "EnduranceDistMean parameter not found for normal \
+        std::cout << "[+] EnduranceDistMean parameter not found for normal \
             distribution!!\n";
         mean = 1000000;
     }

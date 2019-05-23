@@ -51,7 +51,7 @@ using namespace NVM;
 
 FRFCFS::FRFCFS( )
 {
-    std::cout << "Created a First Ready First Come First Serve memory controller!"
+    std::cout << "[+] Created a First Ready First Come First Serve memory controller!"
         << std::endl;
 
     queueSize = 32;
@@ -84,7 +84,7 @@ FRFCFS::FRFCFS( )
 
 FRFCFS::~FRFCFS( )
 {
-    std::cout << "FRFCFS memory controller destroyed. " << memQueue->size( ) 
+    std::cout << "[+] FRFCFS memory controller destroyed. " << memQueue->size( ) 
               << " commands still in memory queue." << std::endl;
 }
 

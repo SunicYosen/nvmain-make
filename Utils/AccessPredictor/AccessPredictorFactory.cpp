@@ -53,7 +53,7 @@ AccessPredictor *AccessPredictorFactory::CreateAccessPredictor( std::string name
 
     if( predictor == NULL )
     {
-        std::cout << "Error: Could not find AccessPredictor named `" << name << "'!" << std::endl;
+        std::cout << "[+] Error: Could not find AccessPredictor named `" << name << "'!" << std::endl;
         exit(1);
     }
 

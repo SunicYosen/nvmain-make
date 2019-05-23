@@ -82,7 +82,7 @@ uint64_t AddressTranslator::ReverseTranslate( const uint64_t& row,
 {
     if( GetTranslationMethod( ) == NULL )
     {
-        std::cerr << "Divider Translator: Translation method not specified!" << std::endl;
+        std::cerr << "[-] Divider Translator: Translation method not specified!" << std::endl;
         exit(1);
     }
 
@@ -144,7 +144,7 @@ uint64_t AddressTranslator::ReverseTranslate( const uint64_t& row,
 
             case MEM_UNKNOWN:
             default:
-                  std::cerr << "Address Translator: No partition found for address " << std::endl;
+                  std::cerr << "[-] Address Translator: No partition found for address " << std::endl;
                   break;
         }
     }
@@ -196,7 +196,7 @@ void AddressTranslator::Translate( uint64_t address, uint64_t *row, uint64_t *co
 
     if( GetTranslationMethod( ) == NULL )
     {
-        std::cerr << "Divider Translator: Translation method not specified!" << std::endl;
+        std::cerr << "[-] Divider Translator: Translation method not specified!" << std::endl;
         return;
     }
 
@@ -347,7 +347,7 @@ uint64_t AddressTranslator::Divide( uint64_t partSize, MemoryPartition partition
     else if( partition == MEM_SUBARRAY )
         retSize >>= subarrayBits;
     else
-        std::cout << "Divider Translator: Warning: Invalid partition " << (int)partition << std::endl;
+        std::cout << "[+] Divider Translator: Warning: Invalid partition " << (int)partition << std::endl;
 
     return retSize;
 }
@@ -378,7 +378,7 @@ uint64_t AddressTranslator::Modulo( uint64_t partialAddr, MemoryPartition partit
     else if( partition == MEM_SUBARRAY )
         moduloSize <<= subarrayBits;
     else
-        std::cout << "Modulo Translator: Warning: Invalid partition " << (int)partition << std::endl;
+        std::cout << "[+] Modulo Translator: Warning: Invalid partition " << (int)partition << std::endl;
 
     retVal = partialAddr % moduloSize;
 
@@ -410,7 +410,7 @@ void AddressTranslator::FindOrder( int order, MemoryPartition *p )
     else
     {
         *p = MEM_UNKNOWN;
-        std::cerr << "Address Translator: No order " << order << std::endl << "Row = " << rowOrder
+        std::cerr << "[-] Address Translator: No order " << order << std::endl << "Row = " << rowOrder
 	      << " Column = " << colOrder << " Bank = " << bankOrder << " Rank = " << rankOrder
 	      << " Channel = " << channelOrder << " SubArray = " << subarrayOrder << std::endl;
     }

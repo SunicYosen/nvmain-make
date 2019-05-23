@@ -52,7 +52,7 @@ EnduranceModel *EnduranceModelFactory::CreateEnduranceModel(
     EnduranceModel *enduranceModel = NULL;
 
     if( modelName == "" )
-        std::cout << "NVMain: EnduranceModel is not set in configuration file!\n";
+        std::cout << "[+] NVMain: EnduranceModel is not set in configuration file!\n";
 
     if( modelName == "RowModel" ) 
         enduranceModel = new RowModel( );
@@ -69,7 +69,7 @@ EnduranceModel *EnduranceModelFactory::CreateEnduranceModel(
 
 
     if( enduranceModel == NULL )
-        std::cout << "NVMain: Endurance model " << modelName 
+        std::cout << "[+] NVMain: Endurance model " << modelName 
             << " not found in factory. Endurance will not be modelled.\n";
 
     return enduranceModel;

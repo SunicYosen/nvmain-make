@@ -29,7 +29,7 @@ extern "C" int rvsim_set_config(){
  	argv[3] = (char*)"10000";
 
 	assert(argc = 4);
-  std::cout << "//-----------------------------------------//" << std::endl;
+  std::cout << "[+](SetConfig)-----------------------------------------------------" << std::endl;
   riscv_sim->SetConfig(argc, argv);
 	return 0;
 }

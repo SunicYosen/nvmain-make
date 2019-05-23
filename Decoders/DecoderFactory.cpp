@@ -62,7 +62,7 @@ AddressTranslator *DecoderFactory::CreateNewDecoder( std::string decoder )
     {
         trans = new AddressTranslator( );
         
-        std::cout << "Could not find Decoder named `" << decoder 
+        std::cout << "[-](CreateNewDecoder) Could not find Decoder named `" << decoder 
             << "'. Using default decoder." << std::endl;
     }
 

@@ -49,7 +49,7 @@ NormalDistribution::NormalDistribution( Config *conf )
 
     if( conf->GetValue( "EnduranceDistMean" ) == -1 )
     {
-        std::cout << "EnduranceDistMean parameter not found for normal \
+        std::cout << "[+] EnduranceDistMean parameter not found for normal \
             distribution!!\n";
         mean = 1000000;
     }
@@ -61,7 +61,7 @@ NormalDistribution::NormalDistribution( Config *conf )
 
     if( conf->GetValue( "EnduranceDistVariance" ) == -1 )
     {
-        std::cout << "EnduranceDistVariance parameter not found for normal \
+        std::cout << "[+] EnduranceDistVariance parameter not found for normal \
             distribution!!\n";
         variance = 100000;
     }

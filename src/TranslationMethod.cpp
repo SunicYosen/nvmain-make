@@ -74,7 +74,7 @@ void TranslationMethod::SetOrder( int row, int col, int bank, int rank, int chan
         || subarray == row || subarray == col || subarray == bank 
         || subarray == rank || subarray == channel )
     {
-        std::cout << "Translation Method: Orders are not unique!" << std::endl;
+        std::cout << "[+] Translation Method: Orders are not unique!" << std::endl;
     }
 
     order[MEM_ROW] = row - 1;
@@ -160,13 +160,13 @@ void TranslationMethod::SetAddressMappingScheme( std::string scheme )
         else if( !strcmp( addrParser, "SA" ) )
             subarray = currentOrder;
         else
-            std::cerr << "NVMain Error: unrecognized address mapping scheme: " 
+            std::cerr << "[-] NVMain Error: unrecognized address mapping scheme: " 
                 << scheme << std::endl;
 
         /* move to next item */
         currentOrder--;
         if( currentOrder < 0 )
-            std::cerr << "NVMain Error: invalid address mapping scheme: " 
+            std::cerr << "[-] NVMain Error: invalid address mapping scheme: " 
                 << scheme << std::endl;
     }
 
@@ -179,7 +179,7 @@ void TranslationMethod::SetAddressMappingScheme( std::string scheme )
     if( col == 0 ) { col = currentOrder--; }
     
     SetOrder( row, col, bank, rank, channel, subarray );
-    //std::cout << "NVMain: the address mapping order is " << std::endl
+    //std::cout << "[+] NVMain: the address mapping order is " << std::endl
     //    << "\tSub-Array " << subarray << std::endl
     //    << "\tRow " << row << std::endl
     //    << "\tColumn " << col << std::endl

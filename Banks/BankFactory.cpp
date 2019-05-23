@@ -63,7 +63,7 @@ Bank *BankFactory::CreateNewBank( std::string bankName )
     {
         bank = new DDR3Bank( );
         
-        std::cout << "Could not find Bank named `" << bankName
+        std::cout << "[*] (CreateNewBank) Could not find Bank named `" << bankName
             << "'. Using DDR3Bank." << std::endl;
     }
 

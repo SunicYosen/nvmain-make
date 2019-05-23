@@ -60,7 +60,7 @@ Prefetcher *PrefetcherFactory::CreateNewPrefetcher( std::string name )
     {
         prefetcher = new Prefetcher( );
         
-        std::cout << "Could not find prefetcher named `" << name 
+        std::cout << "[+] Could not find prefetcher named `" << name 
             << "'. Using default prefetcher." << std::endl;
     }
 

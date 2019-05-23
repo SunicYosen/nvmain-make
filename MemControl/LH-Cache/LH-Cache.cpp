@@ -47,8 +47,8 @@ LH_Cache::LH_Cache( )
 {
     //translator->GetTranslationMethod( )->SetOrder( 5, 1, 4, 3, 2, 6 );
 
-    std::cout << "This Memory Controller is no longer maintained in favor of LO-Cache and is in a non-working state." << std::endl;
-    std::cout << "This code is only provided for reference." << std::endl;
+    std::cout << "[+] This Memory Controller is no longer maintained in favor of LO-Cache and is in a non-working state." << std::endl;
+    std::cout << "[+] This code is only provided for reference." << std::endl;
 
     exit(1);
 

@@ -175,7 +175,7 @@ void SubArray::SetConfig( Config *c, bool createChildren )
         }
         else
         {
-            std::cout << "NVMain Warning: Unknown write mode `"
+            std::cout << "[+] NVMain Warning: Unknown write mode `"
                       << conf->GetString( "WriteMode" )
                       << "'. Defaulting to WriteThrough" << std::endl;
             writeMode = WRITE_THROUGH;
@@ -288,13 +288,13 @@ bool SubArray::Activate( NVMainRequest *request )
     /* sanity check */
     if( nextActivate > GetEventQueue()->GetCurrentCycle() )
     {
-        std::cerr << "NVMain Error: SubArray violates ACTIVATION timing constraint!"
+        std::cerr << "[-] NVMain Error: SubArray violates ACTIVATION timing constraint!"
             << std::endl;
         return false;
     }
     else if( p->UsePrecharge && state != SUBARRAY_CLOSED )
     {
-        std::cerr << "NVMain Error: try to open a subarray that is not idle!"
+        std::cerr << "[-] NVMain Error: try to open a subarray that is not idle!"
             << std::endl;
         return false;
     }
@@ -387,19 +387,19 @@ bool SubArray::Read( NVMainRequest *request )
     /* sanity check */
     if( nextRead > GetEventQueue()->GetCurrentCycle() )
     {
-        std::cerr << "NVMain Error: Subarray violates READ timing constraint!"
+        std::cerr << "[-] NVMain Error: Subarray violates READ timing constraint!"
             << std::endl;
         return false;
     }
     else if( state != SUBARRAY_OPEN )
     {
-        std::cerr << "NVMain Error: try to read a subarray that is not active!"
+        std::cerr << "[-] NVMain Error: try to read a subarray that is not active!"
             << std::endl;
         return false;
     }
     else if( readRow != openRow )
     {
-        std::cerr << "NVMain Error: try to read a row that is not opened in a subarray!"
+        std::cerr << "[-] NVMain Error: try to read a row that is not opened in a subarray!"
             << std::endl;
         return false;
     }
@@ -532,19 +532,19 @@ bool SubArray::Write( NVMainRequest *request )
     /* sanity check */
     if( nextWrite > GetEventQueue()->GetCurrentCycle() )
     {
-        std::cerr << "NVMain Error: Subarray violates WRITE timing constraint!"
+        std::cerr << "[-] NVMain Error: Subarray violates WRITE timing constraint!"
             << std::endl;
         return false;
     }
     else if( state != SUBARRAY_OPEN )
     {
-        std::cerr << "NVMain Error: try to write a subarray that is not active!"
+        std::cerr << "[-] NVMain Error: try to write a subarray that is not active!"
             << std::endl;
         return false;
     }
     else if( writeRow != openRow )
     {
-        std::cerr << "NVMain Error: try to write a row that is not opened "
+        std::cerr << "[-] NVMain Error: try to write a row that is not opened "
             << "in a subarray!" << std::endl;
         return false;
     }
@@ -727,7 +727,7 @@ bool SubArray::Write( NVMainRequest *request )
 
 bool SubArray::Transfer( NVMainRequest *request )
 {
-    std::cout << "rec Transfer command in bank*****" << std::endl;
+    std::cout << "[+] rec Transfer command in bank*****" << std::endl;
     uint64_t readRow;
     ncycle_t transferTimer;
 
@@ -740,19 +740,19 @@ bool SubArray::Transfer( NVMainRequest *request )
     /* sanity check */
     if( nextRead > GetEventQueue()->GetCurrentCycle() )
     {
-        std::cerr << "NVMain Error: Subarray violates READ timing constraint!"
+        std::cerr << "[-] NVMain Error: Subarray violates READ timing constraint!"
             << std::endl;
         return false;
     }
     else if( state != SUBARRAY_OPEN )
     {
-        std::cerr << "NVMain Error: try to read a subarray that is not active!"
+        std::cerr << "[-] NVMain Error: try to read a subarray that is not active!"
             << std::endl;
         return false;
     }
     else if( readRow != openRow )
     {
-        std::cerr << "NVMain Error: try to read a row that is not opened in a subarray!"
+        std::cerr << "[-] NVMain Error: try to read a row that is not opened in a subarray!"
             << std::endl;
         return false;
     }
@@ -768,7 +768,7 @@ bool SubArray::Transfer( NVMainRequest *request )
     }
     else
     {
-        std::cout << "errrror **********" << std::endl;
+        std::cout << "[+] errrror **********" << std::endl;
         return false;
     }
     
@@ -780,14 +780,14 @@ bool SubArray::Transfer( NVMainRequest *request )
     GetEventQueue( )->InsertEvent( EventResponse, this, request, 
             GetEventQueue()->GetCurrentCycle() + transferTimer + decLat );
     
-    std::cout << "rec transfer command in bank(complete)*****" << std::endl;
+    std::cout << "[+] rec transfer command in bank(complete)*****" << std::endl;
     return true;
     
 }
 
 bool SubArray::LoadWeight( NVMainRequest *request )
 {
-    std::cout << "rec Load command in bank*****" << std::endl;
+    std::cout << "[+] rec Load command in bank*****" << std::endl;
     uint64_t readRow;
 
     request->address.GetTranslatedAddress( &readRow, NULL, NULL, NULL, NULL, NULL );
@@ -799,19 +799,19 @@ bool SubArray::LoadWeight( NVMainRequest *request )
     /* sanity check */
     if( nextRead > GetEventQueue()->GetCurrentCycle() )
     {
-        std::cerr << "NVMain Error: Subarray violates READ timing constraint!"
+        std::cerr << "[-] NVMain Error: Subarray violates READ timing constraint!"
             << std::endl;
         return false;
     }
     else if( state != SUBARRAY_OPEN )
     {
-        std::cerr << "NVMain Error: try to read a subarray that is not active!"
+        std::cerr << "[-] NVMain Error: try to read a subarray that is not active!"
             << std::endl;
         return false;
     }
     else if( readRow != openRow )
     {
-        std::cerr << "NVMain Error: try to read a row that is not opened in a subarray!"
+        std::cerr << "[-] NVMain Error: try to read a row that is not opened in a subarray!"
             << std::endl;
         return false;
     }
@@ -830,14 +830,14 @@ bool SubArray::LoadWeight( NVMainRequest *request )
     GetEventQueue( )->InsertEvent( EventResponse, this, request, 
             GetEventQueue()->GetCurrentCycle() + Timer + decLat );
     
-    std::cout << "rec Load command in bank(complete)*****" << std::endl;
+    std::cout << "[+] rec Load command in bank(complete)*****" << std::endl;
     return true;
     
 }
 
 bool SubArray::ReadCycle( NVMainRequest *request)
 {
-    std::cout << "rec readcycle command in bank*****" << std::endl;
+    std::cout << "[+] rec readcycle command in bank*****" << std::endl;
     uint64_t readRow;
 
     request->address.GetTranslatedAddress( &readRow, NULL, NULL, NULL, NULL, NULL );
@@ -849,19 +849,19 @@ bool SubArray::ReadCycle( NVMainRequest *request)
     /* sanity check */
     if( nextRead > GetEventQueue()->GetCurrentCycle() )
     {
-        std::cerr << "NVMain Error: Subarray violates READ timing constraint!"
+        std::cerr << "[-] NVMain Error: Subarray violates READ timing constraint!"
             << std::endl;
         return false;
     }
     else if( state != SUBARRAY_OPEN )
     {
-        std::cerr << "NVMain Error: try to read a subarray that is not active!"
+        std::cerr << "[-] NVMain Error: try to read a subarray that is not active!"
             << std::endl;
         return false;
     }
     else if( readRow != openRow )
     {
-        std::cerr << "NVMain Error: try to read a row that is not opened in a subarray!"
+        std::cerr << "[-] NVMain Error: try to read a row that is not opened in a subarray!"
             << std::endl;
         return false;
     }
@@ -901,14 +901,14 @@ bool SubArray::ReadCycle( NVMainRequest *request)
     GetEventQueue( )->InsertEvent( EventResponse, this, request, 
             GetEventQueue()->GetCurrentCycle() + Timer + decLat);
     
-    std::cout << "rec readcycle command in bank(complete)*****" << std::endl;
+    std::cout << "[+] rec readcycle command in bank(complete)*****" << std::endl;
     return true;
   
 }
 
 bool SubArray::RealCompute( NVMainRequest *request)
 {
-    std::cout << "rec realcompute command in bank*****" << std::endl;
+    std::cout << "[+] rec realcompute command in bank*****" << std::endl;
     
     nextActivate = MAX( nextActivate, GetEventQueue()->GetCurrentCycle() + 40 );
     nextCompute = MAX( nextActivate, GetEventQueue()->GetCurrentCycle() + 40 );
@@ -917,13 +917,13 @@ bool SubArray::RealCompute( NVMainRequest *request)
     GetEventQueue( )->InsertEvent( EventResponse, this, request, 
             GetEventQueue()->GetCurrentCycle() + 40 );
     
-    std::cout << "rec realcompute command in bank(complete)*****" << std::endl;
+    std::cout << "[+] rec realcompute command in bank(complete)*****" << std::endl;
     return true;    
 }
 
 bool SubArray::PostRead( NVMainRequest *request)
 {
-    std::cout << "rec postread command in bank*****" << std::endl;
+    std::cout << "[+] rec postread command in bank*****" << std::endl;
 
     ncycles_t Timer;
     Timer = ceil( globalparams.K_num*p->tBURST/8.0 ) + p->tCAS;
@@ -934,13 +934,13 @@ bool SubArray::PostRead( NVMainRequest *request)
     GetEventQueue( )->InsertEvent( EventResponse, this, request, 
             GetEventQueue()->GetCurrentCycle() + Timer );
     
-    std::cout << "rec postread command in bank(complete)*****" << std::endl;
+    std::cout << "[+] rec postread command in bank(complete)*****" << std::endl;
     return true; 
 }
 
 bool SubArray::WriteCycle( NVMainRequest *request)
 {
-    std::cout << "rec writecycle command in Sub*****" << std::endl;
+    std::cout << "[+] rec writecycle command in Sub*****" << std::endl;
     uint64_t readRow;
 
     request->address.GetTranslatedAddress( &readRow, NULL, NULL, NULL, NULL, NULL );
@@ -952,14 +952,14 @@ bool SubArray::WriteCycle( NVMainRequest *request)
     /* sanity check */
     if( nextRead > GetEventQueue()->GetCurrentCycle() )
     {
-        std::cerr << "NVMain Error: Subarray violates READ timing constraint!"
+        std::cerr << "[-] NVMain Error: Subarray violates READ timing constraint!"
             << std::endl;
         return false;
     }
     /*
     else if( state != SUBARRAY_OPEN )
     {
-        std::cerr << "NVMain Error: try to read a subarray that is not active!"
+        std::cerr << "[-] NVMain Error: try to read a subarray that is not active!"
             << std::endl;
         return false;
     }
@@ -967,7 +967,7 @@ bool SubArray::WriteCycle( NVMainRequest *request)
     /*
     else if( readRow != openRow )
     {
-        std::cerr << "NVMain Error: try to read a row that is not opened in a subarray!"
+        std::cerr << "[-] NVMain Error: try to read a row that is not opened in a subarray!"
             << std::endl;
         return false;
     }
@@ -986,7 +986,7 @@ bool SubArray::WriteCycle( NVMainRequest *request)
     GetEventQueue( )->InsertEvent( EventResponse, this, request, 
             GetEventQueue()->GetCurrentCycle() + Timer + decLat);
     
-    std::cout << "rec writecycle command in Sub(complete)*****" << std::endl;
+    std::cout << "[+] rec writecycle command in Sub(complete)*****" << std::endl;
     return true;  
 }
 
@@ -1001,13 +1001,13 @@ bool SubArray::Precharge( NVMainRequest *request )
     /* sanity check */
     if( nextPrecharge > GetEventQueue()->GetCurrentCycle() )
     {
-        std::cerr << "NVMain Error: SubArray violates PRECHARGE timing constraint!"
+        std::cerr << "[-] NVMain Error: SubArray violates PRECHARGE timing constraint!"
             << std::endl;
         return false;
     }
     else if( state != SUBARRAY_CLOSED && state != SUBARRAY_OPEN )
     {
-        std::cerr << "NVMain Error: try to precharge a subarray that is neither " 
+        std::cerr << "[-] NVMain Error: try to precharge a subarray that is neither " 
             << "idle nor active" << std::endl;
         return false;
     }
@@ -1060,13 +1060,13 @@ bool SubArray::Refresh( NVMainRequest* request )
     /* sanity check */
     if( nextActivate > GetEventQueue()->GetCurrentCycle() )
     {
-        std::cerr << "NVMain Error: SubArray violates REFRESH timing constraint!"
+        std::cerr << "[-] NVMain Error: SubArray violates REFRESH timing constraint!"
             << std::endl;
         return false;
     }
     else if( (state != SUBARRAY_CLOSED && p->UsePrecharge) )
     {
-        std::cerr << "NVMain Error: try to refresh a subarray that is not idle " 
+        std::cerr << "[-] NVMain Error: try to refresh a subarray that is not idle " 
             << std::endl;
         return false;
     }
@@ -1389,7 +1389,7 @@ ncycle_t SubArray::NextIssuable( NVMainRequest *request )
     else if( request->type == READCYCLE || request->type == REALCOMPUTE || request->type == POSTREAD || request->type == WRITECYCLE || request->type == COMPUTE ) nextCompare = nextCompute;
     else assert(false);
 
-    //std::cout << "sub next " << nextCompare << std::endl;
+    //std::cout << "[+] sub next " << nextCompare << std::endl;
     // Should have no children
     return nextCompare;
 }
@@ -1415,13 +1415,13 @@ bool SubArray::IsIssuable( NVMainRequest *req, FailReason *reason )
             || (p->WritePausing && isWriting && !(req->flags & NVMainRequest::FLAG_PRIORITY)) ) /* Prevent normal row buffer misses from pausing writes at odd times. */
         {
             if(nextActivate > (GetEventQueue()->GetCurrentCycle()))
-                std::cout << "sub is not ok" << std::endl;
+                std::cout << "[+] sub is not ok" << std::endl;
             else if (p->UsePrecharge && state != SUBARRAY_CLOSED)
-                std::cout << "sub is noot ok" << std::endl;
+                std::cout << "[+] sub is noot ok" << std::endl;
             else if (p->WritePausing && isWriting && writeRequest->flags & NVMainRequest::FLAG_FORCED)
-                std::cout << "sub is nooot ok" << std::endl;
+                std::cout << "[+] sub is nooot ok" << std::endl;
             else if (p->WritePausing && isWriting && !(req->flags & NVMainRequest::FLAG_PRIORITY))
-                std::cout << "sub is noooot ok" << std::endl;
+                std::cout << "[+] sub is noooot ok" << std::endl;
             rv = false;
             if( reason ) 
                 reason->reason = SUBARRAY_TIMING;
@@ -1522,22 +1522,22 @@ bool SubArray::IsIssuable( NVMainRequest *req, FailReason *reason )
     }
     else if ( req->type == REALCOMPUTE ) 
     {
-        //std::cout << "something wrong in the sub " << std::endl;
+        //std::cout << "[+] something wrong in the sub " << std::endl;
         rv = true ;
     }
     else if ( req->type == POSTREAD )
     {
-        //std::cout << "something wrong in the sub " << std::endl;
+        //std::cout << "[+] something wrong in the sub " << std::endl;
         rv = true ;
     }
     else if ( req->type == WRITECYCLE )
     {
-        //std::cout << "something wrong in the sub " << std::endl;
+        //std::cout << "[+] something wrong in the sub " << std::endl;
         rv = true ;
     }
     else if ( req->type == COMPUTE )
     {
-        //std::cout << "something wrong in the sub " << std::endl;
+        //std::cout << "[+] something wrong in the sub " << std::endl;
         rv = true ;
     }
     else if( req->type == PRECHARGE || req->type == PRECHARGE_ALL )
@@ -1600,7 +1600,7 @@ bool SubArray::IssueCommand( NVMainRequest *req )
 
     if( !IsIssuable( req ) )
     {
-        std::cerr << "NVMain Error: Command " << req->type << " can not be " 
+        std::cerr << "[-] NVMain Error: Command " << req->type << " can not be " 
             << "issued in the subarray!" << std::endl;
     }
     else
@@ -1652,7 +1652,7 @@ bool SubArray::IssueCommand( NVMainRequest *req )
                 break;
 
             default:
-                std::cerr << "NVMain Error : subarray detects unknown operation "
+                std::cerr << "[-] NVMain Error : subarray detects unknown operation "
                     << "in command queue! " << req->type << std::endl;
                 break;  
         }
@@ -1822,14 +1822,14 @@ ncycle_t SubArray::UpdateEndurance( NVMainRequest *request )
             {
                 // TODO: Get extra latency from fault model
                 // latency += ...;
-                std::cout << "WARNING: Write to 0x" << std::hex 
+                std::cout << "[+] WARNING: Write to 0x" << std::hex 
                     << request->address.GetPhysicalAddress( )
                     << std::dec << " resulted in a hard error! " << std::endl;
             }
         }
         else
         {
-            std::cerr << "NVMain Error: Endurance modeled without simulator "
+            std::cerr << "[-] NVMain Error: Endurance modeled without simulator "
                 << "interface for data tracking!" << std::endl;
         }
     }

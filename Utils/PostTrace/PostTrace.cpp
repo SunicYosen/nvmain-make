@@ -79,7 +79,7 @@ void PostTrace::Init( Config *conf )
 
     if( testTracer->GetPerChannelTraces() && testTracer->GetPerRankTraces() )
     {
-        std::cout << "PostTrace: Cannot have per channel and per rank traces!" << std::endl;
+        std::cout << "[+] PostTrace: Cannot have per channel and per rank traces!" << std::endl;
         exit(0);
     }
 
@@ -94,7 +94,7 @@ void PostTrace::Init( Config *conf )
         baseFileName += conf->GetString( "PostTraceFile" );
     }
 
-    std::cout << "PostTrace: Using trace file " << baseFileName << std::endl;
+    std::cout << "[+] PostTrace: Using trace file " << baseFileName << std::endl;
 
     /* Determine the number of channels with their own writers. */
     if( testTracer->GetPerChannelTraces() || testTracer->GetPerRankTraces() )

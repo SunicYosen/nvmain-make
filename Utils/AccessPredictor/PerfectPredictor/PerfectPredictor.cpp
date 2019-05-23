@@ -128,7 +128,7 @@ uint64_t PerfectPredictor::Translate( NVMainRequest *request )
 //    }
 //    else if( drc->IssueFunctional( req ) )
 //    {
-//        //std::cout << "Request 0x" << std::hex << req->address.GetPhysicalAddress() << std::dec
+//        //std::cout << "[+] Request 0x" << std::hex << req->address.GetPhysicalAddress() << std::dec
 //        //          << " predicted HIT." << std::endl;
 //
 //        rv = drc->IssueCommand( req );
@@ -145,11 +145,11 @@ uint64_t PerfectPredictor::Translate( NVMainRequest *request )
 //        }
 //        else
 //        {
-//            std::cout << "Error: No miss destination specified." << std::endl;
+//            std::cout << "[+] Error: No miss destination specified." << std::endl;
 //            exit(1);
 //        }
 //
-//        //std::cout << "Request 0x" << std::hex << req->address.GetPhysicalAddress() << std::dec
+//        //std::cout << "[+] Request 0x" << std::hex << req->address.GetPhysicalAddress() << std::dec
 //        //          << " predicted MISS." << std::endl;
 //
 //        outstandingMisses.insert( req->address.GetPhysicalAddress( ) );
@@ -168,7 +168,7 @@ uint64_t PerfectPredictor::Translate( NVMainRequest *request )
 //     */
 //    if( req->owner == this )
 //    {
-//        //std::cout << "Request 0x" << std::hex << req->address.GetPhysicalAddress() << std::dec
+//        //std::cout << "[+] Request 0x" << std::hex << req->address.GetPhysicalAddress() << std::dec
 //        //          << " fill complete." << std::endl;
 //
 //        delete req;
@@ -176,12 +176,12 @@ uint64_t PerfectPredictor::Translate( NVMainRequest *request )
 //    }
 //    else
 //    {
-//        //std::cout << "Request 0x" << std::hex << req->address.GetPhysicalAddress() << std::dec
+//        //std::cout << "[+] Request 0x" << std::hex << req->address.GetPhysicalAddress() << std::dec
 //        //          << " complete." << std::endl;
 //
 //        if( outstandingMisses.count( req->address.GetPhysicalAddress() ) != 0 )
 //        {
-//            //std::cout << "Request 0x" << std::hex << req->address.GetPhysicalAddress() << std::dec
+//            //std::cout << "[+] Request 0x" << std::hex << req->address.GetPhysicalAddress() << std::dec
 //            //          << " starting fill." << std::endl;
 //
 //            NVMainRequest *fillReq = new NVMainRequest();

@@ -317,7 +317,7 @@ bool DDR3Bank::Activate( NVMainRequest *request )
     /* sanity check */
     if( nextActivate > GetEventQueue()->GetCurrentCycle() )
     {
-        std::cerr << "NVMain Error: Bank violates ACTIVATION timing constraint!"
+        std::cerr << "[-] NVMain Error: Bank violates ACTIVATION timing constraint!"
             << std::endl;
         return false;
     }
@@ -331,7 +331,7 @@ bool DDR3Bank::Activate( NVMainRequest *request )
          */
         if( activeSubArrayQueue.empty( ) )
         {
-            std::cerr << "NVMain Error: try to open a bank that is not idle!"
+            std::cerr << "[-] NVMain Error: try to open a bank that is not idle!"
                 << std::endl;
             return false;
         }
@@ -357,7 +357,7 @@ bool DDR3Bank::Activate( NVMainRequest *request )
     }
     else
     {
-        std::cerr << "NVMain Error: Bank " << bankId << " failed to "
+        std::cerr << "[-] NVMain Error: Bank " << bankId << " failed to "
             << "activate the subarray " << activateSubArray << std::endl;
     }
 
@@ -373,13 +373,13 @@ bool DDR3Bank::Read( NVMainRequest *request )
     /* sanity check */
     if( nextRead > GetEventQueue()->GetCurrentCycle() )
     {
-        std::cerr << "NVMain Error: Bank violates READ timing constraint!"
+        std::cerr << "[-] NVMain Error: Bank violates READ timing constraint!"
             << std::endl;
         return false;
     }
     else if( state != DDR3BANK_OPEN )
     {
-        std::cerr << "NVMain Error: try to read a bank that is not active!"
+        std::cerr << "[-] NVMain Error: try to read a bank that is not active!"
             << std::endl;
         return false;
     }
@@ -441,7 +441,7 @@ bool DDR3Bank::Read( NVMainRequest *request )
     } // if( succsss )
     else
     {
-        std::cerr << "NVMain Error: Bank " << bankId << " failed to "
+        std::cerr << "[-] NVMain Error: Bank " << bankId << " failed to "
             << "read the subarray " << readSubArray << std::endl;
     }
 
@@ -457,13 +457,13 @@ bool DDR3Bank::Write( NVMainRequest *request )
     /* sanity check */
     if( nextWrite > GetEventQueue()->GetCurrentCycle() )
     {
-        std::cerr << "NVMain Error: Bank violates WRITE timing constraint!"
+        std::cerr << "[-] NVMain Error: Bank violates WRITE timing constraint!"
             << std::endl;
         return false;
     }
     else if( state != DDR3BANK_OPEN )
     {
-        std::cerr << "NVMain Error: try to read a bank that is not active!"
+        std::cerr << "[-] NVMain Error: try to read a bank that is not active!"
             << std::endl;
         return false;
     }
@@ -530,7 +530,7 @@ bool DDR3Bank::Write( NVMainRequest *request )
     }
     else
     {
-        std::cerr << "NVMain Error: Bank " << bankId << " failed to "
+        std::cerr << "[-] NVMain Error: Bank " << bankId << " failed to "
             << "write the subarray " << writeSubArray << std::endl;
     }
 
@@ -539,22 +539,22 @@ bool DDR3Bank::Write( NVMainRequest *request )
 
 bool DDR3Bank::LoadWeight( NVMainRequest *request )
 {
-    std::cout << "rec Load command in bank*****" << std::endl;
+    std::cout << "[+](LoadWeight) rec Load command in bank*****" << std::endl;
     if( nextRead > GetEventQueue()->GetCurrentCycle() )
     {
-        std::cerr << "NVMain Error: Bank violates READ timing constraint!"
+        std::cerr << "[-](LoadWeight)  NVMain Error: Bank violates READ timing constraint!"
             << std::endl;
         return false;
     }
     else if( nextWrite > GetEventQueue()->GetCurrentCycle() )
     {
-        std::cerr << "NVMain Error: Bank violates WRITE timing constraint!"
+        std::cerr << "[-](LoadWeight) NVMain Error: Bank violates WRITE timing constraint!"
             << std::endl;
         return false;
     }
     else if( state != DDR3BANK_OPEN )
     {
-        std::cerr << "NVMain Error: try to read a bank that is not active!"
+        std::cerr << "[-](LoadWeight) NVMain Error: try to read a bank that is not active!"
             << std::endl;
         return false;
     }
@@ -598,29 +598,29 @@ bool DDR3Bank::LoadWeight( NVMainRequest *request )
     } // if( request->type == READ_PRECHARGE )
 
     //dataCycles += p->tBURST; 
-    std::cout << "rec Load command in bank(complete)*****" << std::endl;
+    std::cout << "[+](LoadWeight) rec Load command in bank(complete)*****" << std::endl;
     
     return true;
 }
 
 bool DDR3Bank::Transfer( NVMainRequest *request )
 {
-    std::cout << "rec transfer command in bank*****" << std::endl;
+    std::cout << "[+](Transfer) rec transfer command in bank*****" << std::endl;
     if( nextRead > GetEventQueue()->GetCurrentCycle() )
     {
-        std::cerr << "NVMain Error: Bank violates READ timing constraint!"
+        std::cerr << "[-](Transfer) NVMain Error: Bank violates READ timing constraint!"
             << std::endl;
         return false;
     }
     else if( nextWrite > GetEventQueue()->GetCurrentCycle() )
     {
-        std::cerr << "NVMain Error: Bank violates WRITE timing constraint!"
+        std::cerr << "[-](Transfer) NVMain Error: Bank violates WRITE timing constraint!"
             << std::endl;
         return false;
     }
     else if( state != DDR3BANK_OPEN )
     {
-        std::cerr << "NVMain Error: try to read a bank that is not active!"
+        std::cerr << "[-](Transfer) NVMain Error: try to read a bank that is not active!"
             << std::endl;
         return false;
     }
@@ -664,29 +664,29 @@ bool DDR3Bank::Transfer( NVMainRequest *request )
     } // if( request->type == READ_PRECHARGE )
 
     //dataCycles += p->tBURST; 
-    std::cout << "rec transfer command in bank(complete)*****" << std::endl;
+    std::cout << "[+](Transfer) rec transfer command in bank(complete)*****" << std::endl;
     
     return true;
 }
 
 bool DDR3Bank::ReadCycle( NVMainRequest *request )
 {
-    std::cout << "rec readcycle command in bank*****" << std::endl;
+    std::cout << "[+](ReadCycle) rec readcycle command in bank*****" << std::endl;
     if( nextRead > GetEventQueue()->GetCurrentCycle() )
     {
-        std::cerr << "NVMain Error: Bank violates READ timing constraint!"
+        std::cerr << "[-](ReadCycle) NVMain Error: Bank violates READ timing constraint!"
             << std::endl;
         return false;
     }
     else if( nextWrite > GetEventQueue()->GetCurrentCycle() )
     {
-        std::cerr << "NVMain Error: Bank violates WRITE timing constraint!"
+        std::cerr << "[-](ReadCycle) NVMain Error: Bank violates WRITE timing constraint!"
             << std::endl;
         return false;
     }
     else if( state != DDR3BANK_OPEN )
     {
-        std::cerr << "NVMain Error: try to read a bank that is not active!"
+        std::cerr << "[-](ReadCycle) NVMain Error: try to read a bank that is not active!"
             << std::endl;
         return false;
     }
@@ -730,14 +730,14 @@ bool DDR3Bank::ReadCycle( NVMainRequest *request )
     } // if( request->type == READ_PRECHARGE )
 
     //dataCycles += p->tBURST; 
-    std::cout << "rec readcycle command in bank(complete)*****" << std::endl;
+    std::cout << "[+](ReadCycle) rec readcycle command in bank(complete)*****" << std::endl;
     
     return true;
 }
 
 bool DDR3Bank::RealCompute( NVMainRequest *request )
 {
-    std::cout << "rec realcompute command in bank*****" << std::endl;
+    std::cout << "[+](RealCompute) rec realcompute command in bank*****" << std::endl;
 
     nextPowerDown = MAX( nextPowerDown, 
                          GetEventQueue()->GetCurrentCycle() 
@@ -757,14 +757,14 @@ bool DDR3Bank::RealCompute( NVMainRequest *request )
     bool success = GetChild( request )->IssueCommand( request );
 
     //dataCycles += p->tBURST; 
-    std::cout << "rec realcompute command in bank(complete)*****" << std::endl;
+    std::cout << "[+](RealCompute) rec realcompute command in bank(complete)*****" << std::endl;
     
     return success;
 }
 
 bool DDR3Bank::PostRead( NVMainRequest *request )
 {
-    std::cout << "rec postread command in bank*****" << std::endl;
+    std::cout << "[+](PostRead) rec postread command in bank*****" << std::endl;
 
     nextPowerDown = MAX( nextPowerDown, 
                          GetEventQueue()->GetCurrentCycle() 
@@ -784,30 +784,30 @@ bool DDR3Bank::PostRead( NVMainRequest *request )
     bool success = GetChild( request )->IssueCommand( request );
 
     //dataCycles += p->tBURST; 
-    std::cout << "rec postread command in bank(complete)*****" << std::endl;
+    std::cout << "[+](PostRead) rec postread command in bank(complete)*****" << std::endl;
     
     return success;
 }
 
 bool DDR3Bank::WriteCycle( NVMainRequest *request )
 {
-    std::cout << "rec writecycle command in bank*****" << std::endl;
+    std::cout << "[+](WriteCycle) rec writecycle command in bank*****" << std::endl;
     if( nextRead > GetEventQueue()->GetCurrentCycle() )
     {
-        std::cerr << "NVMain Error: Bank violates READ timing constraint!"
+        std::cerr << "[-](WriteCycle) NVMain Error: Bank violates READ timing constraint!"
             << std::endl;
         return false;
     }
     else if( nextWrite > GetEventQueue()->GetCurrentCycle() )
     {
-        std::cerr << "NVMain Error: Bank violates WRITE timing constraint!"
+        std::cerr << "[-](WriteCycle) NVMain Error: Bank violates WRITE timing constraint!"
             << std::endl;
         return false;
     }
     /*
     else if( state != DDR3BANK_OPEN )
     {
-        std::cerr << "NVMain Error: try to read a bank that is not active!"
+        std::cerr << "[-](WriteCycle) NVMain Error: try to read a bank that is not active!"
             << std::endl;
         return false;
     }
@@ -852,7 +852,7 @@ bool DDR3Bank::WriteCycle( NVMainRequest *request )
     } // if( request->type == READ_PRECHARGE )
 
     //dataCycles += p->tBURST; 
-    std::cout << "rec writecycle command in bank(complete)*****" << std::endl;
+    std::cout << "[+](WriteCycle) rec writecycle command in bank(complete)*****" << std::endl;
     
     return success;
 }
@@ -865,13 +865,13 @@ bool DDR3Bank::Precharge( NVMainRequest *request )
     /* sanity check */
     if( nextPrecharge > GetEventQueue()->GetCurrentCycle() )
     {
-        std::cerr << "NVMain Error: Bank violates PRECHARGE timing constraint!"
+        std::cerr << "[-](Precharge) NVMain Error: Bank violates PRECHARGE timing constraint!"
             << std::endl;
         return false;
     }
     else if( state != DDR3BANK_CLOSED && state != DDR3BANK_OPEN )
     {
-        std::cerr << "NVMain Error: try to precharge a bank that is neither "
+        std::cerr << "[-](Precharge) NVMain Error: try to precharge a bank that is neither "
             << "idle nor active" << std::endl;
         return false;
     }
@@ -908,7 +908,7 @@ bool DDR3Bank::Precharge( NVMainRequest *request )
         }
         else
         {
-            std::cerr << "NVMain Error: Bank " << bankId << " failed to "
+            std::cerr << "[-](Precharge) NVMain Error: Bank " << bankId << " failed to "
                 << "precharge the subarray " << preSubArray << std::endl;
             return false;
         }
@@ -930,7 +930,7 @@ bool DDR3Bank::Precharge( NVMainRequest *request )
 
                 if( success == false )
                 {
-                    std::cerr << "NVMain Error: Bank " << bankId << " failed to "
+                    std::cerr << "[-](Precharge) NVMain Error: Bank " << bankId << " failed to "
                         << "precharge the subarray " << openedSubArray 
                         << std::endl;
                     return false;
@@ -945,7 +945,7 @@ bool DDR3Bank::Precharge( NVMainRequest *request )
 
             if( success == false )
             {
-                std::cerr << "NVMain Error: Bank " << bankId << " failed to "
+                std::cerr << "[-](Precharge) NVMain Error: Bank " << bankId << " failed to "
                     << "issue " << request->type << " to subarray" 
                     << openedSubArray << std::endl;
                 return false;
@@ -956,7 +956,7 @@ bool DDR3Bank::Precharge( NVMainRequest *request )
     } // if( request->type == PRECHARGE_ALL )
     else
     {
-        std::cerr << "NVMain Error: Bank " << bankId 
+        std::cerr << "[-](Precharge) NVMain Error: Bank " << bankId 
             << " has unrecognized command "
             << request->type << std::endl;
         return false;
@@ -979,7 +979,7 @@ bool DDR3Bank::Refresh( NVMainRequest *request )
     /* sanity check */
     if( nextActivate > GetEventQueue()->GetCurrentCycle() )
     {
-        std::cerr << "NVMain Error: Bank violates REFRESH timing constraint!"
+        std::cerr << "[-](Refresh) NVMain Error: Bank violates REFRESH timing constraint!"
             << std::endl;
         return false;
     }
@@ -1006,7 +1006,7 @@ bool DDR3Bank::Refresh( NVMainRequest *request )
     }
     else
     {
-        std::cerr << "NVMain Error: Bank " << bankId << " failed to "
+        std::cerr << "[-](Refresh) NVMain Error: Bank " << bankId << " failed to "
             << "refresh the subarray " << refSubArray 
             << " by command " << request->type << std::endl;
         return false;
@@ -1027,7 +1027,7 @@ ncycle_t DDR3Bank::NextIssuable( NVMainRequest *request )
     else if( request->type == READCYCLE || request->type == REALCOMPUTE || request->type == POSTREAD || request->type == WRITECYCLE || request->type == COMPUTE ) nextCompare = MAX( nextRead, nextWrite );
     else assert(false);
 
-    //std::cout << "bank next" << nextCompare << std::endl;
+    //std::cout << "[+] bank next" << nextCompare << std::endl;
     return MAX(GetChild( request )->NextIssuable( request ), nextCompare );
 }
 
@@ -1051,7 +1051,7 @@ bool DDR3Bank::IsIssuable( NVMainRequest *req, FailReason *reason )
             || state == DDR3BANK_PDPF || state == DDR3BANK_PDPS || state == DDR3BANK_PDA )
 
         {
-            std::cout << "bank is not ok" << std::endl;
+            std::cout << "[+](IsIssuable)  bank is not ok" << std::endl;
             rv = false;
             if( reason ) 
                 reason->reason = BANK_TIMING;
@@ -1098,7 +1098,7 @@ bool DDR3Bank::IsIssuable( NVMainRequest *req, FailReason *reason )
             || state != DDR3BANK_OPEN )
         {
             rv = false;
-            std::cout << "bank is writing" << std::endl;
+            std::cout << "[+](IsIssuable) bank is writing" << std::endl;
             if( reason ) 
                 reason->reason = BANK_TIMING;
         }
@@ -1106,7 +1106,7 @@ bool DDR3Bank::IsIssuable( NVMainRequest *req, FailReason *reason )
             || state != DDR3BANK_OPEN )
         {
             rv = false;
-            std::cout << "bank is reading" << std::endl;
+            std::cout << "[+](IsIssuable) bank is reading" << std::endl;
             if( reason ) 
                 reason->reason = BANK_TIMING;
         }
@@ -1121,7 +1121,7 @@ bool DDR3Bank::IsIssuable( NVMainRequest *req, FailReason *reason )
             || state != DDR3BANK_OPEN )
         {
             rv = false;
-            std::cout << "bank is writing" << std::endl;
+            std::cout << "[+](IsIssuable) bank is writing" << std::endl;
             if( reason ) 
                 reason->reason = BANK_TIMING;
         }
@@ -1129,7 +1129,7 @@ bool DDR3Bank::IsIssuable( NVMainRequest *req, FailReason *reason )
             || state != DDR3BANK_OPEN )
         {
             rv = false;
-            std::cout << "bank is reading" << std::endl;
+            std::cout << "[+](IsIssuable) bank is reading" << std::endl;
             if( reason ) 
                 reason->reason = BANK_TIMING;
         }
@@ -1144,7 +1144,7 @@ bool DDR3Bank::IsIssuable( NVMainRequest *req, FailReason *reason )
             || state != DDR3BANK_OPEN )
         {
             rv = false;
-            std::cout << "bank is writing" << std::endl;
+            std::cout << "[+](IsIssuable) bank is writing" << std::endl;
             if( reason ) 
                 reason->reason = BANK_TIMING;
         }
@@ -1152,7 +1152,7 @@ bool DDR3Bank::IsIssuable( NVMainRequest *req, FailReason *reason )
             || state != DDR3BANK_OPEN )
         {
             rv = false;
-            std::cout << "bank is reading" << std::endl;
+            std::cout << "[+](IsIssuable) bank is reading" << std::endl;
             if( reason ) 
                 reason->reason = BANK_TIMING;
         }
@@ -1163,22 +1163,22 @@ bool DDR3Bank::IsIssuable( NVMainRequest *req, FailReason *reason )
     }
     else if ( req->type == REALCOMPUTE ) 
     {
-        //std::cout << "something wrong in the bank " << std::endl;
+        //std::cout << "[-](IsIssuable) something wrong in the bank " << std::endl;
         rv = true ;
     }
     else if ( req->type == POSTREAD )
     {
-        //std::cout << "something wrong in the bank " << std::endl;
+        //std::cout << "[-](IsIssuable) something wrong in the bank " << std::endl;
         rv = true ;
     }
     else if ( req->type == WRITECYCLE )
     {
-        //std::cout << "something wrong in the bank " << std::endl;
+        //std::cout << "[-](IsIssuable) something wrong in the bank " << std::endl;
         rv = true ;
     }
     else if ( req->type == COMPUTE )
     {
-        //std::cout << "something wrong in the bank " << std::endl;
+        //std::cout << "[-](IsIssuable) something wrong in the bank " << std::endl;
         rv = true ;
     }
     else if( req->type == PRECHARGE || req->type == PRECHARGE_ALL )
@@ -1285,7 +1285,7 @@ bool DDR3Bank::IssueCommand( NVMainRequest *req )
 
     if( !IsIssuable( req ) )
     {
-        std::cout << "NVMain: Bank: Warning: Command can not be issued!\n";
+        std::cout << "[-](IssueCommand) NVMain: Bank: Warning: Command can not be issued!\n";
     }
     else
     {
@@ -1329,7 +1329,7 @@ bool DDR3Bank::IssueCommand( NVMainRequest *req )
                 break;
             case COMPUTE:
                 rv = false ;
-                std::cout << "something wrong in bank ********" << std::endl;
+                std::cout << "[-](IssueCommand) something wrong in bank ********" << std::endl;
                 break;
 
             case PRECHARGE:

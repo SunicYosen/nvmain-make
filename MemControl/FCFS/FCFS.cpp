@@ -50,7 +50,7 @@ using namespace NVM;
  */
 FCFS::FCFS( )
 {
-    std::cout << "Created a FCFS memory controller!" << std::endl;
+    std::cout << "[+] Created a FCFS memory controller!" << std::endl;
 
     queueSize = 32;
 

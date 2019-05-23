@@ -74,7 +74,7 @@ bool NVMainTraceReader::GetNextAccess( TraceLine *nextAccess )
     /* If there is no trace file, we can't do anything. */
     if( traceFile == "" )
     {
-        std::cerr << "No trace file specified!" << std::endl;
+        std::cerr << "[-] No trace file specified!" << std::endl;
         return false;
     }
 
@@ -84,7 +84,7 @@ bool NVMainTraceReader::GetNextAccess( TraceLine *nextAccess )
         trace.open( traceFile.c_str( ) );
         if( !trace.is_open( ) )
         {
-            std::cerr << "Could not open trace file: " << traceFile << "!" << std::endl;
+            std::cerr << "[-] Could not open trace file: " << traceFile << "!" << std::endl;
             return false;
         }
     }
@@ -106,7 +106,7 @@ bool NVMainTraceReader::GetNextAccess( TraceLine *nextAccess )
         NVMAddress nAddress;
         nAddress.SetPhysicalAddress( 0xDEADC0DEDEADBEEFULL );
         nextAccess->SetLine( nAddress, NOP, 0, dataBlock, oldDataBlock, 0 );
-        std::cout << "NVMainTraceReader: Reached EOF!" << std::endl;
+        std::cout << "[+] NVMainTraceReader: Reached EOF!" << std::endl;
         return false;
     }
 
@@ -143,7 +143,7 @@ bool NVMainTraceReader::GetNextAccess( TraceLine *nextAccess )
                 else if( field == "W" )
                     operation = WRITE;
                 else
-                    std::cout << "Warning: Unknown operation `" 
+                    std::cout << "[+] Warning: Unknown operation `" 
                         << field << "'" << std::endl;
             }
             else if( fieldId == 2 )
@@ -235,7 +235,7 @@ bool NVMainTraceReader::GetNextAccess( TraceLine *nextAccess )
     linenum++;
 
     if( operation != READ && operation != WRITE )
-        std::cout << "NVMainTraceReader: Unknown Operation: " << operation 
+        std::cout << "[+] NVMainTraceReader: Unknown Operation: " << operation 
             << "Line number is " << linenum << ". Full Line is \"" << fullLine 
             << "\"" << std::endl;
 

@@ -48,7 +48,7 @@ using namespace NVM;
 
 LO_Cache::LO_Cache( )
 {
-    std::cout << "Created a Latency Optimized DRAM Cache!" << std::endl;
+    std::cout << "[+] Created a Latency Optimized DRAM Cache!" << std::endl;
 
     drcQueueSize = 32;
     starvationThreshold = 4;
@@ -542,7 +542,7 @@ void LO_Cache::CreateCheckpoint( std::string dir )
 
             if( !cpt_handle.is_open( ) )
             {
-                std::cout << "LO_Cache: Warning: Could not open checkpoint file: " << cpt_file.str() << "!" << std::endl;
+                std::cout << "[+] LO_Cache: Warning: Could not open checkpoint file: " << cpt_file.str() << "!" << std::endl;
             }
             else
             {
@@ -564,7 +564,7 @@ void LO_Cache::CreateCheckpoint( std::string dir )
 
             if( !cpt_handle.is_open() )
             {
-                std::cout << "LO_Cache: Warning: Could not open checkpoint info file: " << cpt_info << "!" << std::endl;
+                std::cout << "[+] LO_Cache: Warning: Could not open checkpoint info file: " << cpt_info << "!" << std::endl;
             }
             else
             {
@@ -596,14 +596,14 @@ void LO_Cache::RestoreCheckpoint( std::string dir )
 
             if( !cpt_handle.is_open( ) )
             {
-                std::cout << "LO_Cache: Warning: Could not open checkpoint file: " << cpt_file.str() << "!" << std::endl;
+                std::cout << "[+] LO_Cache: Warning: Could not open checkpoint file: " << cpt_file.str() << "!" << std::endl;
             }
             else
             {
                 std::streampos expectedSize = sizeof(CacheEntry)*functionalCache[rankIdx][bankIdx]->numSets*functionalCache[rankIdx][bankIdx]->numAssoc;
                 if( cpt_handle.tellg( ) != expectedSize )
                 {
-                    std::cout << "LO_Cache: Warning: Expected checkpoint size differs from DRAM cache configuration. Skipping restore." << std::endl;
+                    std::cout << "[+] LO_Cache: Warning: Expected checkpoint size differs from DRAM cache configuration. Skipping restore." << std::endl;
                 }
                 else
                 {
@@ -620,7 +620,7 @@ void LO_Cache::RestoreCheckpoint( std::string dir )
 
                     cpt_handle.close( );
 
-                    std::cout << "LO_Cache: Checkpoint read " << (sizeof(CacheEntry)*functionalCache[rankIdx][bankIdx]->numAssoc*functionalCache[rankIdx][bankIdx]->numSets) << " bytes." << std::endl;
+                    std::cout << "[+] LO_Cache: Checkpoint read " << (sizeof(CacheEntry)*functionalCache[rankIdx][bankIdx]->numAssoc*functionalCache[rankIdx][bankIdx]->numSets) << " bytes." << std::endl;
                 }
             }
         }

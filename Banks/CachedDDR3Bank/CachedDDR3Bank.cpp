@@ -131,7 +131,7 @@ bool CachedDDR3Bank::Activate( NVMainRequest *request )
 
             RDBAllocations++;
 
-            //std::cout << statName << ": Buffer " << bufferIdx << " bound to address 0x" << std::hex
+            //std::cout << "[+]" << statName << ": Buffer " << bufferIdx << " bound to address 0x" << std::hex
             //          << request->address.GetPhysicalAddress( ) << std::dec << " from col "
             //          << cachedRowBuffer[bufferIdx]->colStart << " to col "
             //          << cachedRowBuffer[bufferIdx]->colEnd << std::endl;
@@ -167,7 +167,7 @@ bool CachedDDR3Bank::Activate( NVMainRequest *request )
 
         RDBAllocations++;
 
-        //std::cout << statName << ": Buffer " << bufferIdx << " bound to address 0x" << std::hex
+        //std::cout << "[+]" << statName << ": Buffer " << bufferIdx << " bound to address 0x" << std::hex
         //          << request->address.GetPhysicalAddress( ) << std::dec << " from col "
         //          << cachedRowBuffer[bufferIdx]->colStart << " to col "
         //          << cachedRowBuffer[bufferIdx]->colEnd << std::endl;
@@ -234,7 +234,7 @@ bool CachedDDR3Bank::Activate( NVMainRequest *request )
     }
     else
     {
-        std::cerr << "NVMain Error: Bank " << bankId << " failed to "
+        std::cerr << "[-] NVMain Error: Bank " << bankId << " failed to "
             << "activate the subarray " << activateSubArray << std::endl;
     }
 
@@ -275,7 +275,7 @@ bool CachedDDR3Bank::Read( NVMainRequest *request )
             /* Swap the cached status back to normal. */
             request->type = (request->type == CACHED_READ ? READ : request->type);
 
-            //std::cout << GetEventQueue()->GetCurrentCycle() << " " << statName 
+            //std::cout << "[+]" << GetEventQueue()->GetCurrentCycle() << " " << statName 
             //          << ": Served read request 0x" << std::hex
             //          << request->address.GetPhysicalAddress() << std::dec << std::endl;
             
@@ -343,7 +343,7 @@ bool CachedDDR3Bank::Write( NVMainRequest *request )
                 /* Swap the cached status back to normal. */
                 request->type = (request->type == CACHED_WRITE ? WRITE : request->type);
 
-                //std::cout << GetEventQueue()->GetCurrentCycle() << " " << statName 
+                //std::cout << "[+]" << GetEventQueue()->GetCurrentCycle() << " " << statName 
                 //          << ": Served write request 0x" << std::hex
                 //          << request->address.GetPhysicalAddress() << std::dec << std::endl;
 
@@ -408,7 +408,7 @@ bool CachedDDR3Bank::IsIssuable( NVMainRequest *request, FailReason *reason )
         inRDBCount++;
         rv = true;
 
-        //std::cout << GetEventQueue()->GetCurrentCycle() << " " << statName << ": Found 0x"
+        //std::cout << "[+]" << GetEventQueue()->GetCurrentCycle() << " " << statName << ": Found 0x"
         //          << std::hex << request->address.GetPhysicalAddress( ) << std::dec
         //          << " in RDB. Row = " << request->address.GetRow( ) << " Col = "
         //          << request->address.GetCol( ) << std::endl;

@@ -205,7 +205,7 @@ void StandardRank::SetConfig( Config *c, bool createChildren )
 
     if( conf->GetValue( "RAW" ) == -1 )
     {
-        std::cout << "NVMain Warning: RAW (Row Activation Window) is not "
+        std::cout << "[+] NVMain Warning: RAW (Row Activation Window) is not "
             << "specified. Has set it to 4 (FAW)" << std::endl;
         rawNum = 4;
     }
@@ -218,7 +218,7 @@ void StandardRank::SetConfig( Config *c, bool createChildren )
     deviceCount = busWidth / deviceWidth;
     if( busWidth % deviceWidth != 0 )
     {
-        std::cout << "NVMain: device width is not a multiple of the bus width!\n";
+        std::cout << "[+] NVMain: device width is not a multiple of the bus width!\n";
         deviceCount++;
     }
 
@@ -233,7 +233,7 @@ void StandardRank::SetConfig( Config *c, bool createChildren )
         rankAT->SetConfig( c, createChildren );
         SetDecoder( rankAT );
 
-        //std::cout << "Creating " << bankCount << " banks in all " 
+        //std::cout << "[+] Creating " << bankCount << " banks in all " 
         //    << deviceCount << " devices.\n";
 
         for( ncounter_t i = 0; i < bankCount; i++ )
@@ -351,7 +351,7 @@ bool StandardRank::Activate( NVMainRequest *request )
 
     if( activateBank >= bankCount )
     {
-        std::cerr << "Rank: Attempted to activate non-existant bank " << activateBank << std::endl;
+        std::cerr << "[-] Rank: Attempted to activate non-existant bank " << activateBank << std::endl;
         return false;
     }
     
@@ -377,7 +377,7 @@ bool StandardRank::Activate( NVMainRequest *request )
     }
     else
     {
-        std::cerr << "NVMain Error: Rank Activation FAILED! " 
+        std::cerr << "[-] NVMain Error: Rank Activation FAILED! " 
             << "Did you check IsIssuable?" << std::endl;
     }
 
@@ -392,14 +392,14 @@ bool StandardRank::Read( NVMainRequest *request )
 
     if( readBank >= bankCount )
     {
-        std::cerr << "NVMain Error: Rank attempted to read non-existant bank: " 
+        std::cerr << "[-] NVMain Error: Rank attempted to read non-existant bank: " 
             << readBank << "!" << std::endl;
         return false;
     }
 
     if( nextRead > GetEventQueue()->GetCurrentCycle() )
     {
-        std::cerr << "NVMain Error: Rank Read violates the timing constraint: " 
+        std::cerr << "[-] NVMain Error: Rank Read violates the timing constraint: " 
             << readBank << "!" << std::endl;
         return false;
     }
@@ -431,7 +431,7 @@ bool StandardRank::Read( NVMainRequest *request )
 
     if( success == false )
     {
-        std::cerr << "NVMain Error: Rank Read FAILED! Did you check IsIssuable?" 
+        std::cerr << "[-] NVMain Error: Rank Read FAILED! Did you check IsIssuable?" 
             << std::endl;
     }
 
@@ -447,14 +447,14 @@ bool StandardRank::Write( NVMainRequest *request )
 
     if( writeBank >= bankCount )
     {
-        std::cerr << "NVMain Error: Attempted to write non-existant bank: " 
+        std::cerr << "[-] NVMain Error: Attempted to write non-existant bank: " 
             << writeBank << "!" << std::endl;
         return false;
     }
 
     if( nextWrite > GetEventQueue()->GetCurrentCycle() )
     {
-        std::cerr << "NVMain Error: Rank Write violates the timing constraint: " 
+        std::cerr << "[-] NVMain Error: Rank Write violates the timing constraint: " 
             << writeBank << "!" << std::endl;
         return false;
     }
@@ -487,7 +487,7 @@ bool StandardRank::Write( NVMainRequest *request )
 
     if( success == false )
     {
-        std::cerr << "NVMain Error: Rank Write FAILED! Did you check IsIssuable?" 
+        std::cerr << "[-] NVMain Error: Rank Write FAILED! Did you check IsIssuable?" 
             << std::endl;
     }
 
@@ -497,21 +497,21 @@ bool StandardRank::Write( NVMainRequest *request )
 bool StandardRank::LoadWeight( NVMainRequest *request )
 {
     uint64_t readBank;
-    std::cout << "rec Load command in rank*****" << std::endl;
+    std::cout << "[+] rec Load command in rank*****" << std::endl;
     //addrgen.init();
 
     request->address.GetTranslatedAddress( NULL, NULL, &readBank, NULL, NULL, NULL );
 
     if( readBank >= bankCount )
     {
-        std::cerr << "NVMain Error: Rank attempted to read non-existant bank: " 
+        std::cerr << "[-] NVMain Error: Rank attempted to read non-existant bank: " 
             << readBank << "!" << std::endl;
         return false;
     }
 
     if( nextRead > GetEventQueue()->GetCurrentCycle() )
     {
-        std::cerr << "NVMain Error: Rank Read violates the timing constraint: " 
+        std::cerr << "[-] NVMain Error: Rank Read violates the timing constraint: " 
             << readBank << "!" << std::endl;
         return false;
     }
@@ -531,31 +531,31 @@ bool StandardRank::LoadWeight( NVMainRequest *request )
     
     if( success == false )
     {
-        std::cerr << "NVMain Error: Rank Write FAILED! Did you check IsIssuable?" 
+        std::cerr << "[-] NVMain Error: Rank Write FAILED! Did you check IsIssuable?" 
             << std::endl;
     }
-    std::cout << "rec Load command in rank(complete)*****" << std::endl;
+    std::cout << "[+] rec Load command in rank(complete)*****" << std::endl;
     return success;                 
 }
 
 bool StandardRank::Transfer( NVMainRequest *request )
 {
     uint64_t readBank;
-    std::cout << "rec Transfer command in rank*****" << std::endl;
+    std::cout << "[+] rec Transfer command in rank*****" << std::endl;
     //addrgen.init();
 
     request->address.GetTranslatedAddress( NULL, NULL, &readBank, NULL, NULL, NULL );
 
     if( readBank >= bankCount )
     {
-        std::cerr << "NVMain Error: Rank attempted to read non-existant bank: " 
+        std::cerr << "[-] NVMain Error: Rank attempted to read non-existant bank: " 
             << readBank << "!" << std::endl;
         return false;
     }
 
     if( nextRead > GetEventQueue()->GetCurrentCycle() )
     {
-        std::cerr << "NVMain Error: Rank Read violates the timing constraint: " 
+        std::cerr << "[-] NVMain Error: Rank Read violates the timing constraint: " 
             << readBank << "!" << std::endl;
         return false;
     }
@@ -575,17 +575,17 @@ bool StandardRank::Transfer( NVMainRequest *request )
     
     if( success == false )
     {
-        std::cerr << "NVMain Error: Rank Write FAILED! Did you check IsIssuable?" 
+        std::cerr << "[-] NVMain Error: Rank Write FAILED! Did you check IsIssuable?" 
             << std::endl;
     }
-    std::cout << "rec Transfer command in rank(complete)*****" << std::endl;
+    std::cout << "[+] rec Transfer command in rank(complete)*****" << std::endl;
     return success;                 
 }
 
 bool StandardRank::ReadCycle( NVMainRequest *request )
 {
     uint64_t readBank;
-    std::cout << "rec readcycle command in rank*****" << std::endl;
+    std::cout << "[+] rec readcycle command in rank*****" << std::endl;
     compute_flag = true;
     //addrgen.init();
 
@@ -593,14 +593,14 @@ bool StandardRank::ReadCycle( NVMainRequest *request )
 
     if( readBank >= bankCount )
     {
-        std::cerr << "NVMain Error: Rank attempted to read non-existant bank: " 
+        std::cerr << "[-] NVMain Error: Rank attempted to read non-existant bank: " 
             << readBank << "!" << std::endl;
         return false;
     }
 
     if( nextRead > GetEventQueue()->GetCurrentCycle() )
     {
-        std::cerr << "NVMain Error: Rank Read violates the timing constraint: " 
+        std::cerr << "[-] NVMain Error: Rank Read violates the timing constraint: " 
             << readBank << "!" << std::endl;
         return false;
     }
@@ -620,16 +620,16 @@ bool StandardRank::ReadCycle( NVMainRequest *request )
     
     if( success == false )
     {
-        std::cerr << "NVMain Error: Rank Write FAILED! Did you check IsIssuable?" 
+        std::cerr << "[-] NVMain Error: Rank Write FAILED! Did you check IsIssuable?" 
             << std::endl;
     }
-    std::cout << "rec readcycle command in rank(complete)*****" << std::endl;
+    std::cout << "[+] rec readcycle command in rank(complete)*****" << std::endl;
     return success;    
 }
 
 bool StandardRank::RealCompute( NVMainRequest *request )
 {
-    std::cout << "rec realcompute command in rank*****" << std::endl;
+    std::cout << "[+] rec realcompute command in rank*****" << std::endl;
 
     bool success = GetChild( request )->IssueCommand( request );
 
@@ -646,16 +646,16 @@ bool StandardRank::RealCompute( NVMainRequest *request )
 
     if( success == false )
     {
-        std::cerr << "NVMain Error: Rank Write FAILED! Did you check IsIssuable?" 
+        std::cerr << "[-] NVMain Error: Rank Write FAILED! Did you check IsIssuable?" 
             << std::endl;
     }
-    std::cout << "rec realcompute command in rank(complete)*****" << std::endl;
+    std::cout << "[+] rec realcompute command in rank(complete)*****" << std::endl;
     return success;    
 }
 
 bool StandardRank::PostRead( NVMainRequest *request )
 {
-    std::cout << "rec postread command in rank*****" << std::endl;
+    std::cout << "[+] rec postread command in rank*****" << std::endl;
 
     bool success = GetChild( request )->IssueCommand( request );
 
@@ -672,31 +672,31 @@ bool StandardRank::PostRead( NVMainRequest *request )
 
     if( success == false )
     {
-        std::cerr << "NVMain Error: Rank Write FAILED! Did you check IsIssuable?" 
+        std::cerr << "[-] NVMain Error: Rank Write FAILED! Did you check IsIssuable?" 
             << std::endl;
     }
-    std::cout << "rec postread command in rank(complete)*****" << std::endl;
+    std::cout << "[+] rec postread command in rank(complete)*****" << std::endl;
     return success;    
 }
 
 bool StandardRank::WriteCycle( NVMainRequest *request )
 {
     uint64_t writeBank;
-    std::cout << "rec writecycle command in rank*****" << std::endl;
+    std::cout << "[+] rec writecycle command in rank*****" << std::endl;
     //addrgen.init();
 
     request->address.GetTranslatedAddress( NULL, NULL, &writeBank, NULL, NULL, NULL );
 
     if( writeBank >= bankCount )
     {
-        std::cerr << "NVMain Error: Rank attempted to read non-existant bank: " 
+        std::cerr << "[-] NVMain Error: Rank attempted to read non-existant bank: " 
             << writeBank << "!" << std::endl;
         return false;
     }
 
     if( nextWrite > GetEventQueue()->GetCurrentCycle() )
     {
-        std::cerr << "NVMain Error: Rank Read violates the timing constraint: " 
+        std::cerr << "[-] NVMain Error: Rank Read violates the timing constraint: " 
             << writeBank << "!" << std::endl;
         return false;
     }
@@ -716,16 +716,16 @@ bool StandardRank::WriteCycle( NVMainRequest *request )
    
     if( success == false )
     {
-        std::cerr << "NVMain Error: Rank Write FAILED! Did you check IsIssuable?" 
+        std::cerr << "[-] NVMain Error: Rank Write FAILED! Did you check IsIssuable?" 
             << std::endl;
     }
-    std::cout << "rec writecycle command in rank(complete)*****" << std::endl;
+    std::cout << "[+] rec writecycle command in rank(complete)*****" << std::endl;
     return success;   
 }
 
 bool StandardRank::Compute( NVMainRequest *request )
 {
-    std::cout << "rec compute command in rank*****" << std::endl;
+    std::cout << "[+] rec compute command in rank*****" << std::endl;
 
     if(request->isBuffer)
     {
@@ -745,7 +745,7 @@ bool StandardRank::Compute( NVMainRequest *request )
     }
 
     GetEventQueue( )->InsertEvent( EventResponse, this, request, GetEventQueue()->GetCurrentCycle() + 1);
-    std::cout << "rec compute command in rank*****" << std::endl;
+    std::cout << "[+] rec compute command in rank*****" << std::endl;
 
     return true;
 }
@@ -758,7 +758,7 @@ bool StandardRank::Precharge( NVMainRequest *request )
 
     if( preBank >= bankCount )
     {
-        std::cerr << "NVMain Error: Rank Attempted to precharge non-existant bank: " 
+        std::cerr << "[-] NVMain Error: Rank Attempted to precharge non-existant bank: " 
             << preBank << std::endl;
         return false;
     }
@@ -778,7 +778,7 @@ bool StandardRank::Precharge( NVMainRequest *request )
 
     if( success == false )
     {
-        std::cerr << "NVMain Error: Rank Precharge FAILED! Did you check IsIssuable?" 
+        std::cerr << "[-] NVMain Error: Rank Precharge FAILED! Did you check IsIssuable?" 
             << std::endl;
     }
 
@@ -835,7 +835,7 @@ bool StandardRank::PowerDown( NVMainRequest *request )
             break;
 
         default:
-            std::cerr<< "NVMain Error: Unrecognized PowerDown command " 
+            std::cerr << "[-](PowerDown) NVMain Error: Unrecognized PowerDown command " 
                 << request->type << " is detected in Rank " << std::endl; 
             break;
     }
@@ -905,7 +905,7 @@ bool StandardRank::PowerUp( NVMainRequest *request )
             break;
 
         default:
-            std::cerr<< "NVMain Error: PowerUp is issued to a Rank that is not " 
+            std::cerr << "[-](PowerUp) NVMain Error: PowerUp is issued to a Rank that is not " 
                 << "PowerDown before. The current rank state is " << state 
                 << std::endl; 
             break;
@@ -970,7 +970,7 @@ ncycle_t StandardRank::NextIssuable( NVMainRequest *request )
     else if( request->type == READCYCLE || request->type == REALCOMPUTE || request->type == POSTREAD || request->type == WRITECYCLE || request->type == COMPUTE ) nextCompare = MAX( nextRead, nextWrite );
     else assert(false);
         
-    //std::cout << "rank next " << nextCompare << std::endl;
+    //std::cout << "[+] rank next " << nextCompare << std::endl;
     return MAX(GetChild( request )->NextIssuable( request ), nextCompare );
 }
 
@@ -982,15 +982,15 @@ bool StandardRank::IsIssuable( NVMainRequest *req, FailReason *reason )
     /*
     if( req->type == LOAD_WEIGHT)
     {
-        std::cout << "im in the rank" << std::endl;
+        std::cout << "[+] im in the rank" << std::endl;
         return true;
     }
     */
     /*
     if (req->type == ACTIVATE)
-        std::cout << "act command" << std::endl;
+        std::cout << "[+] act command" << std::endl;
     else if(req->type == LOAD_WEIGHT ) 
-        std::cout << "load command " << std::endl;
+        std::cout << "[+] load command " << std::endl;
     */
     req->address.GetTranslatedAddress( NULL, NULL, &opBank, NULL, NULL, NULL );
 
@@ -1003,7 +1003,7 @@ bool StandardRank::IsIssuable( NVMainRequest *req, FailReason *reason )
                 > GetEventQueue()->GetCurrentCycle() )  
         {
             rv = false;
-            //std::cout << "last" << lastActivate[(RAWindex + 1) % rawNum] + p->tRAW << std::endl;
+            //std::cout << "[+] last" << lastActivate[(RAWindex + 1) % rawNum] + p->tRAW << std::endl;
             if( reason ) 
                 reason->reason = RANK_TIMING;
         }
@@ -1123,14 +1123,14 @@ bool StandardRank::IsIssuable( NVMainRequest *req, FailReason *reason )
         if( nextRead > GetEventQueue( )->GetCurrentCycle( ) )
         {
             rv = false;
-            std::cout << "*********read forbidding*******" << std::endl;
+            std::cout << "[+] *********read forbidding*******" << std::endl;
             if ( reason )
                 reason->reason = RANK_TIMING;
         }
         else if ( nextWrite > GetEventQueue( )->GetCurrentCycle( ) )
         {
             rv = false;
-            std::cout << "********write forbidding******"  << std::endl;
+            std::cout << "[+] ********write forbidding******"  << std::endl;
             if ( reason )
                 reason->reason = RANK_TIMING;
         }
@@ -1144,21 +1144,21 @@ bool StandardRank::IsIssuable( NVMainRequest *req, FailReason *reason )
         if( nextRead > GetEventQueue( )->GetCurrentCycle( ) )
         {
             rv = false;
-            std::cout << "*********read forbidding*******" << std::endl;
+            std::cout << "[+] *********read forbidding*******" << std::endl;
             if ( reason )
                 reason->reason = RANK_TIMING;
         }
         else if ( nextWrite > GetEventQueue( )->GetCurrentCycle( ) )
         {
             rv = false;
-            std::cout << "********write forbidding******"  << std::endl;
+            std::cout << "[+] ********write forbidding******"  << std::endl;
             if ( reason )
                 reason->reason = RANK_TIMING;
         }
         else
         {
-            //std::cout << "im hereeeeee" << std::endl;
-            //std::cout << "test global params " << globalparams.K_Col << std::endl;
+            //std::cout << "[+] im hereeeeee" << std::endl;
+            //std::cout << "[+] test global params " << globalparams.K_Col << std::endl;
             rv = GetChild( req )->IsIssuable( req, reason );
         }
     }
@@ -1167,28 +1167,28 @@ bool StandardRank::IsIssuable( NVMainRequest *req, FailReason *reason )
         if( nextRead > GetEventQueue( )->GetCurrentCycle( ) )
         {
             rv = false;
-            std::cout << "*********read forbidding*******" << std::endl;
+            std::cout << "[+] *********read forbidding*******" << std::endl;
             if ( reason )
                 reason->reason = RANK_TIMING;
         }
         else if ( nextWrite > GetEventQueue( )->GetCurrentCycle( ) )
         {
             rv = false;
-            std::cout << "********write forbidding******"  << std::endl;
+            std::cout << "[+] ********write forbidding******"  << std::endl;
             if ( reason )
                 reason->reason = RANK_TIMING;
         }
         else if ( compute_flag )
         {
             rv = false;
-            std::cout << "compute command is flying ******" << std::endl;
+            std::cout << "[+] compute command is flying ******" << std::endl;
             if ( reason )
                 reason->reason = RANK_TIMING;
         }
         else
         {
-            //std::cout << "im hereeeeee" << std::endl;
-            //std::cout << "test global params " << globalparams.K_Col << std::endl;
+            //std::cout << "[+] im hereeeeee" << std::endl;
+            //std::cout << "[+] test global params " << globalparams.K_Col << std::endl;
             rv = GetChild( req )->IsIssuable( req, reason );
         }
     }
@@ -1202,7 +1202,7 @@ bool StandardRank::IsIssuable( NVMainRequest *req, FailReason *reason )
         else
         {
             rv = false;
-            std::cout << "readcycle is not completed*****" << std::endl;
+            std::cout << "[+] readcycle is not completed*****" << std::endl;
             if( reason )
                 reason->reason = RANK_TIMING;
         }
@@ -1212,13 +1212,13 @@ bool StandardRank::IsIssuable( NVMainRequest *req, FailReason *reason )
         if( !realcompute_flag )
         {
             rv = false;
-            std::cout << "realcompute is not completed*****" << std::endl;
+            std::cout << "[+] realcompute is not completed*****" << std::endl;
             if( reason )
                 reason->reason = RANK_TIMING;
         } 
         else if ( !readcycle_flag )
         {
-            std::cout << "something wrong******" << std::endl;
+            std::cout << "[+] something wrong******" << std::endl;
         }
         else 
         {
@@ -1231,13 +1231,13 @@ bool StandardRank::IsIssuable( NVMainRequest *req, FailReason *reason )
         if( !postread_flag )
         {
             rv = false;
-            std::cout << "postread is not completed*****" << std::endl;
+            std::cout << "[+] postread is not completed*****" << std::endl;
             if( reason )
                 reason->reason = RANK_TIMING;
         }
         else if( !readcycle_flag || !realcompute_flag )
         {
-            std::cout << "something wrong******" << std::endl;
+            std::cout << "[+] something wrong******" << std::endl;
         }
         else
         {
@@ -1249,13 +1249,13 @@ bool StandardRank::IsIssuable( NVMainRequest *req, FailReason *reason )
         if( !writecycle_flag )
         {
             rv = false;
-            std::cout << "writecycle is not completed*****" << std::endl;
+            std::cout << "[+] writecycle is not completed*****" << std::endl;
             if( reason )
                 reason->reason = RANK_TIMING;
         }
         else if( !readcycle_flag || !realcompute_flag || !postread_flag )
         {
-            std::cout << "something wrong******" << std::endl;
+            std::cout << "[+] something wrong******" << std::endl;
         }
         else
         {
@@ -1279,7 +1279,7 @@ bool StandardRank::IssueCommand( NVMainRequest *req )
     {
         uint64_t bank, rank, channel;
         req->address.GetTranslatedAddress( NULL, NULL, &bank, &rank, &channel, NULL );
-        std::cout << "NVMain: Rank: Warning: Command " << req->type 
+        std::cout << "[+] NVMain: Rank: Warning: Command " << req->type 
             << " @ Bank " << bank << " Rank " << rank << " Channel " << channel 
             << " can not be issued!\n" << std::endl;
     }
@@ -1351,7 +1351,7 @@ bool StandardRank::IssueCommand( NVMainRequest *req )
                 break;
 
             default:
-                std::cout << "NVMain: Rank: Unknown operation in command queue! " 
+                std::cout << "[+] NVMain: Rank: Unknown operation in command queue! " 
                     << req->type << std::endl;
                 break;  
         }

@@ -67,7 +67,7 @@ void DRAMPower2TraceWriter::Init( Config *conf )
 
         if( !xmlFile.is_open( ) )
         {
-            std::cerr << "DRAMPower2TraceWriter: Could not open file " << conf->GetString( "DRAMPower2XML" ) << std::endl;
+            std::cerr << "[-] DRAMPower2TraceWriter: Could not open file " << conf->GetString( "DRAMPower2XML" ) << std::endl;
             return;
         }
 
@@ -132,7 +132,7 @@ void DRAMPower2TraceWriter::SetTraceFile( std::string file )
 
     if( !trace.is_open( ) )
     {
-        std::cout << "Warning: Could not open trace file " << file
+        std::cout << "[+] Warning: Could not open trace file " << file
                   << ". Output will be suppressed." << std::endl;
     }
 }
@@ -165,7 +165,7 @@ bool DRAMPower2TraceWriter::SetNextAccess( TraceLine *nextAccess )
 
     if( this->GetEcho() )
     {
-        WriteTraceLine( std::cout, nextAccess );
+        WriteTraceLine( std::cout , nextAccess );
         rv = true;
     }
 
@@ -268,7 +268,7 @@ void DRAMPower2TraceWriter::WriteTraceLine( std::ostream& stream, TraceLine *lin
             }
             else
             {
-                std::cerr << "DRAMPower2TraceWriter: Unknown powerdown state" << std::endl;
+                std::cerr << "[-] DRAMPower2TraceWriter: Unknown powerdown state" << std::endl;
             }
             pdState = DRAMPower2TraceWriter::PUP;
 

@@ -70,7 +70,7 @@ bool RubyTraceReader::GetNextAccess( TraceLine *nextAccess )
     /* If trace file is not specified, we can't know what to do. */
     if( traceFile == "" )
     {
-        std::cerr << "No trace file specified!" << std::endl;
+        std::cerr << "[-] No trace file specified!" << std::endl;
         return false;
     }
 
@@ -80,7 +80,7 @@ bool RubyTraceReader::GetNextAccess( TraceLine *nextAccess )
         trace.open( traceFile.c_str() );
         if( !trace.is_open( ) )
         {
-            std::cerr << "Could not open trace file: " << traceFile << "!" << std::endl;
+            std::cerr << "[-] Could not open trace file: " << traceFile << "!" << std::endl;
             return false;
         }
     }
@@ -201,7 +201,7 @@ bool RubyTraceReader::GetNextAccess( TraceLine *nextAccess )
                 else
                 {
                     memOp = NOP;
-                    std::cout << "RubyTraceReader: Unknown memory operation! " 
+                    std::cout << "[+] RubyTraceReader: Unknown memory operation! " 
                         << operation << std::endl;
                 }
 

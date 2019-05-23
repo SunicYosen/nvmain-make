@@ -56,7 +56,7 @@ using namespace NVM;
  */
 PerfectMemory::PerfectMemory( )
 {
-    std::cout << "Created a Perfect Memory memory controller!" << std::endl;
+    std::cout << "[+] Created a Perfect Memory memory controller!" << std::endl;
 }
 
 /*

@@ -50,7 +50,7 @@ MemoryController *MemoryControllerFactory::CreateNewController( std::string cont
     MemoryController *memoryController = NULL;
 
     if( controller == "" )
-        std::cout << "NVMain: MEM_CTL is not set in configuration file!" << std::endl;
+        std::cout << "[+] NVMain: MEM_CTL is not set in configuration file!" << std::endl;
 
     if( controller == "FCFS" )
         memoryController = new FCFS( );
@@ -70,7 +70,7 @@ MemoryController *MemoryControllerFactory::CreateNewController( std::string cont
         memoryController = new PredictorDRC( );
 
     if( memoryController == NULL )
-        std::cout << "NVMain: Unknown memory controller `" 
+        std::cout << "[+] NVMain: Unknown memory controller `" 
             << controller << "'." << std::endl;
 
     return memoryController;

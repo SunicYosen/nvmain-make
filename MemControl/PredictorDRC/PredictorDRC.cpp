@@ -47,7 +47,7 @@ PredictorDRC::PredictorDRC( )
 {
     //translator->GetTranslationMethod( )->SetOrder( 5, 1, 4, 3, 2, 6 );
 
-    std::cout << "Created a PredictorDRC!" << std::endl;
+    std::cout << "[+] Created a PredictorDRC!" << std::endl;
 
     DRC = NULL;
 
@@ -68,7 +68,7 @@ void PredictorDRC::SetConfig( Config *conf, bool createChildren )
         /* Initialize access predictor. */
         if( !conf->KeyExists( "DRCPredictor" ) )
         {
-            std::cout << "Error: No DRC predictor specified." << std::endl;
+            std::cout << "[+] Error: No DRC predictor specified." << std::endl;
         }
 
         formatter.str( "" );

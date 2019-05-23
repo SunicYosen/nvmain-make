@@ -50,7 +50,7 @@ DRAMCache::DRAMCache( )
 {
     //translator->GetTranslationMethod( )->SetOrder( 5, 1, 4, 3, 2, 6 );
 
-    std::cout << "Created a DRAMCache!" << std::endl;
+    std::cout << "[+] Created a DRAMCache!" << std::endl;
 
     drcChannels = NULL;
 
@@ -92,7 +92,7 @@ void DRAMCache::SetConfig( Config *conf, bool createChildren )
 
         if( !conf->KeyExists( "DRCVariant" ) )
         {
-            std::cout << "Error: No DRCVariant specified." << std::endl;
+            std::cout << "[+] Error: No DRCVariant specified." << std::endl;
             exit(1);
         }
 

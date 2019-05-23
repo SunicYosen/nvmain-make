@@ -46,7 +46,7 @@ GenericTraceWriter *TraceWriterFactory::CreateNewTraceWriter( std::string writer
     GenericTraceWriter *tracer = NULL;
 
     if( writer == "" )
-        std::cout << "NVMain: TraceWriter is not set in configuration file!" 
+        std::cout << "[+] NVMain: TraceWriter is not set in configuration file!" 
             << std::endl;
 
     if( writer == "NVMainTrace" )
@@ -57,7 +57,7 @@ GenericTraceWriter *TraceWriterFactory::CreateNewTraceWriter( std::string writer
         tracer = new DRAMPower2TraceWriter( );
 
     if( tracer == NULL )
-        std::cout << "NVMain: Unknown trace writer `" << writer << "'." 
+        std::cout << "[+] NVMain: Unknown trace writer `" << writer << "'." 
             << std::endl;
 
     return tracer;

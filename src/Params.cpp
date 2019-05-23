@@ -395,7 +395,7 @@ void Params::SetParams( Config *c )
         else if( c->GetString( "ProgramMode" ) == "SSMR" )
             programMode = ProgramMode_SSMR;
         else
-            std::cout << "Unknown ProgramMode: " << c->GetString( "ProgramMode" )
+            std::cout << "[+] Unknown ProgramMode: " << c->GetString( "ProgramMode" )
                       << ". Defaulting to SRMS" << std::endl;
     }
     c->GetValueUL( "MLCLevels", MLCLevels );
@@ -427,7 +427,7 @@ void Params::SetParams( Config *c )
         while( std::getline( debugClassStream, debugClass, ',' ) )
         {
             // TODO: strip whitespace?
-            std::cout << "Will print debug information from \"" << debugClass << ".\"" << std::endl;
+            std::cout << "[+] Will print debug information from \"" << debugClass << ".\"" << std::endl;
             debugClasses.insert( debugClass );
         }
     }
@@ -444,7 +444,7 @@ void Params::SetParams( Config *c )
         else if( c->GetString( "PauseMode" ) == "Optimal" )
             pauseMode = PauseMode_Optimal;
         else
-            std::cout << "Unknown PauseMode: " << c->GetString( "PauseMode" )
+            std::cout << "[+] Unknown PauseMode: " << c->GetString( "PauseMode" )
                       << ". Defaulting to Normal" << std::endl;
     }
 }

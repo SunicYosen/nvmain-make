@@ -296,7 +296,7 @@ void MemoryController::CleanupCallback( void * /*data*/ )
     for( ncycle_t queueId = 0; queueId < commandQueueCount; queueId++ )
     {
         /* Remove issued requests from the command queue. */
-        //std::cout << "i do the cleanup " << std::endl;
+        //std::cout << "[+] i do the cleanup " << std::endl;
         commandQueues[queueId].erase(
             std::remove_if( commandQueues[queueId].begin(), 
                             commandQueues[queueId].end(), 
@@ -318,7 +318,7 @@ bool MemoryController::RequestComplete( NVMainRequest *request )
          *  and we are in charge of deleting them!
          */
         //if ( request->type == READCYCLE || request->type == REALCOMPUTE || request->type == POSTREAD || request->type == WRITECYCLE )
-            //std::cout<< "im fine thank you " << std::endl;
+            //std::cout << "[+](setParameters) I'm fine thank you " << std::endl;
         delete request;
     }
     else
@@ -413,7 +413,7 @@ void MemoryController::SetConfig( Config *conf, bool createChildren )
      *  number of devices = bus width / device width
      *  Total channel size is: loglcal bank size * BANKS * RANKS
      */
-    //std::cout << StatName( ) << " capacity is " << ((p->ROWS * p->COLS * p->tBURST * p->RATE * p->BusWidth * p->BANKS * p->RANKS) / (8*1024*1024)) << " MB." << std::endl;
+    //std::cout << "[+]" << StatName( ) << " capacity is " << ((p->ROWS * p->COLS * p->tBURST * p->RATE * p->BusWidth * p->BANKS * p->RANKS) / (8*1024*1024)) << " MB." << std::endl;
 
     if( conf->KeyExists( "MATHeight" ) )
     {
@@ -447,7 +447,7 @@ void MemoryController::SetConfig( Config *conf, bool createChildren )
         /* Add your custom types here. */
     }
 
-    //std::cout << "Creating " << commandQueueCount << " command queues." << std::endl;
+    //std::cout << "[+] Creating " << commandQueueCount << " command queues." << std::endl;
     
     commandQueues = new std::deque<NVMainRequest *> [commandQueueCount];
     activateQueued = new bool * [p->RANKS];
@@ -797,7 +797,7 @@ void MemoryController::PowerDown( const ncounter_t& rankId )
     else if( p->PowerDownMode == "FASTEXIT" )
         pdOp = POWERDOWN_PDPF;
     else
-        std::cerr << "NVMain Error: Undefined low power mode" << std::endl;
+        std::cerr << "[-] NVMain Error: Undefined low power mode" << std::endl;
 
     NVMainRequest *powerdownRequest = MakePowerdownRequest( pdOp, rankId );
 
@@ -1795,9 +1795,9 @@ bool MemoryController::IssueMemoryCommands( NVMainRequest *req )
             }
 
             commandQueues[queueId].push_back( req );
-            //std::cout << "im here？？？" <<" id " << queueId << std::endl;
+            //std::cout << "[+] im here？？？" <<" id " << queueId << std::endl;
         }
-        //std::cout << "im here" << std::endl;
+        //std::cout << "[+] im here" << std::endl;
         rv = true;
     }
     else if( activateQueued[rank][bank] 
@@ -1960,15 +1960,15 @@ void MemoryController::CycleCommandQueues( )
          * iterator over all queues.
          */
         ncounter_t queueId = (curQueue + queueIdx) % commandQueueCount;
-        //std::cout << "test for queueId " << queueId << std::endl;
+        //std::cout << "[+] test for queueId " << queueId << std::endl;
         FailReason fail;
 
         /*
-        std::cout << "test wrong" << std::endl;
+        std::cout << "[+] test wrong" << std::endl;
         if( commandQueues[queueId].empty( ) )
-            std::cout << "1****************" << std::endl;
+            std::cout << "[+] 1****************" << std::endl;
         else if( !(lastIssueCycle != GetEventQueue()->GetCurrentCycle() ))
-            std::cout << "2************" << std::endl;
+            std::cout << "[+] 2************" << std::endl;
         */
         if( !commandQueues[queueId].empty( )
             && lastIssueCycle != GetEventQueue()->GetCurrentCycle()
@@ -1980,7 +1980,7 @@ void MemoryController::CycleCommandQueues( )
                          << queueHead->type << " for address 0x" << std::hex 
                          << queueHead->address.GetPhysicalAddress()
                          << std::dec << " for queue " << queueId << std::endl;
-            //std::cout << "test for queueId " << queueId << std::endl;
+            //std::cout << "[+] test for queueId " << queueId << std::endl;
 
             if( queueHead->type == COMPUTE )
             {
@@ -2035,7 +2035,7 @@ void MemoryController::CycleCommandQueues( )
                             row++;
                             if( row == p->ROWS)
                             {
-                                std::cout<<" wrong command: load data from different bank " << std::endl;
+                                std::cout << "[-](CycleCommandQueues) wrong command: load data from different bank " << std::endl;
                                 assert(row < p->ROWS);
                             }
                         }
@@ -2049,12 +2049,12 @@ void MemoryController::CycleCommandQueues( )
                             row++ ;
                             if( row = p->ROWS )
                             {
-                                std::cout<<" wrong command: load data from different bank " << std::endl;
+                                std::cout << "[-](CycleCommandQueues) wrong command: load data from different bank " << std::endl;
                                 assert(row < p->ROWS);
                             }
                         }
                         */
-                        std::cout << " now is col " << col << " row " << row << std::endl;
+                        std::cout << "[+]  now is col " << col << " row " << row << std::endl;
                         queueHead->address.SetTranslatedAddress( row, col, bank, rank, channel, subarray );
                         
                         queueHead->BufferSize = globalparams.Buffer_n;
@@ -2064,7 +2064,7 @@ void MemoryController::CycleCommandQueues( )
                             queueHead->ColComplete = true;
                         }
                         queueHead->Buffer_n = queueHead->BufferSize;
-                        std::cout << "buffer_n is " << queueHead->Buffer_n << std::endl;
+                        std::cout << "[+] buffer_n is " << queueHead->Buffer_n << std::endl;
                         /*
                         if((col + queueHead->Buffer_n / 2 + globalparams.K_Col - 1) >= p->COLS)
                             queueHead->rowIntr = true;
@@ -2099,7 +2099,7 @@ void MemoryController::CycleCommandQueues( )
                             row++;
                             if( row == p->ROWS)
                             {
-                                std::cout<<" wrong command: load data from different bank " << std::endl;
+                                std::cout << "[-](CycleCommandQueues) wrong command: load data from different bank " << std::endl;
                                 assert(row < p->ROWS);
                             }
                         }
@@ -2114,7 +2114,7 @@ void MemoryController::CycleCommandQueues( )
                             queueHead->ColComplete = true;
                         }
                         queueHead->Buffer_n = queueHead->BufferSize;
-                        std::cout << "buffer is " << queueHead->Buffer_n << std::endl;
+                        std::cout << "[+] buffer is " << queueHead->Buffer_n << std::endl;
                         if(( queueHead->row + globalparams.K_Row - 1 ) >= globalparams.Input_Row)
                         {
                             queueHead->RowComplete = true;
@@ -2148,11 +2148,11 @@ void MemoryController::CycleCommandQueues( )
 
                         queueHead->row++;
                         queueHead->Buffer_n = queueHead->BufferSize;
-                        std::cout << "buffer_n is " << queueHead->Buffer_n << std::endl;
+                        std::cout << "[+] buffer_n is " << queueHead->Buffer_n << std::endl;
 
                         ncounter_t rank, bank, row, subarray, col, channel;
                         queueHead->C_address1.GetTranslatedAddress( &row, &col, &bank, &rank, &channel, &subarray );
-                        std::cout << " point is col " << queueHead->col << " row " << queueHead->row << std::endl;
+                        std::cout << "[+]  point is col " << queueHead->col << " row " << queueHead->row << std::endl;
                         col = col + (queueHead->row - 1)*globalparams.Input_Col + queueHead->col - 1;
                         while (col >=p->COLS)
                         {
@@ -2160,11 +2160,11 @@ void MemoryController::CycleCommandQueues( )
                             row++;
                             if( row == p->ROWS)
                             {
-                                std::cout<<" wrong command: load data from different bank " << std::endl;
+                                std::cout << "[-](CycleCommandQueues) wrong command: load data from different bank " << std::endl;
                                 assert(row < p->ROWS);
                             }
                         }
-                        std::cout << " now is col " << col << " row " << row << std::endl;
+                        std::cout << "[+]  now is col " << col << " row " << row << std::endl;
                         queueHead->address.SetTranslatedAddress( row, col, bank, rank, channel, subarray );
 
                         if(( queueHead->row + globalparams.K_Row - 1 ) >= globalparams.Input_Row)
@@ -2202,12 +2202,12 @@ void MemoryController::CycleCommandQueues( )
                             row++;
                             if( row == p->ROWS)
                             {
-                                std::cout<<" wrong command: load data from different bank " << std::endl;
+                                std::cout << "[-](CycleCommandQueues) wrong command: load data from different bank " << std::endl;
                                 assert(row < p->ROWS);
                             }
                         }
                         queueHead->address.SetTranslatedAddress( row, col, bank, rank, channel, subarray );
-                        std::cout << " now is col " << col << " row " << row << std::endl;
+                        std::cout << "[+]  now is col " << col << " row " << row << std::endl;
                         queueHead->BufferSize = globalparams.Buffer_n;
                         if(( queueHead->col + queueHead->BufferSize / 2 + globalparams.K_Col - 2) >= globalparams.Input_Col)
                         {
@@ -2215,7 +2215,7 @@ void MemoryController::CycleCommandQueues( )
                             queueHead->ColComplete = true;
                         }
                         queueHead->Buffer_n = queueHead->BufferSize;
-                        std::cout << "buffer is " << queueHead->Buffer_n << std::endl;
+                        std::cout << "[+] buffer is " << queueHead->Buffer_n << std::endl;
 
                         queueHead->isReused = false;
                         commandQueues[queueId].push_back(MakeActivateRequest( queueHead ));
@@ -2284,9 +2284,9 @@ void MemoryController::CycleCommandQueues( )
             {
                 ncounter_t row, col, bank, rank, channel, subarray;
                 queueHead->address.GetTranslatedAddress( &row, &col, &bank, &rank, &channel, &subarray );
-                std::cout << "NVMain Warning: Operation could not be sent to memory after a very long time: "
+                std::cout << "[+] NVMain Warning: Operation could not be sent to memory after a very long time: "
                           << std::endl; 
-                std::cout << "         Address: 0x" << std::hex 
+                std::cout << "[+]          Address: 0x" << std::hex 
                           << queueHead->address.GetPhysicalAddress( )
                           << std::dec << " @ Bank " << bank << ", Rank " << rank << ", Channel " << channel
                           << " Subarray " << subarray << " Row " << row << " Column " << col
@@ -2373,15 +2373,15 @@ ncycle_t MemoryController::NextIssuable( NVMainRequest * /*request*/ )
                 continue;
 
             NVMainRequest *queueHead = commandQueues[queueIdx].at( 0 );
-            //std::cout << "memctr next" << nextWakeup << std::endl;
+            //std::cout << "[+] memctr next" << nextWakeup << std::endl;
             nextWakeup = MIN( nextWakeup, GetChild( )->NextIssuable( queueHead ) );
         }
     }
 
-    //std::cout << "memctr next" << nextWakeup << std::endl;
+    //std::cout << "[+] memctr next" << nextWakeup << std::endl;
     if( nextWakeup <= GetEventQueue( )->GetCurrentCycle( ) )
         nextWakeup = GetEventQueue( )->GetCurrentCycle( ) + 1;
-    //std::cout << "memctr next" << nextWakeup << std::endl;
+    //std::cout << "[+] memctr next" << nextWakeup << std::endl;
     return nextWakeup;
 }
 

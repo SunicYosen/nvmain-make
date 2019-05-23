@@ -45,7 +45,7 @@ GenericTraceReader *TraceReaderFactory::CreateNewTraceReader( std::string reader
     GenericTraceReader *tracer = NULL;
 
     if( reader == "" )
-        std::cout << "NVMain: TraceReader is not set in configuration file!" 
+        std::cout << "[+] NVMain: TraceReader is not set in configuration file!" 
             << std::endl;
 
     if( reader == "NVMainTrace" )
@@ -54,7 +54,7 @@ GenericTraceReader *TraceReaderFactory::CreateNewTraceReader( std::string reader
         tracer = new RubyTraceReader( );
 
     if( tracer == NULL )
-        std::cout << "NVMain: Unknown trace reader `" << reader << "'." 
+        std::cout << "[+] NVMain: Unknown trace reader `" << reader << "'." 
             << std::endl;
 
     return tracer;

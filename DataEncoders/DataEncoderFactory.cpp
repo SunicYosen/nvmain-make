@@ -61,7 +61,7 @@ DataEncoder *DataEncoderFactory::CreateNewDataEncoder( std::string encoderName )
     {
         encoder = new DataEncoder( );
         
-        std::cout << "Could not find DataEncoder named `" << encoderName
+        std::cout << "[-](CreateNewDataEncoder) Could not find DataEncoder named `" << encoderName
                   << "'. Using default DataEncoder." << std::endl;
     }
 

@@ -45,7 +45,7 @@ Interconnect *InterconnectFactory::CreateInterconnect( std::string type )
     Interconnect *ic = NULL;
 
     if( type == "" )
-        std::cout << "NVMain: Interconnect type is not set!" << std::endl;
+        std::cout << "[+] NVMain: Interconnect type is not set!" << std::endl;
 
     if( type == "OnChipBus" )
         ic = new OnChipBus( );
@@ -54,7 +54,7 @@ Interconnect *InterconnectFactory::CreateInterconnect( std::string type )
 
 
     else
-        std::cout << "NVMain: Could not find interconnect called " 
+        std::cout << "[+] NVMain: Could not find interconnect called " 
             << type << "!" << std::endl;
 
     return ic;

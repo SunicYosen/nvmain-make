@@ -479,7 +479,7 @@ bool CacheBank::IssueCommand( NVMainRequest *nreq )
             break;
 
         default:
-            std::cout << "CacheBank: Unknown operation `" << req->optype << "'!"
+            std::cout << "[+] CacheBank: Unknown operation `" << req->optype << "'!"
                 << std::endl;
             break;
     }

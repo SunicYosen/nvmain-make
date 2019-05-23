@@ -43,7 +43,7 @@ DRCDecoder::DRCDecoder( )
     ignoreBits = 0;
     cachelineSize = 64;
 
-    std::cout << "Created a DRC decoder!" << std::endl;
+    std::cout << "[+](DRCDecoder) Created a DRC decoder!" << std::endl;
 }
 
 void DRCDecoder::SetIgnoreBits( uint64_t numIgnore )
@@ -172,7 +172,7 @@ uint64_t DRCDecoder::ReverseTranslate( const uint64_t& row,
 
     if( GetTranslationMethod( ) == NULL )
     {
-        std::cerr << "Divider Translator: Translation method not specified!" << std::endl;
+        std::cerr << "[-](ReverseTranslate) Divider Translator: Translation method not specified!" << std::endl;
         exit(1);
     }
     

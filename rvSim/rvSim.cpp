@@ -32,7 +32,7 @@ int main()
 {
 	char start;
 
-	std::cout << "Ready? Y/N" << std::endl;
+	std::cout << "[+] Ready? Y/N" << std::endl;
 	std::cin >> start;
 	
 	if( ( start == 'Y' ) || ( start == 'y' ) )
@@ -53,15 +53,15 @@ int main()
 		{		}
 		else
 		{
-			std::cout << "something wrong" << std::endl;
+			std::cout << "[+] something wrong" << std::endl;
 		}
 		
-    //std::cout << "test global params " << globalparams.K_Col << std::endl;
+    //std::cout << "[+] test global params " << globalparams.K_Col << std::endl;
 
 		assert(argc = 4);
 
 		int result;
-        std::cout << "//-----------------------------------------//" << std::endl;
+        std::cout << "[+] //-----------------------------------------//" << std::endl;
         
     riscv_sim->SetConfig( argc, argv );
 		//riscv_sim->IssueCommand( 384, 'L', 12312, 0 );
@@ -70,7 +70,7 @@ int main()
 		while (true)
 		{
 			char conti;
-			std::cout << " continue cycle ? Y/N " << " currentCycle is " << riscv_sim->getCycle() << std::endl;
+			std::cout << "[+]  continue cycle ? Y/N " << " currentCycle is " << riscv_sim->getCycle() << std::endl;
 			std::cin >> conti;
 			if ((conti == 'Y') || (conti == 'y'))
 			{
@@ -78,7 +78,7 @@ int main()
 				{
 					if(command < 1)
 					{
-						//std::cout << "I send a load command" << std::endl;
+						//std::cout << "[+] I send a load command" << std::endl;
 						
 						// riscv_sim->IssueCommand( 384, 'L', 12312, 0);
 						// riscv_sim->IssueCommand( 384, 'L', 12312, 0);
@@ -117,32 +117,32 @@ int main()
 					}
 					else
 					{
-						std::cout << "there are no commands" << std::endl;
+						std::cout << "[+] there are no commands" << std::endl;
 					}	
 				}
 				else
 				{
-					std::cout << "the queue is full" << std::endl;
+					std::cout << "[+] the queue is full" << std::endl;
 				}
 
 				riscv_sim->Cycle(1000000);
 			}
 		}
-        std::cout << "All is done" << std::endl ;
-        std::cout << "//-----------------------------------------//" << std::endl;
+        std::cout << "[+] All is done" << std::endl ;
+        std::cout << "[+] //-----------------------------------------//" << std::endl;
         return result;
     }
 	else if( ( start == 'N' ) || ( start == 'n' ) )
 	{	
-		std::cout << "//-----------------------------------------//" << std::endl;
-		std::cout << "Nothing happened" << std::endl ;
-		std::cout << "//-----------------------------------------//" << std::endl;
+		std::cout << "[+] //-----------------------------------------//" << std::endl;
+		std::cout << "[+] Nothing happened" << std::endl ;
+		std::cout << "[+] //-----------------------------------------//" << std::endl;
 		return 0;
 	}
 	else
 	{
-		std::cout << "wrong answer" << std::endl;
-		std::cout << "Program is stopped" << std::endl;
+		std::cout << "[+] wrong answer" << std::endl;
+		std::cout << "[+] Program is stopped" << std::endl;
 	}
 }
 */
@@ -159,10 +159,9 @@ rvSim::~rvSim()
 
 bool rvSim::setParameters()
 {
-	//std::cout<< "test " << std::endl;
 	if(!globalparams.isUsing)
 	{
-		//std::cout<< "test " << std::endl;
+		//std::cout << "[+](setParameters) Test" << std::endl;
 		globalparams.Func_n = 0;
     globalparams.Input_Row = 5; //28;
     globalparams.Input_Col = 5; //28;
@@ -192,7 +191,7 @@ void rvSim::SetConfig( int argc, char *argv[] )
 {
 	if (argc != 4)
 	{
-		std::cout << "Warnning! Warnning!";
+		std::cout << "[+] Warnning! Warnning!";
 		return ;
 	}
 	/* Init */
@@ -225,7 +224,7 @@ void rvSim::SetConfig( int argc, char *argv[] )
 
   for( size_t i = 0; i < hookList.size( ); i++ )
   {
-    //std::cout << "Creating hook " << hookList[i] << std::endl;
+    //std::cout << "[+] Creating hook " << hookList[i] << std::endl;
 
     NVMObject *hook = HookFactory::CreateHook( hookList[i] );
     
@@ -237,7 +236,7 @@ void rvSim::SetConfig( int argc, char *argv[] )
     }
     else
     {
-        //std::cout << "Warning: Could not create a hook named `" 
+        //std::cout << "[+] Warning: Could not create a hook named `" 
         //    << hookList[i] << "'." << std::endl;
     }
   }
@@ -267,11 +266,11 @@ void rvSim::Cycle( ncycle_t steps )
 			if( !CommandQueue.empty() )
 				if( IsIssuable(CommandQueue.front()))
 				{
-					//std::cout<<"i send a commmmmand" << std::endl;
+					//std::cout << "[+](Cycle) Send a commmmmand" << std::endl;
 					GetChild( )->IssueCommand( CommandQueue.front() );
 					CommandQueue.pop_front();
 				}
-			//std::cout << " now it is " << currentCycle << std::endl;
+			//std::cout << "[+](Cycle) Now it is: " << currentCycle << std::endl;
 			globalEventQueue->Cycle( 1 );
 			currentCycle++;
 			
@@ -289,7 +288,7 @@ bool rvSim::IsIssuable( uint64_t input_addr, uint64_t output_addr, char opt, uin
 		if( slide == 'X')
 			//globalparams.slide=X;
 		{
-			std::cout << "output_addr" << output_addr << std::endl;
+			std::cout << "[+] output_addr" << output_addr << std::endl;
 		}
 		else if ( slide == 'Y' )
 			//globalparams.slide=Y;
@@ -305,7 +304,7 @@ bool rvSim::IsIssuable( uint64_t input_addr, uint64_t output_addr, char opt, uin
 	}
 	else
 	{
-		std::cout<< "[-](IsIssuable) Wrong command!" <<std::endl;
+		std::cout << "[-](IsIssuable) Wrong command!" <<std::endl;
 		return false;
 	}
 }
@@ -403,14 +402,14 @@ bool rvSim::IssueCommand( uint64_t input_addr, uint64_t output_addr, char opt, u
 		}
 		else
 		{
-			std::cout << "wrong slide_mode " << std::endl;
+			std::cout << "[+] wrong slide_mode " << std::endl;
 			return false;
 		}
 		//return IssueCommand(input_addr, opt, data, (uint64_t)0);
 	}
 	else
 	{
-		std::cout<< "wrong command" <<std::endl;
+		std::cout << "[-](IssueCommand) wrong command" <<std::endl;
 		return false;
 	}
 	
@@ -435,7 +434,7 @@ bool rvSim::IssueCommand( uint64_t input_addr, uint64_t output_addr, char opt, u
 	request->status = MEM_REQUEST_INCOMPLETE;
 	request->owner = (NVMObject *)this;
 	
-  return IssueCommand( request );	
+  return IssueCommand(request);	
 }
 bool rvSim::IssueCommand( uint64_t addr, char opt, uint64_t data, uint64_t threadId, char transfer_mode, uint64_t transfer_size )
 {
@@ -457,7 +456,7 @@ bool rvSim::IssueCommand( uint64_t addr, char opt, uint64_t data, uint64_t threa
 	}
 	else 
 	{
-		std::cout<< "[-](IssueCommand) Wrong command" <<std::endl;
+		std::cout << "[-](IssueCommand) Wrong command" <<std::endl;
 		return false;
 	}
 
@@ -564,9 +563,9 @@ bool rvSim::RequestComplete( NVMainRequest* request )
 		std::cout << "[+] Transfer from " << request->arrivalCycle << " to " << request->completionCycle << std::endl;
 	for (int i = 0; i<64; i++)
     {
-        std::cout << (int) request->data.rawData[i] << " ";
+        std::cout << "[+]" << (int) request->data.rawData[i] << " ";
     }
-	std::cout << std::endl;
+	std::cout << "[+]" << std::endl;
 	outstandingRequests--;
 
     delete request;

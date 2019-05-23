@@ -174,7 +174,7 @@ ncycles_t BitModel::Write( NVMainRequest *request, NVMDataBlock& oldData )
             if( oldBit == newBit )
                 continue;
 
-            //std::cout << "Bit " << j << " changed in byte " << i << std::endl;
+            //std::cout << "[+] Bit " << j << " changed in byte " << i << std::endl;
 
             /*
              *  Think of each row being partitioned into 1-bit divisions. 
@@ -187,7 +187,7 @@ ncycles_t BitModel::Write( NVMainRequest *request, NVMDataBlock& oldData )
             wordkey = row * partitionCount 
                              + (col * wordSize * 8) + i * 8 + j;
 
-            //std::cout << "Key is " << wordkey << std::endl;
+            //std::cout << "[+] Key is " << wordkey << std::endl;
 
             if( !DecrementLife( wordkey ) )
                 rv = -1;
