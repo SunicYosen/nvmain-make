@@ -28,9 +28,9 @@ extern "C" void rvsim_issue_command()
    s_vpi_value argv_val[6];
 
    PLI_UBYTE8 value_arg0;
-   PLI_UINT32 value_arg1;
-   PLI_UINT32 value_arg2;
-   PLI_UINT32 value_arg3;
+   PLI_UINT64 value_arg1;
+   PLI_UINT64 value_arg2;
+   PLI_UINT64 value_arg3;
    PLI_UBYTE8 value_arg4;
 
    argv_val[0].format = vpiIntVal;
@@ -61,7 +61,7 @@ extern "C" void rvsim_issue_command()
       riscv_sim -> IssueCommand((uint64_t)value_arg1, (uint64_t)value_arg3, \
            (char)value_arg0, (uint64_t)value_arg2, (char)value_arg4);
 
-      printf("[+](Issue Command) Issue Command: [%c, 0x%.8x, 0x%.8x, 0x%.8x, %c] \n", \
+      printf("[+](Issue Command) Issue Command: [%c, 0x%.16x, 0x%.16x, 0x%.16x, %c] \n", \
              value_arg0, value_arg1, value_arg2, value_arg3, value_arg4);
    }
 
@@ -71,13 +71,13 @@ extern "C" void rvsim_issue_command()
       riscv_sim -> IssueCommand((uint64_t)value_arg1, (char)value_arg0, \
                                 (uint64_t)value_arg2, (uint64_t)value_arg3);
 
-      printf("[+](Issue Command) Issue Command: [%c, 0x%.8x, 0x%.8x, 0x%.8x, %c] \n", \
+      printf("[+](Issue Command) Issue Command: [%c, 0x%.16x, 0x%.16x, 0x%.16x, %c] \n", \
              value_arg0, value_arg1, value_arg2, value_arg3, value_arg4);
    }
 
    else
    {
-      printf("[-]Issue Command Error get opt! [%c, 0x%.8x, 0x%.8x, 0x%.8x, %c] \n", \
+      printf("[-]Issue Command Error get opt! [%c, 0x%.16x, 0x%.16x, 0x%.16x, %c] \n", \
              value_arg0, value_arg1, value_arg2, value_arg3, value_arg4);
 
       exit(0);

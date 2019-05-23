@@ -21,8 +21,8 @@ GXX ?= g++-4.8
 TYPECONFIG ?= fast
 
 CXXFLAGS :=  -Werror -Wall -fPIC -DTRACE\
-	         -std=c++11 -Wextra -DNDEBUG \
-			 -Woverloaded-virtual  \
+	           -std=c++11 -Wextra -DNDEBUG \
+			       -Woverloaded-virtual  \
 
 ifeq ($(TYPECONFIG),fast)
 	CXXFLAGS += -O3

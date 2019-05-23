@@ -26,8 +26,8 @@ using namespace NVM;
 
 //Define some global params
 GlobalParams globalparams;
-rvSim *riscv_sim = new rvSim( );
-
+rvSim *riscv_sim = new rvSim();
+/*
 int main()
 {
 	char start;
@@ -79,40 +79,39 @@ int main()
 					if(command < 1)
 					{
 						//std::cout << "I send a load command" << std::endl;
-						/*
-						riscv_sim->IssueCommand( 384, 'L', 12312, 0);
-						riscv_sim->IssueCommand( 384, 'L', 12312, 0);
-						riscv_sim->IssueCommand( 384, 'L', 12312, 0);
-						riscv_sim->IssueCommand( 384, 'L', 12312, 0);
-						riscv_sim->IssueCommand( 384, 'L', 12312, 0);
-						riscv_sim->IssueCommand( 384, 'L', 12312, 0);
-						riscv_sim->IssueCommand( 384, 'L', 12312, 0);
-						riscv_sim->IssueCommand( 384, 'L', 12312, 0);
-						riscv_sim->IssueCommand( 384, 'L', 12312, 0);
-						*/
-						/*
-						riscv_sim->IssueCommand( 0, 0, 'C', 11, 'Y');
+						
+						// riscv_sim->IssueCommand( 384, 'L', 12312, 0);
+						// riscv_sim->IssueCommand( 384, 'L', 12312, 0);
+						// riscv_sim->IssueCommand( 384, 'L', 12312, 0);
+						// riscv_sim->IssueCommand( 384, 'L', 12312, 0);
+						// riscv_sim->IssueCommand( 384, 'L', 12312, 0);
+						// riscv_sim->IssueCommand( 384, 'L', 12312, 0);
+						// riscv_sim->IssueCommand( 384, 'L', 12312, 0);
+						// riscv_sim->IssueCommand( 384, 'L', 12312, 0);
+						// riscv_sim->IssueCommand( 384, 'L', 12312, 0);
+						
+						// riscv_sim->IssueCommand( 0, 0, 'C', 11, 'Y');
+						// riscv_sim->IssueCommand( 0, 0, 'C', 11, 'X');
+						// riscv_sim->IssueCommand( 0, 0, 'C', 11, 'Y');
+						// riscv_sim->IssueCommand( 0, 0, 'C', 11, 'X');
+						// riscv_sim->IssueCommand( 0, 0, 'C', 11, 'Y');
+						// riscv_sim->IssueCommand( 0, 0, 'C', 11, 'X');
+						
+						// riscv_sim->IssueCommand(333,'T', 123123, 0, 'I', 128 );
+						// riscv_sim->IssueCommand(333,'T', 123123, 0, 'I', 128 );
+						// riscv_sim->IssueCommand(333,'T', 123123, 0, 'O', 128 );
+						// riscv_sim->IssueCommand(333,'T', 123123, 0, 'O', 128 );
+						
+						// riscv_sim->IssueCommand( 333, 'T', 123123, 0, 'O', 128 );
+						// riscv_sim->IssueCommand( 333, 'T', 0, 0, 'O', 128 ); // transfer 128 bit data
+						// riscv_sim->IssueCommand( 333, 'T', 123123, 0, 'O', 128 );
+						// riscv_sim->IssueCommand( 384, 'L', 12312, 0);
+						// riscv_sim->IssueCommand( 0, 0, 'C', 11, 'Y');
 						riscv_sim->IssueCommand( 0, 0, 'C', 11, 'X');
 						riscv_sim->IssueCommand( 0, 0, 'C', 11, 'Y');
 						riscv_sim->IssueCommand( 0, 0, 'C', 11, 'X');
 						riscv_sim->IssueCommand( 0, 0, 'C', 11, 'Y');
-						riscv_sim->IssueCommand( 0, 0, 'C', 11, 'X');
-						*/
-						/*
-						riscv_sim->IssueCommand(333,'T', 123123, 0, 'I', 128 );
-						riscv_sim->IssueCommand(333,'T', 123123, 0, 'I', 128 );
-						riscv_sim->IssueCommand(333,'T', 123123, 0, 'O', 128 );
-						riscv_sim->IssueCommand(333,'T', 123123, 0, 'O', 128 );
-						*/
-						//riscv_sim->IssueCommand( 333, 'T', 123123, 0, 'O', 128 );
-						//riscv_sim->IssueCommand( 333, 'T', 0, 0, 'O', 128 ); // transfer 128 bit data
-						//riscv_sim->IssueCommand( 333, 'T', 123123, 0, 'O', 128 );
-						//riscv_sim->IssueCommand( 384, 'L', 12312, 0);
-						//riscv_sim->IssueCommand( 0, 0, 'C', 11, 'Y');
-						riscv_sim->IssueCommand( 0, 0, 'C', 11, 'X');
-						riscv_sim->IssueCommand( 0, 0, 'C', 11, 'Y');
-						riscv_sim->IssueCommand( 0, 0, 'C', 11, 'X');
-						riscv_sim->IssueCommand( 0, 0, 'C', 11, 'Y');
+						
 						//riscv_sim->IssueCommand( 384, 'L', 12312, 0);
 						command++;
 					}
@@ -146,36 +145,37 @@ int main()
 		std::cout << "Program is stopped" << std::endl;
 	}
 }
+*/
 
-rvSim::rvSim( )
+rvSim::rvSim()
 {
 	
 }
 
-rvSim::~rvSim( )
+rvSim::~rvSim()
 {
 	
 }
 
-bool rvSim::setParameters( )
+bool rvSim::setParameters()
 {
 	//std::cout<< "test " << std::endl;
 	if(!globalparams.isUsing)
 	{
 		//std::cout<< "test " << std::endl;
 		globalparams.Func_n = 0;
-    	globalparams.Input_Row = 5; //28;
-    	globalparams.Input_Col = 5; //28;
-    	globalparams.Input_Channel = 3;
-    	globalparams.BitWidth = 4;
-    	globalparams.K_Row = 3;
-    	globalparams.K_Col = 3;
-    	globalparams.K_Channel = globalparams.Input_Channel;
-    	globalparams.K_num = 32;
-    	globalparams.Input_Width = 8;
-    	globalparams.Weight_Width = 8;
-    	globalparams.act_mode = ACT_RELU;
-    	globalparams.pooling_mode = Pooling_Max;
+    globalparams.Input_Row = 5; //28;
+    globalparams.Input_Col = 5; //28;
+    globalparams.Input_Channel = 3;
+    globalparams.BitWidth = 4;
+    globalparams.K_Row = 3;
+    globalparams.K_Col = 3;
+    globalparams.K_Channel = globalparams.Input_Channel;
+    globalparams.K_num = 32;
+    globalparams.Input_Width = 8;
+    globalparams.Weight_Width = 8;
+    globalparams.act_mode = ACT_RELU;
+    globalparams.pooling_mode = Pooling_Max;
 		globalparams.Buffer_n = 4;
 
 		//globalparams.Input_Addr.SetPhysicalAddress(0);
@@ -313,9 +313,9 @@ bool rvSim::IsIssuable( uint64_t input_addr, uint64_t output_addr, char opt, uin
 
 bool rvSim::IsIssuable( uint64_t addr, char opt, uint64_t data, uint64_t threadId = 0 )
 {
-//	NVMainRequest *request = new NVMainRequest;
-//	request = rvSim::linetocommand( addr, opt, data, threadId )
-	NVMainRequest *request = new NVMainRequest( );
+  //	NVMainRequest *request = new NVMainRequest;
+  //	request = rvSim::linetocommand( addr, opt, data, threadId )
+	NVMainRequest *request = new NVMainRequest();
 
 	/* translate traceline to command */
 	//uint64_t cycle = currentCycle;
@@ -435,7 +435,7 @@ bool rvSim::IssueCommand( uint64_t input_addr, uint64_t output_addr, char opt, u
 	request->status = MEM_REQUEST_INCOMPLETE;
 	request->owner = (NVMObject *)this;
 	
-    return IssueCommand( request );	
+  return IssueCommand( request );	
 }
 bool rvSim::IssueCommand( uint64_t addr, char opt, uint64_t data, uint64_t threadId, char transfer_mode, uint64_t transfer_size )
 {
@@ -535,15 +535,15 @@ bool rvSim::IssueCommand( uint64_t addr, char opt, uint64_t data, uint64_t threa
 	request->status = MEM_REQUEST_INCOMPLETE;
 	request->owner = (NVMObject *)this;
 	
-    return IssueCommand( request );
+  return IssueCommand( request );
 }
 
 bool rvSim::IssueCommand( NVMainRequest *request )
 {	
 	outstandingRequests++;
 	//GetChild( )->IssueCommand( request );
-	if (IsIssuable( ))
-		CommandQueue.push_back( request );
+	if (IsIssuable())
+		CommandQueue.push_back(request);
 	return 1;
 }
 
