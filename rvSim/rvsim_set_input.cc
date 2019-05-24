@@ -1,8 +1,8 @@
 /* 
- * Name  :  rvsim_set_input.cc
- * Author:  SunicYosen
- * Time  :    2019.05.24
- * Introduction:
+ * Name         :  rvsim_set_input.cc
+ * Author       :  SunicYosen
+ * Time         :    2019.05.24
+ * Introduction :
  */
 
 #include <sstream>

@@ -1,8 +1,8 @@
 /* 
- * Name:  rvsim_issue_command.cc
- * Author:  SunicYosen
- * Time:  2019.04.11
- * Introduction:
+ * Name         :  rvsim_is_issuable.cc
+ * Author       :  SunicYosen
+ * Time         :  2019.04.11
+ * Introduction :
  */
 
 #include <iostream>

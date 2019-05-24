@@ -1,8 +1,8 @@
 /* 
- * Name:  rvsim_set_config.cc
- * Author:  SunicYosen
- * Time:  2019.04.11
- * Introduction:
+ * Name         :  rvsim_set_config.cc
+ * Author       :  SunicYosen
+ * Time         :  2019.04.11
+ * Introduction :
  */
 
 #include <sstream>

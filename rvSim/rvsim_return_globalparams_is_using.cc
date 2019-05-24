@@ -1,8 +1,8 @@
 /* 
- * Name:  rvsim_return_globalparams_is_using.cc
- * Author:  SunicYosen
- * Time:    2019.05.24
- * Introduction:
+ * Name         :  rvsim_return_globalparams_is_using.cc
+ * Author       :  SunicYosen
+ * Time         :  2019.05.24
+ * Introduction :
  */
 
 #include <sstream>
