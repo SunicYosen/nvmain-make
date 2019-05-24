@@ -27,6 +27,7 @@ using namespace NVM;
 //Define some global params
 GlobalParams globalparams;
 rvSim *riscv_sim = new rvSim();
+
 /*
 int main()
 {
