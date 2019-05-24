@@ -75,6 +75,16 @@ extern "C" void rvsim_issue_command()
              value_arg0, value_arg1, value_arg2, value_arg3, value_arg4);
    }
 
+   else if(value_arg0 == 'T' | value_arg0 == 't')
+   {
+      riscv_sim -> IssueCommand((uint64_t)value_arg1, (char)value_arg0, \
+                                (uint64_t)(0), (uint64_t)value_arg3, \
+                                (char)value_arg4, (uint64_t)value_arg2);
+                                
+      printf("[+](Issue Command) Issue Command: [%c, 0x%.16x, 0x%.16x, 0x%.16x, %c] \n", \
+             value_arg0, value_arg1, value_arg2, value_arg3, value_arg4);
+   }
+
    else
    {
       printf("[-]Issue Command Error get opt! [%c, 0x%.16x, 0x%.16x, 0x%.16x, %c] \n", \
