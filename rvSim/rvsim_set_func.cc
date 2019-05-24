@@ -50,7 +50,7 @@ extern "C" int rvsim_set_func()
 	{
     uint64_t func_value = value_arg0;
     printf("[+](set_func) Func_n = %d\n", func_value);
-		globalparams.Func_n = 0;
+		globalparams.Func_n = func_value;
 		return true;
 	}
 
