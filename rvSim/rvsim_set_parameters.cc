@@ -11,13 +11,16 @@
 #include <fstream>
 
 #include "rvSim/rvSim.h"
+#include "src/Params.h"
 
 using namespace NVM;
 
 //Define some params
 extern rvSim *riscv_sim;
+extern GlobalParams globalparams;
 
 extern "C" int rvsim_set_parameters()
 {
   riscv_sim->setParameters();
+  return 0;
 }
